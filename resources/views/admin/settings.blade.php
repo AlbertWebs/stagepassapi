@@ -138,6 +138,14 @@
                         <input type="password" name="instagram_access_token" value="{{ $settings['instagram_access_token'] }}" class="mt-2 w-full rounded-xl bg-slate-950 border border-slate-800 px-4 py-2 text-sm text-slate-100" />
                     </div>
                     <div>
+                        <label class="text-sm text-slate-400">Graph API User ID</label>
+                        <input type="text" name="instagram_graph_user_id" value="{{ $settings['instagram_graph_user_id'] }}" class="mt-2 w-full rounded-xl bg-slate-950 border border-slate-800 px-4 py-2 text-sm text-slate-100" />
+                    </div>
+                    <div>
+                        <label class="text-sm text-slate-400">Graph API Version</label>
+                        <input type="text" name="instagram_graph_api_version" value="{{ $settings['instagram_graph_api_version'] }}" class="mt-2 w-full rounded-xl bg-slate-950 border border-slate-800 px-4 py-2 text-sm text-slate-100" />
+                    </div>
+                    <div>
                         <label class="text-sm text-slate-400">App ID</label>
                         <input type="text" name="instagram_app_id" value="{{ $settings['instagram_app_id'] }}" class="mt-2 w-full rounded-xl bg-slate-950 border border-slate-800 px-4 py-2 text-sm text-slate-100" />
                     </div>

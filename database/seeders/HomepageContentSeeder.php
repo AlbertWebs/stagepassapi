@@ -92,7 +92,7 @@ class HomepageContentSeeder extends Seeder
         }
 
         DB::table('hero_sections')->insert([
-            'headline' => 'WWe Create the Most Engaging Events in the World Using Technology',
+            'headline' => 'We Create the Most Engaging Events in the World Using Technology',
             'background_video_url' => 'https://stagepass.co.ke/uploads/video/ceo.mp4',
             'created_at' => $now,
             'updated_at' => $now,
@@ -283,48 +283,56 @@ class HomepageContentSeeder extends Seeder
             [
                 'title' => 'Concerts',
                 'description' => 'StagePass Audio visual has a long history in this industry, affording us a level of knowledge that can help you every step along the way. We maintain a vast inventory of equipment including the latest technology and our personnel have years of experience to know how to handle even the most complex setup. We understand that success is all about the preparation. We move in fast (and always accurately), set ',
+                'icon_name' => 'Music',
                 'image_url' => 'https://stagepass.co.ke/uploads/industries/2019-07-1012:32:30imageCONCERTS-A.png',
                 'link_url' => 'https://stagepass.co.ke/industry/1',
             ],
             [
                 'title' => 'Corporate Events',
                 'description' => 'Where matters of business are concerned, tact and a respect for privacy are paramount. We know that you expect both discretion and confidentiality. With StagePass Audio visual, those considerations come guaranteed. We also pledge that all personnel are well-organized and handle all hardware and equipment in a neat and clean manner. We fully appreciate the need to present a professional overall aesthetic, so you can be assured that everything ',
+                'icon_name' => 'Building2',
                 'image_url' => 'https://stagepass.co.ke/uploads/industries/2019-07-1011:48:51imageACF-DINNER-04.png',
                 'link_url' => 'https://stagepass.co.ke/industry/2',
             ],
             [
                 'title' => 'Fashion',
                 'description' => "The fashion industry is a fast-paced and ever-evolving universe. To ensure success at every fashion show, with every step a model takes on the catwalk, you need a partner you can rely on. StagePass Audio visual is that partner. Our vast experience with fashion events has given us the knowledge and the skill to work quickly and with precision. There’s only one chance to get it right, and at ",
+                'icon_name' => 'Palette',
                 'image_url' => 'https://stagepass.co.ke/uploads/industries/2019-07-1008:26:33imageimage_2019-06-18_08-46-22.png',
                 'link_url' => 'https://stagepass.co.ke/industry/3',
             ],
             [
                 'title' => 'Theater & Dance',
                 'description' => 'StagePass Audio visual has a long history providing technical support for theater and dance events. Success of these performances is all about preparation and full knowledge of the venue space and audience expectations. At StagePass Audio visual, we guarantee that all the services we provide for theater and dance events will exceed your expectations. Working with live performances, we pride ourselves on our ability to be flexible and adapt to ',
+                'icon_name' => 'Theater',
                 'video_url' => 'https://stagepass.co.ke/uploads/video/dance.mp4',
                 'link_url' => 'https://stagepass.co.ke/industry/4',
             ],
             [
                 'title' => 'Gala Dinners',
                 'description' => 'At Stagepass Audio Visual, we specialize in large gatherings and properly prepared for any size of the audience. We employ creative solutions to manage big audiences, quickly and efficiently adapt to the changing needs of your event and guarantee the safety and satisfaction of all in attendance.',
+                'icon_name' => 'Gem',
                 'image_url' => 'https://stagepass.co.ke/uploads/industries/2019-07-1314:26:41imageSPESA.png',
                 'link_url' => 'https://stagepass.co.ke/industry/5',
             ],
             [
                 'title' => 'Trade shows',
                 'description' => 'We are proud of our extensive history of providing production support for trade shows. This allows us to understand and navigate the complex – and usually unique – logistics of convention centers around the country to provide the very best for our clients every single time.',
+                'icon_name' => 'Clapperboard',
                 'image_url' => 'https://stagepass.co.ke/uploads/industries/2019-07-1011:53:25imageACFXPO2.png',
                 'link_url' => 'https://stagepass.co.ke/industry/6',
             ],
             [
                 'title' => 'Sporting Events',
                 'description' => 'StagePass Audio visual has provided services for halftime shows, rallies and promotional events, often in very alternative venues. Events like these usually call for a fast turnaround. Impeccable preparation and planning allow us to be in place and on time at each and every sporting event.',
+                'icon_name' => 'Trophy',
                 'image_url' => 'https://stagepass.co.ke/uploads/industries/2019-07-1011:54:39imageKASARANI.png',
                 'link_url' => 'https://stagepass.co.ke/industry/7',
             ],
             [
                 'title' => 'Nonprofit Events',
                 'description' => 'Nonprofit organizations typically have to work within limited budgets. We understand that it can be overwhelming, but our experts are here to work with you to find a solution that meets your expectations (and your budget). Our project managers are dedicated to providing a neat, clean and organized look for every aspect of your event',
+                'icon_name' => 'Handshake',
                 'image_url' => 'https://stagepass.co.ke/uploads/industries/2019-07-1011:51:41imageWHO-SAFARI-PARK.png',
                 'link_url' => 'https://stagepass.co.ke/industry/8',
             ],
@@ -335,6 +343,8 @@ class HomepageContentSeeder extends Seeder
                 'industries_section_id' => $industriesSectionId,
                 'title' => $industry['title'],
                 'description' => $industry['description'],
+                'icon_name' => $industry['icon_name'] ?? null,
+                'icon_url' => $industry['icon_url'] ?? null,
                 'image_url' => $industry['image_url'] ?? null,
                 'video_url' => $industry['video_url'] ?? null,
                 'link_url' => $industry['link_url'] ?? null,
@@ -427,11 +437,11 @@ class HomepageContentSeeder extends Seeder
         }
 
         $footerQuickLinks = [
-            ['label' => 'Home', 'href' => '#home'],
-            ['label' => 'About Us', 'href' => '#about'],
-            ['label' => 'Services', 'href' => '#services'],
-            ['label' => 'Our Work', 'href' => '#portfolio'],
-            ['label' => 'Contact', 'href' => '#contact'],
+            ['label' => 'About Us', 'href' => '/about'],
+            ['label' => 'Services', 'href' => '/services'],
+            ['label' => 'Our Work', 'href' => '/our-work'],
+            ['label' => 'Industries', 'href' => '/industries'],
+            ['label' => 'Contact', 'href' => '/contact'],
         ];
 
         foreach ($footerQuickLinks as $index => $link) {
@@ -446,10 +456,10 @@ class HomepageContentSeeder extends Seeder
         }
 
         $footerMoreLinks = [
-            ['label' => 'Industries', 'href' => '#industries'],
-            ['label' => 'Clients', 'href' => '#clients'],
-            ['label' => 'Testimonials', 'href' => '#testimonials'],
-            ['label' => 'Blog', 'href' => '#blog'],
+            ['label' => 'Terms & Conditions', 'href' => '/terms-and-conditions'],
+            ['label' => 'Privacy Policy', 'href' => '/privacy'],
+            ['label' => 'Sitemap', 'href' => '/sitemap'],
+            ['label' => 'Get AV Quote', 'href' => '#quote'],
         ];
 
         foreach ($footerMoreLinks as $index => $link) {

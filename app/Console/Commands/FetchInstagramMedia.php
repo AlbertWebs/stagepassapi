@@ -18,8 +18,15 @@ class FetchInstagramMedia extends Command
     {
         $accessToken = config('services.instagram.access_token')
             ?: DB::table('site_settings')->where('key', 'instagram_access_token')->value('value');
+        $graphUserId = DB::table('site_settings')->where('key', 'instagram_graph_user_id')->value('value');
+        $graphApiVersion = DB::table('site_settings')->where('key', 'instagram_graph_api_version')->value('value') ?: 'v20.0';
+        $verifySsl = (bool) config('services.instagram.verify_ssl', true);
         if (!$accessToken) {
             $this->error('Instagram access token is not configured.');
+            return self::FAILURE;
+        }
+        if ($graphUserId && !ctype_digit((string) $graphUserId)) {
+            $this->error('Instagram Graph User ID must be numeric.');
             return self::FAILURE;
         }
 
@@ -31,18 +38,27 @@ class FetchInstagramMedia extends Command
             $limit = 50;
         }
 
-        $response = Http::get('https://graph.instagram.com/me/media', [
+        $endpoint = $graphUserId
+            ? "https://graph.facebook.com/{$graphApiVersion}/{$graphUserId}/media"
+            : 'https://graph.instagram.com/me/media';
+
+        $response = Http::withOptions(['verify' => $verifySsl])->get($endpoint, [
             'fields' => 'id,caption,media_type,media_url,thumbnail_url,permalink,timestamp',
             'access_token' => $accessToken,
             'limit' => $limit,
         ]);
 
         if ($response->failed()) {
+            $status = $response->status();
+            $body = $response->body();
             Log::warning('Instagram fetch failed.', [
-                'status' => $response->status(),
-                'body' => $response->body(),
+                'status' => $status,
+                'body' => $body,
             ]);
-            $this->error('Failed to fetch Instagram media.');
+            $this->error("Failed to fetch Instagram media. (HTTP {$status})");
+            if (!empty($body)) {
+                $this->line($body);
+            }
             return self::FAILURE;
         }
 
@@ -59,7 +75,7 @@ class FetchInstagramMedia extends Command
                 'caption' => $item['caption'] ?? null,
                 'posted_at' => isset($item['timestamp']) ? Carbon::parse($item['timestamp']) : null,
                 'fetched_at' => $now,
-                'raw_payload' => $item,
+                'raw_payload' => json_encode($item),
                 'updated_at' => $now,
                 'created_at' => $now,
             ];

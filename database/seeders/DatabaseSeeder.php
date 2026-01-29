@@ -7,6 +7,7 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Database\Seeders\HomepageContentSeeder;
 use Database\Seeders\SiteSettingsSeeder;
+use Database\Seeders\PageContentSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -26,5 +27,6 @@ class DatabaseSeeder extends Seeder
 
         $this->call(HomepageContentSeeder::class);
         $this->call(SiteSettingsSeeder::class);
+        $this->call(PageContentSeeder::class);
     }
 }

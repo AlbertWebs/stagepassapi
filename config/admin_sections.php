@@ -93,5 +93,47 @@ return [
                 ['name' => 'quote_requests', 'label' => 'Quote Requests', 'no_create' => true, 'no_update' => true],
             ],
         ],
+        'about-page' => [
+            'label' => 'About Page',
+            'tables' => [
+                ['name' => 'about_pages', 'label' => 'About Page', 'single' => true],
+            ],
+        ],
+        'services-page' => [
+            'label' => 'Services Page',
+            'tables' => [
+                ['name' => 'services_pages', 'label' => 'Services Page', 'single' => true],
+            ],
+        ],
+        'our-work-page' => [
+            'label' => 'Our Work Page',
+            'tables' => [
+                ['name' => 'our_work_pages', 'label' => 'Our Work Page', 'single' => true],
+            ],
+        ],
+        'industries-page' => [
+            'label' => 'Industries Page',
+            'tables' => [
+                ['name' => 'industries_pages', 'label' => 'Industries Page', 'single' => true],
+            ],
+        ],
+        'contact-page' => [
+            'label' => 'Contact Page',
+            'tables' => [
+                ['name' => 'contact_pages', 'label' => 'Contact Page', 'single' => true],
+            ],
+        ],
+        'terms-page' => [
+            'label' => 'Terms & Conditions Page',
+            'tables' => [
+                ['name' => 'terms_pages', 'label' => 'Terms & Conditions Page', 'single' => true],
+            ],
+        ],
+        'privacy-page' => [
+            'label' => 'Privacy Policy Page',
+            'tables' => [
+                ['name' => 'privacy_pages', 'label' => 'Privacy Policy Page', 'single' => true],
+            ],
+        ],
     ],
 ];

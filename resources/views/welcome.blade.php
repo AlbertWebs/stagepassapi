@@ -4,7 +4,23 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
+        <title>{{ config('app.name', 'StagePass') }}</title>
+        <meta name="description" content="Premium digital experiences crafted to elevate brands and drive measurable growth.">
+        <meta name="robots" content="index, follow">
+        <link rel="canonical" href="{{ url('/') }}">
+        <meta name="theme-color" content="#FDFDFC">
+
+        <meta property="og:site_name" content="{{ config('app.name', 'StagePass') }}">
+        <meta property="og:type" content="website">
+        <meta property="og:title" content="{{ config('app.name', 'StagePass') }}">
+        <meta property="og:description" content="Premium digital experiences crafted to elevate brands and drive measurable growth.">
+        <meta property="og:url" content="{{ url('/') }}">
+        <meta property="og:image" content="{{ url('/favicon.ico') }}">
+
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="{{ config('app.name', 'StagePass') }}">
+        <meta name="twitter:description" content="Premium digital experiences crafted to elevate brands and drive measurable growth.">
+        <meta name="twitter:image" content="{{ url('/favicon.ico') }}">
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">

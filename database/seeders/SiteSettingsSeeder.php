@@ -37,6 +37,8 @@ class SiteSettingsSeeder extends Seeder
             'instagram_access_token' => '',
             'instagram_app_id' => '',
             'instagram_app_secret' => '',
+            'instagram_graph_user_id' => '',
+            'instagram_graph_api_version' => 'v20.0',
         ];
 
         foreach ($defaults as $key => $value) {

@@ -39,6 +39,7 @@ return [
         'access_token' => env('INSTAGRAM_ACCESS_TOKEN'),
         'client_id' => env('INSTAGRAM_CLIENT_ID'),
         'client_secret' => env('INSTAGRAM_CLIENT_SECRET'),
+        'verify_ssl' => env('INSTAGRAM_VERIFY_SSL', true),
     ],
 
 ];

@@ -145,6 +145,188 @@ class ContentController extends Controller
             ->header('Access-Control-Allow-Origin', '*');
     }
 
+    public function about(): JsonResponse
+    {
+        $page = DB::table('about_pages')->first();
+        $settings = DB::table('site_settings')->pluck('value', 'key')->toArray();
+
+        return response()
+            ->json([
+                'page' => $page ? [
+                    'title' => $page->title,
+                    'meta_description' => $page->meta_description,
+                    'meta_keywords' => $page->meta_keywords,
+                    'og_image' => $this->normalizeUrl($page->og_image),
+                    'hero_title' => $page->hero_title,
+                    'hero_subtitle' => $page->hero_subtitle,
+                    'content' => $page->content,
+                    'image_url' => $this->normalizeUrl($page->image_url),
+                ] : null,
+                'settings' => [
+                    'site_name' => $settings['site_name'] ?? null,
+                    'website_url' => $settings['website_url'] ?? null,
+                ],
+            ])
+            ->header('Access-Control-Allow-Origin', '*');
+    }
+
+    public function services(): JsonResponse
+    {
+        $page = DB::table('services_pages')->first();
+        $settings = DB::table('site_settings')->pluck('value', 'key')->toArray();
+
+        return response()
+            ->json([
+                'page' => $page ? [
+                    'title' => $page->title,
+                    'meta_description' => $page->meta_description,
+                    'meta_keywords' => $page->meta_keywords,
+                    'og_image' => $this->normalizeUrl($page->og_image),
+                    'hero_title' => $page->hero_title,
+                    'hero_subtitle' => $page->hero_subtitle,
+                    'content' => $page->content,
+                ] : null,
+                'settings' => [
+                    'site_name' => $settings['site_name'] ?? null,
+                    'website_url' => $settings['website_url'] ?? null,
+                ],
+            ])
+            ->header('Access-Control-Allow-Origin', '*');
+    }
+
+    public function ourWork(): JsonResponse
+    {
+        $page = DB::table('our_work_pages')->first();
+        $settings = DB::table('site_settings')->pluck('value', 'key')->toArray();
+
+        return response()
+            ->json([
+                'page' => $page ? [
+                    'title' => $page->title,
+                    'meta_description' => $page->meta_description,
+                    'meta_keywords' => $page->meta_keywords,
+                    'og_image' => $this->normalizeUrl($page->og_image),
+                    'hero_title' => $page->hero_title,
+                    'hero_subtitle' => $page->hero_subtitle,
+                    'content' => $page->content,
+                ] : null,
+                'settings' => [
+                    'site_name' => $settings['site_name'] ?? null,
+                    'website_url' => $settings['website_url'] ?? null,
+                ],
+            ])
+            ->header('Access-Control-Allow-Origin', '*');
+    }
+
+    public function industries(): JsonResponse
+    {
+        $page = DB::table('industries_pages')->first();
+        $settings = DB::table('site_settings')->pluck('value', 'key')->toArray();
+
+        return response()
+            ->json([
+                'page' => $page ? [
+                    'title' => $page->title,
+                    'meta_description' => $page->meta_description,
+                    'meta_keywords' => $page->meta_keywords,
+                    'og_image' => $this->normalizeUrl($page->og_image),
+                    'hero_title' => $page->hero_title,
+                    'hero_subtitle' => $page->hero_subtitle,
+                    'content' => $page->content,
+                ] : null,
+                'settings' => [
+                    'site_name' => $settings['site_name'] ?? null,
+                    'website_url' => $settings['website_url'] ?? null,
+                ],
+            ])
+            ->header('Access-Control-Allow-Origin', '*');
+    }
+
+    public function contact(): JsonResponse
+    {
+        $page = DB::table('contact_pages')->first();
+        $contactSection = DB::table('contact_sections')->first();
+        $contactDetails = $contactSection
+            ? DB::table('contact_details')->where('contact_section_id', $contactSection->id)->orderBy('sort_order')->get()
+            : collect();
+        $settings = DB::table('site_settings')->pluck('value', 'key')->toArray();
+
+        return response()
+            ->json([
+                'page' => $page ? [
+                    'title' => $page->title,
+                    'meta_description' => $page->meta_description,
+                    'meta_keywords' => $page->meta_keywords,
+                    'og_image' => $this->normalizeUrl($page->og_image),
+                    'hero_title' => $page->hero_title,
+                    'hero_subtitle' => $page->hero_subtitle,
+                    'content' => $page->content,
+                    'form_title' => $page->form_title,
+                    'form_description' => $page->form_description,
+                ] : null,
+                'contact_details' => $contactDetails,
+                'settings' => [
+                    'site_name' => $settings['site_name'] ?? null,
+                    'website_url' => $settings['website_url'] ?? null,
+                    'contact_email' => $settings['contact_email'] ?? null,
+                    'contact_phone_primary' => $settings['contact_phone_primary'] ?? null,
+                    'contact_phone_secondary' => $settings['contact_phone_secondary'] ?? null,
+                    'contact_address' => $settings['contact_address'] ?? null,
+                ],
+            ])
+            ->header('Access-Control-Allow-Origin', '*');
+    }
+
+    public function terms(): JsonResponse
+    {
+        $page = DB::table('terms_pages')->first();
+        $settings = DB::table('site_settings')->pluck('value', 'key')->toArray();
+
+        return response()
+            ->json([
+                'page' => $page ? [
+                    'title' => $page->title,
+                    'meta_description' => $page->meta_description,
+                    'meta_keywords' => $page->meta_keywords,
+                    'og_image' => $this->normalizeUrl($page->og_image),
+                    'hero_title' => $page->hero_title,
+                    'hero_subtitle' => $page->hero_subtitle,
+                    'content' => $page->content,
+                    'last_updated' => $page->last_updated,
+                ] : null,
+                'settings' => [
+                    'site_name' => $settings['site_name'] ?? null,
+                    'website_url' => $settings['website_url'] ?? null,
+                ],
+            ])
+            ->header('Access-Control-Allow-Origin', '*');
+    }
+
+    public function privacy(): JsonResponse
+    {
+        $page = DB::table('privacy_pages')->first();
+        $settings = DB::table('site_settings')->pluck('value', 'key')->toArray();
+
+        return response()
+            ->json([
+                'page' => $page ? [
+                    'title' => $page->title,
+                    'meta_description' => $page->meta_description,
+                    'meta_keywords' => $page->meta_keywords,
+                    'og_image' => $this->normalizeUrl($page->og_image),
+                    'hero_title' => $page->hero_title,
+                    'hero_subtitle' => $page->hero_subtitle,
+                    'content' => $page->content,
+                    'last_updated' => $page->last_updated,
+                ] : null,
+                'settings' => [
+                    'site_name' => $settings['site_name'] ?? null,
+                    'website_url' => $settings['website_url'] ?? null,
+                ],
+            ])
+            ->header('Access-Control-Allow-Origin', '*');
+    }
+
     private function normalizeUrl(?string $path): ?string
     {
         if (!$path) {
