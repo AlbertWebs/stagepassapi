@@ -22,7 +22,10 @@ class DatabaseSeeder extends Seeder
 
         User::query()->updateOrCreate(
             ['email' => 'test@example.com'],
-            ['name' => 'Test User']
+            [
+                'name' => 'Test User',
+                'password' => 'password', // Will be automatically hashed by the model
+            ]
         );
 
         $this->call(HomepageContentSeeder::class);
