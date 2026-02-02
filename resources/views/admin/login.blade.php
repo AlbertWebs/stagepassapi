@@ -7,15 +7,21 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
         <script>
-            // Ensure form submits even if Alpine.js hasn't loaded
+            // Handle form submission
             document.addEventListener('DOMContentLoaded', function() {
                 const form = document.getElementById('login-form');
-                if (form) {
+                const submitBtn = document.getElementById('submit-btn');
+                const submitText = document.getElementById('submit-text');
+                const submitLoading = document.getElementById('submit-loading');
+                
+                if (form && submitBtn) {
                     form.addEventListener('submit', function(e) {
-                        const submitBtn = form.querySelector('button[type="submit"]');
-                        if (submitBtn) {
+                        // Show loading state but don't prevent form submission
+                        if (!submitBtn.disabled) {
                             submitBtn.disabled = true;
-                            submitBtn.innerHTML = '<span class="flex items-center gap-2"><svg class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Signing in...</span>';
+                            submitText.classList.add('hidden');
+                            submitLoading.classList.remove('hidden');
+                            submitLoading.classList.add('flex');
                         }
                     });
                 }
@@ -34,7 +40,7 @@
             </div>
 
             <!-- Login Card -->
-            <div class="relative z-10 w-full max-w-md mx-auto">
+            <div class="relative z-10 w-full mx-auto" style="max-width: 28rem;">
                 <div class="rounded-2xl border border-slate-800 bg-gradient-to-br from-slate-900/90 to-slate-950/90 backdrop-blur-xl shadow-2xl p-8 space-y-8">
                     <!-- Header -->
                     <div class="text-center space-y-4">
@@ -51,23 +57,25 @@
                     </div>
 
                     <!-- Error Messages -->
-                    @if ($errors->any())
-                        <div class="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 space-y-1 animate-pulse">
+                    @if (count($errors) > 0)
+                        <div class="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 space-y-1">
                             @foreach ($errors->all() as $error)
                                 <p class="text-sm text-red-300 font-medium">{{ $error }}</p>
                             @endforeach
                         </div>
                     @endif
 
-                    @if ($errors->has('username'))
-                        <div class="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 animate-pulse">
-                            <p class="text-sm text-red-300 font-medium">{{ $errors->first('username') }}</p>
+                    @if (session()->has('errors'))
+                        <div class="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 space-y-1">
+                            @foreach (session('errors')->all() as $error)
+                                <p class="text-sm text-red-300 font-medium">{{ $error }}</p>
+                            @endforeach
                         </div>
                     @endif
 
-                    @if ($errors->has('password'))
-                        <div class="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 animate-pulse">
-                            <p class="text-sm text-red-300 font-medium">{{ $errors->first('password') }}</p>
+                    @if (session('error'))
+                        <div class="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3">
+                            <p class="text-sm text-red-300 font-medium">{{ session('error') }}</p>
                         </div>
                     @endif
 
@@ -78,7 +86,7 @@
                     @endif
 
                     <!-- Login Form -->
-                    <form method="POST" action="{{ route('admin.login') }}" class="space-y-6" x-data="{ loading: false }" @submit="loading = true" id="login-form">
+                    <form method="POST" action="{{ route('admin.login') }}" class="space-y-6" id="login-form">
                         @csrf
                         
                         <!-- Username Field -->
@@ -86,9 +94,9 @@
                             <label for="username" class="block text-sm font-semibold text-slate-300">
                                 Username
                             </label>
-                            <div class="relative">
-                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                    <svg class="h-5 w-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div class="flex items-center gap-3">
+                                <div class="flex-shrink-0">
+                                    <svg class="h-5 w-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                     </svg>
                                 </div>
@@ -100,7 +108,7 @@
                                     required
                                     autofocus
                                     autocomplete="username"
-                                    class="w-full pl-12 pr-4 py-3 rounded-xl bg-slate-950/50 border {{ $errors->has('username') ? 'border-red-500/50' : 'border-slate-800' }} text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-yellow-500/50 focus:border-yellow-500/50 transition-all"
+                                    class="flex-1 px-4 py-3 rounded-xl bg-slate-950/50 border {{ $errors->has('username') ? 'border-red-500/50' : 'border-slate-800' }} text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-yellow-500/50 focus:border-yellow-500/50 transition-all"
                                     placeholder="Enter your username"
                                 />
                             </div>
@@ -111,9 +119,9 @@
                             <label for="password" class="block text-sm font-semibold text-slate-300">
                                 Password
                             </label>
-                            <div class="relative">
-                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                    <svg class="h-5 w-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div class="flex items-center gap-3">
+                                <div class="flex-shrink-0">
+                                    <svg class="h-5 w-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                                     </svg>
                                 </div>
@@ -123,7 +131,7 @@
                                     name="password"
                                     required
                                     autocomplete="current-password"
-                                    class="w-full pl-12 pr-4 py-3 rounded-xl bg-slate-950/50 border {{ $errors->has('password') ? 'border-red-500/50' : 'border-slate-800' }} text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-yellow-500/50 focus:border-yellow-500/50 transition-all"
+                                    class="flex-1 px-4 py-3 rounded-xl bg-slate-950/50 border {{ $errors->has('password') ? 'border-red-500/50' : 'border-slate-800' }} text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-yellow-500/50 focus:border-yellow-500/50 transition-all"
                                     placeholder="Enter your password"
                                 />
                             </div>
@@ -132,12 +140,11 @@
                         <!-- Submit Button -->
                         <button
                             type="submit"
-                            @click="loading = true"
-                            :disabled="loading"
-                            class="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-yellow-500 to-yellow-600 text-slate-900 text-sm font-bold hover:from-yellow-400 hover:to-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-500/50 focus:ring-offset-2 focus:ring-offset-slate-900 transition-all duration-200 shadow-lg shadow-yellow-500/20 hover:shadow-yellow-500/30 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                            id="submit-btn"
+                            class="w-full py-4 px-6 rounded-xl bg-gradient-to-r from-yellow-500 to-yellow-600 text-slate-900 text-base font-bold hover:from-yellow-400 hover:to-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-500/50 focus:ring-offset-2 focus:ring-offset-slate-900 transition-all duration-200 shadow-lg shadow-yellow-500/20 hover:shadow-yellow-500/30 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                         >
-                            <span x-show="!loading">Sign In</span>
-                            <span x-show="loading" class="flex items-center gap-2">
+                            <span id="submit-text">Sign In</span>
+                            <span id="submit-loading" class="hidden items-center gap-2">
                                 <svg class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>

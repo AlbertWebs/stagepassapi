@@ -30,13 +30,13 @@ class AdminLoginController extends Controller
             $pass = config('admin.basic_pass');
 
             if (!$user || !$pass) {
-                return redirect()->route('admin.login')
+                return back()
                     ->withErrors(['username' => 'Admin credentials are not configured. Please check your .env file.'])
                     ->withInput($request->only('username'));
             }
 
             if ($credentials['username'] !== $user || $credentials['password'] !== $pass) {
-                return redirect()->route('admin.login')
+                return back()
                     ->withErrors(['username' => 'These credentials do not match our records.'])
                     ->withInput($request->only('username'));
             }
