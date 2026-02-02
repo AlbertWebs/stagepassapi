@@ -27,7 +27,7 @@
                 $hasUpload = in_array($table['name'], ['navbar_settings', 'footer_settings'], true)
                     && count(array_intersect($inputColumns, ['logo_url', 'favicon_url'])) > 0;
                 $hasVideoField = in_array('background_video_url', $inputColumns, true);
-                $hasImageFields = count(array_intersect($inputColumns, ['og_image', 'image_url'])) > 0;
+                $hasImageFields = count(array_intersect($inputColumns, ['og_image', 'image_url', 'logo_path', 'icon_url'])) > 0;
             @endphp
 
             <section class="rounded-2xl border border-slate-800 bg-slate-900/60 p-6">
@@ -214,6 +214,37 @@
                                                 <img src="{{ $previewUrl }}" alt="{{ $column }} preview" class="h-12 w-12 rounded bg-slate-900 object-contain" />
                                             @endif
                                         </div>
+                                    @elseif ($columnLower === 'logo_path')
+                                        @php
+                                            $previewUrl = '';
+                                            if (!empty($value)) {
+                                                $previewUrl = \Illuminate\Support\Str::startsWith($value, ['http://', 'https://'])
+                                                    ? $value
+                                                    : '/' . ltrim($value, '/');
+                                            }
+                                        @endphp
+                                        <div class="mt-2 space-y-3 rounded-xl border border-slate-800 bg-slate-950/60 p-4">
+                                            <div>
+                                                <label class="text-xs uppercase tracking-wide text-slate-500">Logo URL</label>
+                                                <input type="url" name="{{ $column }}" value="{{ $value }}" class="mt-2 w-full rounded-xl bg-slate-950 border border-slate-800 px-4 py-2 text-sm text-slate-100" placeholder="https://stagepass.co.ke/uploads/clients/logo.jpg" />
+                                                <p class="mt-1 text-xs text-slate-500">Paste a hosted URL or upload an image file.</p>
+                                            </div>
+                                            <div class="flex items-center gap-3 text-xs text-slate-500">
+                                                <span class="uppercase tracking-[0.2em]">or</span>
+                                                <span class="h-px flex-1 bg-slate-800"></span>
+                                            </div>
+                                            <div>
+                                                <label class="text-xs uppercase tracking-wide text-slate-500">Upload Logo</label>
+                                                <input type="file" name="{{ $column }}_upload" accept="image/*" class="mt-2 block w-full text-sm text-slate-200" />
+                                                <p class="mt-1 text-xs text-slate-500">JPG, PNG, or WebP recommended. Upload replaces the URL.</p>
+                                            </div>
+                                            @if ($previewUrl)
+                                                <div class="mt-3">
+                                                    <p class="text-xs text-slate-500 mb-2">Preview:</p>
+                                                    <img src="{{ $previewUrl }}" alt="{{ $column }} preview" class="max-w-full h-auto rounded-lg border border-slate-800 bg-slate-900 object-contain max-h-32" />
+                                                </div>
+                                            @endif
+                                        </div>
                                     @elseif ($columnLower === 'og_image' || $columnLower === 'image_url')
                                         @php
                                             $previewUrl = '';
@@ -324,6 +355,23 @@
                                                     @if (!empty($value))
                                                         <img src="{{ \Illuminate\Support\Str::startsWith($value, ['http://', 'https://']) ? $value : '/' . ltrim($value, '/') }}" alt="{{ $column }} preview" class="h-12 w-12 rounded bg-slate-900 object-contain" />
                                                     @endif
+                                                </div>
+                                            @elseif ($columnLower === 'logo_path')
+                                                <div class="mt-2 space-y-3 rounded-xl border border-slate-800 bg-slate-950/60 p-4">
+                                                    <div>
+                                                        <label class="text-xs uppercase tracking-wide text-slate-500">Logo URL</label>
+                                                        <input type="url" name="{{ $column }}" value="{{ $value }}" class="mt-2 w-full rounded-xl bg-slate-950 border border-slate-800 px-4 py-2 text-sm text-slate-100" placeholder="https://stagepass.co.ke/uploads/clients/logo.jpg" />
+                                                        <p class="mt-1 text-xs text-slate-500">Paste a hosted URL or upload an image file.</p>
+                                                    </div>
+                                                    <div class="flex items-center gap-3 text-xs text-slate-500">
+                                                        <span class="uppercase tracking-[0.2em]">or</span>
+                                                        <span class="h-px flex-1 bg-slate-800"></span>
+                                                    </div>
+                                                    <div>
+                                                        <label class="text-xs uppercase tracking-wide text-slate-500">Upload Logo</label>
+                                                        <input type="file" name="{{ $column }}_upload" accept="image/*" class="mt-2 block w-full text-sm text-slate-200" />
+                                                        <p class="mt-1 text-xs text-slate-500">JPG, PNG, or WebP recommended. Upload replaces the URL.</p>
+                                                    </div>
                                                 </div>
                                             @elseif ($columnLower === 'og_image' || $columnLower === 'image_url')
                                                 <div class="mt-2 space-y-3 rounded-xl border border-slate-800 bg-slate-950/60 p-4">
@@ -475,6 +523,37 @@
                                                                                 @endif
                                                                             </div>
                                                                             <input type="hidden" name="{{ $column }}" value="{{ $value }}" />
+                                                                        @elseif (strtolower($column) === 'logo_path')
+                                                                            @php
+                                                                                $previewUrl = '';
+                                                                                if (!empty($value)) {
+                                                                                    $previewUrl = \Illuminate\Support\Str::startsWith($value, ['http://', 'https://'])
+                                                                                        ? $value
+                                                                                        : '/' . ltrim($value, '/');
+                                                                                }
+                                                                            @endphp
+                                                                            <div class="mt-2 space-y-3 rounded-xl border border-slate-800 bg-slate-950/60 p-4">
+                                                                                <div>
+                                                                                    <label class="text-xs uppercase tracking-wide text-slate-500">Logo URL</label>
+                                                                                    <input type="url" name="{{ $column }}" value="{{ $value }}" class="mt-2 w-full rounded-xl bg-slate-950 border border-slate-800 px-4 py-2 text-sm text-slate-100" placeholder="https://stagepass.co.ke/uploads/clients/logo.jpg" />
+                                                                                    <p class="mt-1 text-xs text-slate-500">Paste a hosted URL or upload an image file.</p>
+                                                                                </div>
+                                                                                <div class="flex items-center gap-3 text-xs text-slate-500">
+                                                                                    <span class="uppercase tracking-[0.2em]">or</span>
+                                                                                    <span class="h-px flex-1 bg-slate-800"></span>
+                                                                                </div>
+                                                                                <div>
+                                                                                    <label class="text-xs uppercase tracking-wide text-slate-500">Upload Logo</label>
+                                                                                    <input type="file" name="{{ $column }}_upload" accept="image/*" class="mt-2 block w-full text-sm text-slate-200" />
+                                                                                    <p class="mt-1 text-xs text-slate-500">JPG, PNG, or WebP recommended. Upload replaces the URL.</p>
+                                                                                </div>
+                                                                                @if ($previewUrl)
+                                                                                    <div class="mt-3">
+                                                                                        <p class="text-xs text-slate-500 mb-2">Preview:</p>
+                                                                                        <img src="{{ $previewUrl }}" alt="{{ $column }} preview" class="max-w-full h-auto rounded-lg border border-slate-800 bg-slate-900 object-contain max-h-32" />
+                                                                                    </div>
+                                                                                @endif
+                                                                            </div>
                                                                         @elseif (strtolower($column) === 'og_image' || strtolower($column) === 'image_url')
                                                                             @php
                                                                                 $previewUrl = '';

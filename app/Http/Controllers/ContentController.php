@@ -9,7 +9,8 @@ class ContentController extends Controller
 {
     public function homepage(): JsonResponse
     {
-        $navbar = DB::table('navbar_settings')->first();
+        try {
+            $navbar = DB::table('navbar_settings')->first();
         $navbarLinks = DB::table('navbar_links')->orderBy('sort_order')->get();
         $bottomLinks = DB::table('bottom_nav_links')->orderBy('sort_order')->get();
 
@@ -97,6 +98,7 @@ class ContentController extends Controller
                 ],
                 'hero' => $hero,
                 'about' => [
+                    // Note: Both description_primary and description_secondary should use the same font styling
                     'section' => $about,
                     'highlights' => $aboutHighlights,
                 ],
@@ -143,6 +145,14 @@ class ContentController extends Controller
                 ],
             ])
             ->header('Access-Control-Allow-Origin', '*');
+        } catch (\Exception $e) {
+            return response()
+                ->json([
+                    'error' => 'Failed to load homepage content',
+                    'message' => $e->getMessage(),
+                ], 500)
+                ->header('Access-Control-Allow-Origin', '*');
+        }
     }
 
     public function about(): JsonResponse

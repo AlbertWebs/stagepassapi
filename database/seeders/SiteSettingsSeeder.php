@@ -25,7 +25,7 @@ class SiteSettingsSeeder extends Seeder
             'contact_phone_primary' => '+254 729 171 351',
             'contact_phone_secondary' => '',
             'whatsapp_number' => '',
-            'contact_address' => "Paa ya Paa Lane, Off Ridgeways Road\nNairobi, Kenya",
+            'contact_address' => "Jacaranda Close, Ridgeways,\nNairobi, Kenya",
             'business_hours' => "Mon - Fri: 9:00 AM - 6:00 PM\nSat: 10:00 AM - 4:00 PM",
             'facebook_url' => '#',
             'twitter_url' => '#',

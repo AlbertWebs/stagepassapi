@@ -46,7 +46,7 @@
                 <div class="px-6 py-8 border-b border-slate-800 bg-gradient-to-br from-slate-900 to-slate-950">
                     <div class="flex items-center gap-2 mb-3">
                         <div class="w-2 h-2 rounded-full bg-yellow-500 animate-pulse"></div>
-                        <div class="text-xs uppercase tracking-[0.3em] text-yellow-400 font-semibold">StagePass</div>
+                    <div class="text-xs uppercase tracking-[0.3em] text-yellow-400 font-semibold">StagePass</div>
                     </div>
                     <div class="text-2xl font-black text-white mt-2 bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">Admin Console</div>
                     <p class="text-slate-400 text-sm mt-2 leading-relaxed">
@@ -63,7 +63,7 @@
                         >
                             <div class="flex-1 flex items-center gap-3">
                                 <div class="w-1.5 h-1.5 rounded-full {{ $activeKey === $item['key'] ? 'bg-yellow-500' : 'bg-slate-600 group-hover:bg-yellow-500/50' }} transition-colors"></div>
-                                <span>{{ $item['label'] }}</span>
+                            <span>{{ $item['label'] }}</span>
                             </div>
                         </a>
                     @endforeach
@@ -112,8 +112,8 @@
                                 >
                                     <div class="w-1 h-1 rounded-full {{ $activeKey === $pageItem['key'] ? 'bg-yellow-500' : 'bg-slate-600 group-hover:bg-yellow-500/50' }} transition-colors"></div>
                                     <span>{{ $pageItem['label'] }}</span>
-                                </a>
-                            @endforeach
+                        </a>
+                    @endforeach
                         </div>
                     </div>
                 </nav>
@@ -172,7 +172,10 @@
                                 <a href="{{ route('admin.backup') }}" class="block px-4 py-3 text-sm text-slate-200 hover:bg-slate-800">Backup</a>
                                 <a href="{{ route('admin.maintain') }}" class="block px-4 py-3 text-sm text-slate-200 hover:bg-slate-800">Maintain</a>
                                 <div class="border-t border-slate-800"></div>
-                                <a href="{{ route('admin.logout') }}" class="block px-4 py-3 text-sm text-red-300 hover:bg-slate-800">Logout</a>
+                                <form method="POST" action="{{ route('admin.logout') }}" class="block">
+                                    @csrf
+                                    <button type="submit" class="w-full text-left px-4 py-3 text-sm text-red-300 hover:bg-slate-800">Logout</button>
+                                </form>
                             </div>
                         </div>
                     </div>

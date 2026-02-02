@@ -5,6 +5,7 @@ use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\AdminInstagramController;
 use App\Http\Controllers\AdminInstagramToolsController;
 use App\Http\Controllers\AdminLogsController;
+use App\Http\Controllers\AdminLoginController;
 use App\Http\Controllers\AdminProfileController;
 use App\Http\Controllers\AdminMaintenanceController;
 use App\Http\Controllers\AdminSectionController;
@@ -18,16 +19,24 @@ Route::get('/', function () {
 });
 
 // API Routes for Frontend
+Route::middleware('cors')->group(function () {
 Route::get('/api/portfolio/instagram', [InstagramPortfolioController::class, 'index']);
 Route::get('/instagram/callback', [InstagramPortfolioController::class, 'callback']);
 Route::get('/api/content/homepage', [ContentController::class, 'homepage']);
-Route::get('/api/content/about', [ContentController::class, 'about']);
-Route::get('/api/content/services', [ContentController::class, 'services']);
-Route::get('/api/content/our-work', [ContentController::class, 'ourWork']);
-Route::get('/api/content/industries', [ContentController::class, 'industries']);
-Route::get('/api/content/contact', [ContentController::class, 'contact']);
-Route::get('/api/content/terms-and-conditions', [ContentController::class, 'terms']);
-Route::get('/api/content/privacy', [ContentController::class, 'privacy']);
+    Route::get('/api/content/about', [ContentController::class, 'about']);
+    Route::get('/api/content/services', [ContentController::class, 'services']);
+    Route::get('/api/content/our-work', [ContentController::class, 'ourWork']);
+    Route::get('/api/content/industries', [ContentController::class, 'industries']);
+    Route::get('/api/content/contact', [ContentController::class, 'contact']);
+    Route::get('/api/content/terms-and-conditions', [ContentController::class, 'terms']);
+    Route::get('/api/content/privacy', [ContentController::class, 'privacy']);
+    Route::options('/api/{any}', function () {
+        return response('', 200)
+            ->header('Access-Control-Allow-Origin', '*')
+            ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+            ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+    })->where('any', '.*');
+});
 
 Route::get('/sitemap.xml', function () {
     $baseUrl = 'http://stagepass.co.ke';
@@ -94,7 +103,15 @@ Route::get('/sitemap.xml', function () {
         ->header('Content-Type', 'application/xml');
 });
 
-Route::prefix('admin')->middleware('admin.basic')->group(function () {
+// Admin Login Routes (public)
+Route::prefix('admin')->group(function () {
+    Route::get('/login', [AdminLoginController::class, 'showLoginForm'])->name('admin.login');
+    Route::post('/login', [AdminLoginController::class, 'login']);
+    Route::post('/logout', [AdminLoginController::class, 'logout'])->name('admin.logout');
+});
+
+// Admin Protected Routes (require session authentication)
+Route::prefix('admin')->middleware('admin.session')->group(function () {
     Route::get('/', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
 
     $sections = config('admin_sections.sections', []);
@@ -142,9 +159,9 @@ Route::prefix('admin')->middleware('admin.basic')->group(function () {
     Route::get('/maintain', [AdminMaintenanceController::class, 'index'])->name('admin.maintain');
     Route::post('/maintain/{task}', [AdminMaintenanceController::class, 'run'])->name('admin.maintain.run');
 
-    Route::get('/logout', function () {
+    Route::get('/logout-page', function () {
         return view('admin.logout');
-    })->name('admin.logout');
+    })->name('admin.logout-page');
 
     Route::post('/instagram/fetch', [AdminInstagramController::class, 'fetch'])
         ->name('admin.instagram.fetch');
