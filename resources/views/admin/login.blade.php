@@ -44,6 +44,12 @@
                         </div>
                     @endif
 
+                    @if ($errors->has('username'))
+                        <div class="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3">
+                            <p class="text-sm text-red-300">{{ $errors->first('username') }}</p>
+                        </div>
+                    @endif
+
                     @if (session('status'))
                         <div class="rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-300">
                             {{ session('status') }}
@@ -51,7 +57,7 @@
                     @endif
 
                     <!-- Login Form -->
-                    <form method="POST" action="{{ route('admin.login') }}" class="space-y-6" x-data="{ loading: false }">
+                    <form method="POST" action="{{ route('admin.login') }}" class="space-y-6" x-data="{ loading: false }" @submit="loading = true">
                         @csrf
                         
                         <!-- Username Field -->

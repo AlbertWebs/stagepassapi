@@ -19,32 +19,38 @@ class AdminLoginController extends Controller
 
     public function login(Request $request)
     {
-        $credentials = $request->validate([
-            'username' => ['required', 'string'],
-            'password' => ['required', 'string'],
-        ]);
-
-        $user = config('admin.basic_user');
-        $pass = config('admin.basic_pass');
-
-        if (!$user || !$pass) {
-            throw ValidationException::withMessages([
-                'username' => ['Admin credentials are not configured.'],
+        try {
+            $credentials = $request->validate([
+                'username' => ['required', 'string'],
+                'password' => ['required', 'string'],
             ]);
+
+            $user = config('admin.basic_user');
+            $pass = config('admin.basic_pass');
+
+            if (!$user || !$pass) {
+                return back()->withErrors([
+                    'username' => 'Admin credentials are not configured. Please check your .env file.',
+                ])->withInput($request->only('username'));
+            }
+
+            if ($credentials['username'] !== $user || $credentials['password'] !== $pass) {
+                return back()->withErrors([
+                    'username' => 'These credentials do not match our records.',
+                ])->withInput($request->only('username'));
+            }
+
+            $request->session()->regenerate();
+            $request->session()->put('admin.authenticated', true);
+            $request->session()->put('admin.username', $user);
+
+            $intended = $request->session()->pull('intended', route('admin.dashboard'));
+            return redirect($intended)->with('status', 'Welcome back!');
+        } catch (\Exception $e) {
+            return back()->withErrors([
+                'username' => 'An error occurred during login. Please try again.',
+            ])->withInput($request->only('username'));
         }
-
-        if ($credentials['username'] !== $user || $credentials['password'] !== $pass) {
-            throw ValidationException::withMessages([
-                'username' => ['These credentials do not match our records.'],
-            ]);
-        }
-
-        $request->session()->regenerate();
-        $request->session()->put('admin.authenticated', true);
-        $request->session()->put('admin.username', $user);
-
-        $intended = $request->session()->pull('intended', route('admin.dashboard'));
-        return redirect($intended)->with('status', 'Welcome back!');
     }
 
     public function logout(Request $request)
