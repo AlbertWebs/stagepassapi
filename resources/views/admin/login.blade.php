@@ -6,9 +6,24 @@
         <title>Admin Login - {{ config('app.name', 'StagePass') }}</title>
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+        <script>
+            // Ensure form submits even if Alpine.js hasn't loaded
+            document.addEventListener('DOMContentLoaded', function() {
+                const form = document.getElementById('login-form');
+                if (form) {
+                    form.addEventListener('submit', function(e) {
+                        const submitBtn = form.querySelector('button[type="submit"]');
+                        if (submitBtn) {
+                            submitBtn.disabled = true;
+                            submitBtn.innerHTML = '<span class="flex items-center gap-2"><svg class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Signing in...</span>';
+                        }
+                    });
+                }
+            });
+        </script>
     </head>
     <body class="h-full text-slate-100 overflow-hidden">
-        <div class="min-h-full flex items-center justify-center relative">
+        <div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative">
             <!-- Background gradient overlay -->
             <div class="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950"></div>
             
@@ -19,7 +34,7 @@
             </div>
 
             <!-- Login Card -->
-            <div class="relative z-10 w-full max-w-md px-6">
+            <div class="relative z-10 w-full max-w-md mx-auto">
                 <div class="rounded-2xl border border-slate-800 bg-gradient-to-br from-slate-900/90 to-slate-950/90 backdrop-blur-xl shadow-2xl p-8 space-y-8">
                     <!-- Header -->
                     <div class="text-center space-y-4">
@@ -37,16 +52,22 @@
 
                     <!-- Error Messages -->
                     @if ($errors->any())
-                        <div class="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 space-y-1">
+                        <div class="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 space-y-1 animate-pulse">
                             @foreach ($errors->all() as $error)
-                                <p class="text-sm text-red-300">{{ $error }}</p>
+                                <p class="text-sm text-red-300 font-medium">{{ $error }}</p>
                             @endforeach
                         </div>
                     @endif
 
                     @if ($errors->has('username'))
-                        <div class="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3">
-                            <p class="text-sm text-red-300">{{ $errors->first('username') }}</p>
+                        <div class="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 animate-pulse">
+                            <p class="text-sm text-red-300 font-medium">{{ $errors->first('username') }}</p>
+                        </div>
+                    @endif
+
+                    @if ($errors->has('password'))
+                        <div class="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 animate-pulse">
+                            <p class="text-sm text-red-300 font-medium">{{ $errors->first('password') }}</p>
                         </div>
                     @endif
 
@@ -57,7 +78,7 @@
                     @endif
 
                     <!-- Login Form -->
-                    <form method="POST" action="{{ route('admin.login') }}" class="space-y-6" x-data="{ loading: false }" @submit="loading = true">
+                    <form method="POST" action="{{ route('admin.login') }}" class="space-y-6" x-data="{ loading: false }" @submit="loading = true" id="login-form">
                         @csrf
                         
                         <!-- Username Field -->
@@ -79,7 +100,7 @@
                                     required
                                     autofocus
                                     autocomplete="username"
-                                    class="w-full pl-12 pr-4 py-3 rounded-xl bg-slate-950/50 border border-slate-800 text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-yellow-500/50 focus:border-yellow-500/50 transition-all"
+                                    class="w-full pl-12 pr-4 py-3 rounded-xl bg-slate-950/50 border {{ $errors->has('username') ? 'border-red-500/50' : 'border-slate-800' }} text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-yellow-500/50 focus:border-yellow-500/50 transition-all"
                                     placeholder="Enter your username"
                                 />
                             </div>
@@ -102,7 +123,7 @@
                                     name="password"
                                     required
                                     autocomplete="current-password"
-                                    class="w-full pl-12 pr-4 py-3 rounded-xl bg-slate-950/50 border border-slate-800 text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-yellow-500/50 focus:border-yellow-500/50 transition-all"
+                                    class="w-full pl-12 pr-4 py-3 rounded-xl bg-slate-950/50 border {{ $errors->has('password') ? 'border-red-500/50' : 'border-slate-800' }} text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-yellow-500/50 focus:border-yellow-500/50 transition-all"
                                     placeholder="Enter your password"
                                 />
                             </div>

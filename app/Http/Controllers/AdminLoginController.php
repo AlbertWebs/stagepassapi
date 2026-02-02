@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 
 class AdminLoginController extends Controller
@@ -29,15 +30,15 @@ class AdminLoginController extends Controller
             $pass = config('admin.basic_pass');
 
             if (!$user || !$pass) {
-                return back()->withErrors([
-                    'username' => 'Admin credentials are not configured. Please check your .env file.',
-                ])->withInput($request->only('username'));
+                return redirect()->route('admin.login')
+                    ->withErrors(['username' => 'Admin credentials are not configured. Please check your .env file.'])
+                    ->withInput($request->only('username'));
             }
 
             if ($credentials['username'] !== $user || $credentials['password'] !== $pass) {
-                return back()->withErrors([
-                    'username' => 'These credentials do not match our records.',
-                ])->withInput($request->only('username'));
+                return redirect()->route('admin.login')
+                    ->withErrors(['username' => 'These credentials do not match our records.'])
+                    ->withInput($request->only('username'));
             }
 
             $request->session()->regenerate();
@@ -46,10 +47,15 @@ class AdminLoginController extends Controller
 
             $intended = $request->session()->pull('intended', route('admin.dashboard'));
             return redirect($intended)->with('status', 'Welcome back!');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return redirect()->route('admin.login')
+                ->withErrors($e->errors())
+                ->withInput($request->only('username'));
         } catch (\Exception $e) {
-            return back()->withErrors([
-                'username' => 'An error occurred during login. Please try again.',
-            ])->withInput($request->only('username'));
+            \Log::error('Admin login error: ' . $e->getMessage());
+            return redirect()->route('admin.login')
+                ->withErrors(['username' => 'An error occurred during login. Please try again.'])
+                ->withInput($request->only('username'));
         }
     }
 

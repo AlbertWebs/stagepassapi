@@ -252,6 +252,19 @@ class AdminSectionController extends Controller
             if ($column === 'sort_order' && $value === null) {
                 $value = 0;
             }
+            
+            // For description/text fields, decode HTML entities to store as plain text
+            // This prevents double-encoding issues
+            $columnLower = strtolower($column);
+            if (is_string($value) && (
+                in_array($columnLower, ['description_primary', 'description_secondary', 'description', 'content', 'headline', 'subtitle', 'caption', 'message', 'text'], true) ||
+                str_contains($columnLower, 'description') ||
+                str_contains($columnLower, 'content')
+            )) {
+                // Decode any existing HTML entities to store as plain text
+                $value = html_entity_decode($value, ENT_QUOTES, 'UTF-8');
+            }
+            
             $payload[$column] = $value;
         }
 

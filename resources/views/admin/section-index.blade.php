@@ -66,7 +66,7 @@
                                 <div class="rounded-2xl border border-slate-800 bg-slate-950/70 p-6">
                                     <h3 class="text-sm font-semibold text-white">Hero Headline</h3>
                                     <p class="mt-1 text-xs text-slate-500">The primary headline shown on the homepage hero.</p>
-                                    <textarea name="headline" rows="4" class="mt-4 w-full rounded-xl bg-slate-950 border border-slate-800 px-4 py-3 text-base text-slate-100">{{ $headlineValue }}</textarea>
+                                    <textarea name="headline" rows="4" class="mt-4 w-full rounded-xl bg-slate-950 border border-slate-800 px-4 py-3 text-base text-slate-100">{{ html_entity_decode($headlineValue, ENT_QUOTES, 'UTF-8') }}</textarea>
                                 </div>
 
                                 <div class="rounded-2xl border border-slate-800 bg-slate-950/70 p-6 space-y-4">
@@ -280,7 +280,7 @@
                                         <input type="{{ $inputType }}" name="{{ $column }}" value="{{ $value }}" class="mt-2 w-full rounded-xl bg-slate-950 border border-slate-800 px-4 py-2 text-sm text-slate-100" placeholder="e.g. Music, Building2" />
                                         <p class="mt-1 text-xs text-slate-500">Use a Lucide icon name (Music, Building2, Theater).</p>
                                     @elseif ($isTextarea)
-                                        <textarea name="{{ $column }}" rows="3" class="mt-2 w-full rounded-xl bg-slate-950 border border-slate-800 px-4 py-2 text-sm text-slate-100">{{ $value }}</textarea>
+                                        <textarea name="{{ $column }}" rows="3" class="mt-2 w-full rounded-xl bg-slate-950 border border-slate-800 px-4 py-2 text-sm text-slate-100">{{ html_entity_decode($value, ENT_QUOTES, 'UTF-8') }}</textarea>
                                     @else
                                         <input type="{{ $inputType }}" name="{{ $column }}" value="{{ $value }}" class="mt-2 w-full rounded-xl bg-slate-950 border border-slate-800 px-4 py-2 text-sm text-slate-100" />
                                     @endif
@@ -408,7 +408,7 @@
                                                 <input type="{{ $inputType }}" name="{{ $column }}" value="{{ $value }}" class="mt-2 w-full rounded-xl bg-slate-950 border border-slate-800 px-4 py-2 text-sm text-slate-100" placeholder="e.g. Music, Building2" />
                                                 <p class="mt-1 text-xs text-slate-500">Use a Lucide icon name (Music, Building2, Theater).</p>
                                             @elseif ($isTextarea)
-                                                <textarea name="{{ $column }}" rows="3" class="mt-2 w-full rounded-xl bg-slate-950 border border-slate-800 px-4 py-2 text-sm text-slate-100">{{ $value }}</textarea>
+                                                <textarea name="{{ $column }}" rows="3" class="mt-2 w-full rounded-xl bg-slate-950 border border-slate-800 px-4 py-2 text-sm text-slate-100">{{ html_entity_decode($value, ENT_QUOTES, 'UTF-8') }}</textarea>
                                             @else
                                                 <input type="{{ $inputType }}" name="{{ $column }}" value="{{ $value }}" class="mt-2 w-full rounded-xl bg-slate-950 border border-slate-800 px-4 py-2 text-sm text-slate-100" />
                                             @endif
@@ -586,7 +586,7 @@
                                                                                 @endif
                                                                             </div>
                                                                         @elseif ($isTextarea)
-                                                                            <textarea name="{{ $column }}" rows="3" class="mt-2 w-full rounded-xl bg-slate-950 border border-slate-800 px-4 py-2 text-sm text-slate-100">{{ $value }}</textarea>
+                                                                            <textarea name="{{ $column }}" rows="3" class="mt-2 w-full rounded-xl bg-slate-950 border border-slate-800 px-4 py-2 text-sm text-slate-100">{{ html_entity_decode($value, ENT_QUOTES, 'UTF-8') }}</textarea>
                                                                         @else
                                                                             <input type="{{ $inputType }}" name="{{ $column }}" value="{{ $value }}" class="mt-2 w-full rounded-xl bg-slate-950 border border-slate-800 px-4 py-2 text-sm text-slate-100" />
                                                                         @endif
