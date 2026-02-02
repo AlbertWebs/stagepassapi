@@ -98,8 +98,13 @@ class ContentController extends Controller
                 ],
                 'hero' => $hero,
                 'about' => [
-                    // Note: Both description_primary and description_secondary should use the same font styling
-                    'section' => $about,
+                    'section' => $about ? (object) array_merge((array) $about, [
+                        // Styling metadata: Both descriptions should use the same font size
+                        'description_primary_font_size' => 'text-base',
+                        'description_secondary_font_size' => 'text-base', // Same as description_primary
+                        'description_primary_font_class' => 'text-base leading-relaxed',
+                        'description_secondary_font_class' => 'text-base leading-relaxed', // Same as description_primary
+                    ]) : null,
                     'highlights' => $aboutHighlights,
                 ],
                 'services' => [
