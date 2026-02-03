@@ -218,9 +218,13 @@
                                         @php
                                             $previewUrl = '';
                                             if (!empty($value)) {
-                                                $previewUrl = \Illuminate\Support\Str::startsWith($value, ['http://', 'https://'])
-                                                    ? $value
-                                                    : '/' . ltrim($value, '/');
+                                                if (\Illuminate\Support\Str::startsWith($value, ['http://', 'https://'])) {
+                                                    $previewUrl = $value;
+                                                } elseif (\Illuminate\Support\Str::startsWith($value, '/storage/')) {
+                                                    $previewUrl = asset($value);
+                                                } else {
+                                                    $previewUrl = asset('/storage/' . ltrim($value, '/'));
+                                                }
                                             }
                                         @endphp
                                         <div class="mt-2 space-y-3 rounded-xl border border-slate-800 bg-slate-950/60 p-4">
@@ -249,9 +253,13 @@
                                         @php
                                             $previewUrl = '';
                                             if (!empty($value)) {
-                                                $previewUrl = \Illuminate\Support\Str::startsWith($value, ['http://', 'https://'])
-                                                    ? $value
-                                                    : '/' . ltrim($value, '/');
+                                                if (\Illuminate\Support\Str::startsWith($value, ['http://', 'https://'])) {
+                                                    $previewUrl = $value;
+                                                } elseif (\Illuminate\Support\Str::startsWith($value, '/storage/')) {
+                                                    $previewUrl = asset($value);
+                                                } else {
+                                                    $previewUrl = asset('/storage/' . ltrim($value, '/'));
+                                                }
                                             }
                                         @endphp
                                         <div class="mt-2 space-y-3 rounded-xl border border-slate-800 bg-slate-950/60 p-4">
@@ -353,7 +361,12 @@
                                                         <p class="mt-1 text-xs text-slate-500">Upload replaces the URL.</p>
                                                     </div>
                                                     @if (!empty($value))
-                                                        <img src="{{ \Illuminate\Support\Str::startsWith($value, ['http://', 'https://']) ? $value : '/' . ltrim($value, '/') }}" alt="{{ $column }} preview" class="h-12 w-12 rounded bg-slate-900 object-contain" />
+                                                        @php
+                                                            $iconUrl = \Illuminate\Support\Str::startsWith($value, ['http://', 'https://']) 
+                                                                ? $value 
+                                                                : (\Illuminate\Support\Str::startsWith($value, '/storage/') ? asset($value) : asset('/storage/' . ltrim($value, '/')));
+                                                        @endphp
+                                                        <img src="{{ $iconUrl }}" alt="{{ $column }} preview" class="h-12 w-12 rounded bg-slate-900 object-contain" />
                                                     @endif
                                                 </div>
                                             @elseif ($columnLower === 'logo_path')
@@ -527,9 +540,13 @@
                                                                             @php
                                                                                 $previewUrl = '';
                                                                                 if (!empty($value)) {
-                                                                                    $previewUrl = \Illuminate\Support\Str::startsWith($value, ['http://', 'https://'])
-                                                                                        ? $value
-                                                                                        : '/' . ltrim($value, '/');
+                                                                                    if (\Illuminate\Support\Str::startsWith($value, ['http://', 'https://'])) {
+                                                                                        $previewUrl = $value;
+                                                                                    } elseif (\Illuminate\Support\Str::startsWith($value, '/storage/')) {
+                                                                                        $previewUrl = asset($value);
+                                                                                    } else {
+                                                                                        $previewUrl = asset('/storage/' . ltrim($value, '/'));
+                                                                                    }
                                                                                 }
                                                                             @endphp
                                                                             <div class="mt-2 space-y-3 rounded-xl border border-slate-800 bg-slate-950/60 p-4">
@@ -558,9 +575,13 @@
                                                                             @php
                                                                                 $previewUrl = '';
                                                                                 if (!empty($value)) {
-                                                                                    $previewUrl = \Illuminate\Support\Str::startsWith($value, ['http://', 'https://'])
-                                                                                        ? $value
-                                                                                        : '/' . ltrim($value, '/');
+                                                                                    if (\Illuminate\Support\Str::startsWith($value, ['http://', 'https://'])) {
+                                                                                        $previewUrl = $value;
+                                                                                    } elseif (\Illuminate\Support\Str::startsWith($value, '/storage/')) {
+                                                                                        $previewUrl = asset($value);
+                                                                                    } else {
+                                                                                        $previewUrl = asset('/storage/' . ltrim($value, '/'));
+                                                                                    }
                                                                                 }
                                                                             @endphp
                                                                             <div class="mt-2 space-y-3 rounded-xl border border-slate-800 bg-slate-950/60 p-4">

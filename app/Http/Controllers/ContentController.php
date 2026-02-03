@@ -104,6 +104,8 @@ class ContentController extends Controller
                         'description_secondary_font_size' => 'text-base', // Same as description_primary
                         'description_primary_font_class' => 'text-base leading-relaxed',
                         'description_secondary_font_class' => 'text-base leading-relaxed', // Same as description_primary
+                        // Normalize image URL
+                        'image_url' => $this->normalizeUrl($about->image_url),
                     ]) : null,
                     'highlights' => $aboutHighlights,
                 ],

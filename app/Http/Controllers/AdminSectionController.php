@@ -281,7 +281,9 @@ class AdminSectionController extends Controller
         $dir = "admin/{$table}";
         $path = $file->storePublicly($dir, 'public');
 
-        return '/storage/' . ltrim($path, '/');
+        // Return the path relative to storage/app/public (which is accessible via /storage)
+        // The path from storePublicly already includes the directory structure
+        return '/storage/' . $path;
     }
 
     private function touchInsert(string $table, array &$payload): void
