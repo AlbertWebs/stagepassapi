@@ -264,25 +264,17 @@
                                         @endphp
                                         <div class="mt-2 space-y-3 rounded-xl border border-slate-800 bg-slate-950/60 p-4">
                                             <div>
-                                                <label class="text-xs uppercase tracking-wide text-slate-500">{{ \Illuminate\Support\Str::headline($column) }} URL</label>
-                                                <input type="url" name="{{ $column }}" value="{{ $value }}" class="mt-2 w-full rounded-xl bg-slate-950 border border-slate-800 px-4 py-2 text-sm text-slate-100" placeholder="https://stagepass.co.ke/uploads/og-image.jpg" />
-                                                <p class="mt-1 text-xs text-slate-500">Paste a hosted URL or upload an image file.</p>
-                                            </div>
-                                            <div class="flex items-center gap-3 text-xs text-slate-500">
-                                                <span class="uppercase tracking-[0.2em]">or</span>
-                                                <span class="h-px flex-1 bg-slate-800"></span>
-                                            </div>
-                                            <div>
                                                 <label class="text-xs uppercase tracking-wide text-slate-500">Upload {{ \Illuminate\Support\Str::headline($column) }}</label>
                                                 <input type="file" name="{{ $column }}_upload" accept="image/*" class="mt-2 block w-full text-sm text-slate-200" />
                                                 <p class="mt-1 text-xs text-slate-500">JPG, PNG, or WebP recommended. Recommended size: 1200x630px for OG images.</p>
                                             </div>
                                             @if ($previewUrl)
                                                 <div class="mt-3">
-                                                    <p class="text-xs text-slate-500 mb-2">Preview:</p>
+                                                    <p class="text-xs text-slate-500 mb-2">Current Image:</p>
                                                     <img src="{{ $previewUrl }}" alt="{{ $column }} preview" class="max-w-full h-auto rounded-lg border border-slate-800 bg-slate-900 object-contain max-h-48" />
                                                 </div>
                                             @endif
+                                            <input type="hidden" name="{{ $column }}" value="{{ $value }}" />
                                         </div>
                                     @elseif ($columnLower === 'icon_name')
                                         <input type="{{ $inputType }}" name="{{ $column }}" value="{{ $value }}" class="mt-2 w-full rounded-xl bg-slate-950 border border-slate-800 px-4 py-2 text-sm text-slate-100" placeholder="e.g. Music, Building2" />
@@ -387,21 +379,31 @@
                                                     </div>
                                                 </div>
                                             @elseif ($columnLower === 'og_image' || $columnLower === 'image_url')
+                                                @php
+                                                    $previewUrl = '';
+                                                    if (!empty($value)) {
+                                                        if (\Illuminate\Support\Str::startsWith($value, ['http://', 'https://'])) {
+                                                            $previewUrl = $value;
+                                                        } elseif (\Illuminate\Support\Str::startsWith($value, '/storage/')) {
+                                                            $previewUrl = asset($value);
+                                                        } else {
+                                                            $previewUrl = asset('/storage/' . ltrim($value, '/'));
+                                                        }
+                                                    }
+                                                @endphp
                                                 <div class="mt-2 space-y-3 rounded-xl border border-slate-800 bg-slate-950/60 p-4">
-                                                    <div>
-                                                        <label class="text-xs uppercase tracking-wide text-slate-500">{{ \Illuminate\Support\Str::headline($column) }} URL</label>
-                                                        <input type="url" name="{{ $column }}" value="{{ $value }}" class="mt-2 w-full rounded-xl bg-slate-950 border border-slate-800 px-4 py-2 text-sm text-slate-100" placeholder="https://stagepass.co.ke/uploads/og-image.jpg" />
-                                                        <p class="mt-1 text-xs text-slate-500">Paste a hosted URL or upload an image file.</p>
-                                                    </div>
-                                                    <div class="flex items-center gap-3 text-xs text-slate-500">
-                                                        <span class="uppercase tracking-[0.2em]">or</span>
-                                                        <span class="h-px flex-1 bg-slate-800"></span>
-                                                    </div>
                                                     <div>
                                                         <label class="text-xs uppercase tracking-wide text-slate-500">Upload {{ \Illuminate\Support\Str::headline($column) }}</label>
                                                         <input type="file" name="{{ $column }}_upload" accept="image/*" class="mt-2 block w-full text-sm text-slate-200" />
                                                         <p class="mt-1 text-xs text-slate-500">JPG, PNG, or WebP recommended. Recommended size: 1200x630px for OG images.</p>
                                                     </div>
+                                                    @if ($previewUrl)
+                                                        <div class="mt-3">
+                                                            <p class="text-xs text-slate-500 mb-2">Current Image:</p>
+                                                            <img src="{{ $previewUrl }}" alt="{{ $column }} preview" class="max-w-full h-auto rounded-lg border border-slate-800 bg-slate-900 object-contain max-h-48" />
+                                                        </div>
+                                                    @endif
+                                                    <input type="hidden" name="{{ $column }}" value="{{ $value }}" />
                                                 </div>
                                             @elseif ($columnLower === 'icon_name')
                                                 <input type="{{ $inputType }}" name="{{ $column }}" value="{{ $value }}" class="mt-2 w-full rounded-xl bg-slate-950 border border-slate-800 px-4 py-2 text-sm text-slate-100" placeholder="e.g. Music, Building2" />
@@ -586,25 +588,17 @@
                                                                             @endphp
                                                                             <div class="mt-2 space-y-3 rounded-xl border border-slate-800 bg-slate-950/60 p-4">
                                                                                 <div>
-                                                                                    <label class="text-xs uppercase tracking-wide text-slate-500">{{ \Illuminate\Support\Str::headline($column) }} URL</label>
-                                                                                    <input type="url" name="{{ $column }}" value="{{ $value }}" class="mt-2 w-full rounded-xl bg-slate-950 border border-slate-800 px-4 py-2 text-sm text-slate-100" placeholder="https://stagepass.co.ke/uploads/og-image.jpg" />
-                                                                                    <p class="mt-1 text-xs text-slate-500">Paste a hosted URL or upload an image file.</p>
-                                                                                </div>
-                                                                                <div class="flex items-center gap-3 text-xs text-slate-500">
-                                                                                    <span class="uppercase tracking-[0.2em]">or</span>
-                                                                                    <span class="h-px flex-1 bg-slate-800"></span>
-                                                                                </div>
-                                                                                <div>
                                                                                     <label class="text-xs uppercase tracking-wide text-slate-500">Upload {{ \Illuminate\Support\Str::headline($column) }}</label>
                                                                                     <input type="file" name="{{ $column }}_upload" accept="image/*" class="mt-2 block w-full text-sm text-slate-200" />
                                                                                     <p class="mt-1 text-xs text-slate-500">JPG, PNG, or WebP recommended. Recommended size: 1200x630px for OG images.</p>
                                                                                 </div>
                                                                                 @if ($previewUrl)
                                                                                     <div class="mt-3">
-                                                                                        <p class="text-xs text-slate-500 mb-2">Preview:</p>
+                                                                                        <p class="text-xs text-slate-500 mb-2">Current Image:</p>
                                                                                         <img src="{{ $previewUrl }}" alt="{{ $column }} preview" class="max-w-full h-auto rounded-lg border border-slate-800 bg-slate-900 object-contain max-h-48" />
                                                                                     </div>
                                                                                 @endif
+                                                                                <input type="hidden" name="{{ $column }}" value="{{ $value }}" />
                                                                             </div>
                                                                         @elseif ($isTextarea)
                                                                             <textarea name="{{ $column }}" rows="3" class="mt-2 w-full rounded-xl bg-slate-950 border border-slate-800 px-4 py-2 text-sm text-slate-100">{{ html_entity_decode($value, ENT_QUOTES, 'UTF-8') }}</textarea>
