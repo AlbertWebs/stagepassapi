@@ -2,16 +2,30 @@
 
 namespace App\Console\Commands;
 
+use App\Console\Commands\Traits\LogsExecution;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 
 class SendInstagramStatusEmail extends Command
 {
+    use LogsExecution;
+
     protected $signature = 'instagram:send-status-email';
     protected $description = 'Send daily email notification if Instagram fetching is working correctly';
 
     public function handle(): int
+    {
+        return $this->logExecution(
+            'instagram:send-status-email',
+            'Send daily email notification if Instagram fetching is working correctly',
+            function () {
+                return $this->performTask();
+            }
+        );
+    }
+
+    protected function performTask(): int
     {
         try {
             // Check the last successful Instagram fetch

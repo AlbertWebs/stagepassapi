@@ -27,6 +27,7 @@
                 ['key' => 'instagram-tools', 'label' => 'Instagram Tools', 'href' => route('admin.instagram.tools')],
                 ['key' => 'contact-messages', 'label' => 'Contact Messages', 'href' => route('admin.contact-messages')],
                 ['key' => 'quote-requests', 'label' => 'Quote Requests', 'href' => route('admin.quote-requests')],
+                ['key' => 'cron-jobs', 'label' => 'Cron Jobs', 'href' => route('admin.cron-jobs')],
             ];
             
             $pageItems = [

@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Console\Commands\Traits\LogsExecution;
 use App\Models\InstagramMedia;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
@@ -11,10 +12,23 @@ use Illuminate\Support\Facades\Log;
 
 class FetchInstagramMedia extends Command
 {
+    use LogsExecution;
+
     protected $signature = 'instagram:fetch-media {--limit=50}';
     protected $description = 'Fetch Instagram media and store it in the database.';
 
     public function handle(): int
+    {
+        return $this->logExecution(
+            'instagram:fetch-media',
+            'Fetch Instagram media and store it in the database.',
+            function () {
+                return $this->performTask();
+            }
+        );
+    }
+
+    protected function performTask(): int
     {
         $accessToken = config('services.instagram.access_token')
             ?: DB::table('site_settings')->where('key', 'instagram_access_token')->value('value');

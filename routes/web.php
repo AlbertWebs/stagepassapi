@@ -153,6 +153,8 @@ Route::prefix('admin')->middleware('admin.session')->group(function () {
 
     Route::get('/logs', [AdminLogsController::class, 'index'])->name('admin.logs');
 
+    Route::get('/cron-jobs', [App\Http\Controllers\AdminCronJobsController::class, 'index'])->name('admin.cron-jobs');
+
     Route::get('/backup', [AdminBackupController::class, 'index'])->name('admin.backup');
     Route::post('/backup', [AdminBackupController::class, 'run'])->name('admin.backup.run');
 

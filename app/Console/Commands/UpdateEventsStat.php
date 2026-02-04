@@ -2,15 +2,29 @@
 
 namespace App\Console\Commands;
 
+use App\Console\Commands\Traits\LogsExecution;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
 class UpdateEventsStat extends Command
 {
+    use LogsExecution;
+
     protected $signature = 'stats:update-events';
     protected $description = 'Automatically update the Events stat by adding 1-4 events per month';
 
     public function handle(): int
+    {
+        return $this->logExecution(
+            'stats:update-events',
+            'Automatically update the Events stat by adding 1-4 events per month',
+            function () {
+                return $this->performTask();
+            }
+        );
+    }
+
+    protected function performTask(): int
     {
         try {
             // Find the Events stat
