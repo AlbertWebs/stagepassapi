@@ -30,6 +30,9 @@ Route::get('/api/content/homepage', [ContentController::class, 'homepage']);
     Route::get('/api/content/contact', [ContentController::class, 'contact']);
     Route::get('/api/content/terms-and-conditions', [ContentController::class, 'terms']);
     Route::get('/api/content/privacy', [ContentController::class, 'privacy']);
+    Route::get('/api/content/service/{service}', [ContentController::class, 'service']);
+    Route::get('/api/content/service/{service}/{subservice}', [ContentController::class, 'service']);
+    Route::get('/api/content/industry/{id}', [ContentController::class, 'industry']);
     Route::post('/api/contact/submit', [\App\Http\Controllers\ContactController::class, 'submit']);
     Route::options('/api/{any}', function () {
         return response('', 200)

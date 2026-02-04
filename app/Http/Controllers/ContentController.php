@@ -294,6 +294,55 @@ class ContentController extends Controller
             ->header('Access-Control-Allow-Origin', '*');
     }
 
+    public function service(string $service, ?string $subservice = null): JsonResponse
+    {
+        $slug = $subservice ? "{$service}/{$subservice}" : $service;
+        $page = DB::table('service_pages')->where('slug', $slug)->first();
+        $settings = DB::table('site_settings')->pluck('value', 'key')->toArray();
+
+        return response()
+            ->json([
+                'page' => $page ? [
+                    'slug' => $page->slug,
+                    'title' => $page->title,
+                    'description' => $page->description,
+                    'content' => $page->content,
+                    'meta_description' => $page->meta_description,
+                    'meta_keywords' => $page->meta_keywords,
+                    'og_image' => $this->normalizeUrl($page->og_image),
+                ] : null,
+                'settings' => [
+                    'site_name' => $settings['site_name'] ?? null,
+                    'website_url' => $settings['website_url'] ?? null,
+                ],
+            ])
+            ->header('Access-Control-Allow-Origin', '*');
+    }
+
+    public function industry(string $id): JsonResponse
+    {
+        $page = DB::table('industry_pages')->where('slug', $id)->first();
+        $settings = DB::table('site_settings')->pluck('value', 'key')->toArray();
+
+        return response()
+            ->json([
+                'page' => $page ? [
+                    'slug' => $page->slug,
+                    'title' => $page->title,
+                    'description' => $page->description,
+                    'content' => $page->content,
+                    'meta_description' => $page->meta_description,
+                    'meta_keywords' => $page->meta_keywords,
+                    'og_image' => $this->normalizeUrl($page->og_image),
+                ] : null,
+                'settings' => [
+                    'site_name' => $settings['site_name'] ?? null,
+                    'website_url' => $settings['website_url'] ?? null,
+                ],
+            ])
+            ->header('Access-Control-Allow-Origin', '*');
+    }
+
     public function terms(): JsonResponse
     {
         $page = DB::table('terms_pages')->first();

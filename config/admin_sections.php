@@ -135,5 +135,17 @@ return [
                 ['name' => 'privacy_pages', 'label' => 'Privacy Policy Page', 'single' => true],
             ],
         ],
+        'service-pages' => [
+            'label' => 'Service Pages',
+            'tables' => [
+                ['name' => 'service_pages', 'label' => 'Service Pages'],
+            ],
+        ],
+        'industry-pages' => [
+            'label' => 'Industry Pages',
+            'tables' => [
+                ['name' => 'industry_pages', 'label' => 'Industry Pages'],
+            ],
+        ],
     ],
 ];
