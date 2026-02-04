@@ -279,6 +279,16 @@
                                     @elseif ($columnLower === 'icon_name')
                                         <input type="{{ $inputType }}" name="{{ $column }}" value="{{ $value }}" class="mt-2 w-full rounded-xl bg-slate-950 border border-slate-800 px-4 py-2 text-sm text-slate-100" placeholder="e.g. Music, Building2" />
                                         <p class="mt-1 text-xs text-slate-500">Use a Lucide icon name (Music, Building2, Theater).</p>
+                                    @elseif ($columnLower === 'description_primary' && $table === 'about_sections')
+                                        <div class="mt-2">
+                                            <div id="description_primary_editor" style="height: 200px; background-color: #0f172a; color: #e2e8f0;"></div>
+                                            <textarea 
+                                                id="description_primary_hidden" 
+                                                name="{{ $column }}" 
+                                                style="display: none;"
+                                            >{{ html_entity_decode($value, ENT_QUOTES, 'UTF-8') }}</textarea>
+                                        </div>
+                                        <p class="mt-1 text-xs text-slate-500">Rich text editor for formatted content. Formatting will be saved as HTML.</p>
                                     @elseif ($isTextarea)
                                         <textarea name="{{ $column }}" rows="3" class="mt-2 w-full rounded-xl bg-slate-950 border border-slate-800 px-4 py-2 text-sm text-slate-100">{{ $value }}</textarea>
                                     @else
@@ -629,4 +639,71 @@
             </section>
         @endforeach
     </div>
+
+    @if(isset($sectionKey) && $sectionKey === 'about')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const editorElement = document.getElementById('description_primary_editor');
+            const hiddenTextarea = document.getElementById('description_primary_hidden');
+            
+            if (editorElement && hiddenTextarea && typeof Quill !== 'undefined') {
+                // Initialize Quill editor
+                const quill = new Quill('#description_primary_editor', {
+                    theme: 'snow',
+                    modules: {
+                        toolbar: [
+                            [{ 'header': [1, 2, 3, false] }],
+                            ['bold', 'italic', 'underline', 'strike'],
+                            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                            ['link'],
+                            ['clean']
+                        ]
+                    },
+                    placeholder: 'Enter description...'
+                });
+                
+                // Set initial content from hidden textarea
+                if (hiddenTextarea.value) {
+                    quill.root.innerHTML = hiddenTextarea.value;
+                }
+                
+                // Update hidden textarea when editor content changes
+                quill.on('text-change', function() {
+                    hiddenTextarea.value = quill.root.innerHTML;
+                });
+                
+                // Also update on form submit
+                const form = editorElement.closest('form');
+                if (form) {
+                    form.addEventListener('submit', function() {
+                        hiddenTextarea.value = quill.root.innerHTML;
+                    });
+                }
+            }
+        });
+    </script>
+    <style>
+        .ql-toolbar {
+            background-color: #1e293b;
+            border-color: #334155;
+        }
+        .ql-container {
+            background-color: #0f172a;
+            border-color: #334155;
+            color: #e2e8f0;
+        }
+        .ql-editor {
+            color: #e2e8f0;
+        }
+        .ql-stroke {
+            stroke: #e2e8f0;
+        }
+        .ql-fill {
+            fill: #e2e8f0;
+        }
+        .ql-picker-label {
+            color: #e2e8f0;
+        }
+    </style>
+    @endif
 @endsection
