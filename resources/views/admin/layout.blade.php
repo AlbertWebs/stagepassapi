@@ -172,7 +172,10 @@
                                 <a href="{{ route('admin.backup') }}" class="block px-4 py-3 text-sm text-slate-200 hover:bg-slate-800">Backup</a>
                                 <a href="{{ route('admin.maintain') }}" class="block px-4 py-3 text-sm text-slate-200 hover:bg-slate-800">Maintain</a>
                                 <div class="border-t border-slate-800"></div>
-                                <a href="{{ route('admin.logout') }}" class="block px-4 py-3 text-sm text-red-300 hover:bg-slate-800">Logout</a>
+                                <form method="POST" action="{{ route('admin.logout') }}" class="block">
+                                    @csrf
+                                    <button type="submit" class="w-full text-left px-4 py-3 text-sm text-red-300 hover:bg-slate-800">Logout</button>
+                                </form>
                             </div>
                         </div>
                     </div>

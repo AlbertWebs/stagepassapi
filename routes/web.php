@@ -5,6 +5,7 @@ use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\AdminInstagramController;
 use App\Http\Controllers\AdminInstagramToolsController;
 use App\Http\Controllers\AdminLogsController;
+use App\Http\Controllers\AdminLoginController;
 use App\Http\Controllers\AdminProfileController;
 use App\Http\Controllers\AdminMaintenanceController;
 use App\Http\Controllers\AdminSectionController;
@@ -105,7 +106,12 @@ Route::get('/sitemap.xml', function () {
         ->header('Content-Type', 'application/xml');
 });
 
-Route::prefix('admin')->middleware('admin.basic')->group(function () {
+// Admin Login Routes (Public)
+Route::get('/admin/login', [AdminLoginController::class, 'showLoginForm'])->name('admin.login');
+Route::post('/admin/login', [AdminLoginController::class, 'login']);
+Route::post('/admin/logout', [AdminLoginController::class, 'logout'])->name('admin.logout');
+
+Route::prefix('admin')->middleware('admin.session')->group(function () {
     Route::get('/', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
 
     $sections = config('admin_sections.sections', []);
