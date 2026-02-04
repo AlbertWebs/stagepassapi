@@ -238,11 +238,6 @@ class AdminSectionController extends Controller
     {
         $payload = [];
         foreach ($columns as $column) {
-            $uploadColumn = $column . '_upload';
-            if ($request->hasFile($uploadColumn)) {
-                $payload[$column] = $this->storeUpload($request, $uploadColumn, $table);
-                continue;
-            }
             if ($request->hasFile($column)) {
                 $payload[$column] = $this->storeUpload($request, $column, $table);
                 continue;
@@ -252,19 +247,6 @@ class AdminSectionController extends Controller
             if ($column === 'sort_order' && $value === null) {
                 $value = 0;
             }
-            
-            // For description/text fields, decode HTML entities to store as plain text
-            // This prevents double-encoding issues
-            $columnLower = strtolower($column);
-            if (is_string($value) && (
-                in_array($columnLower, ['description_primary', 'description_secondary', 'description', 'content', 'headline', 'subtitle', 'caption', 'message', 'text'], true) ||
-                str_contains($columnLower, 'description') ||
-                str_contains($columnLower, 'content')
-            )) {
-                // Decode any existing HTML entities to store as plain text
-                $value = html_entity_decode($value, ENT_QUOTES, 'UTF-8');
-            }
-            
             $payload[$column] = $value;
         }
 
@@ -281,9 +263,7 @@ class AdminSectionController extends Controller
         $dir = "admin/{$table}";
         $path = $file->storePublicly($dir, 'public');
 
-        // Return the path relative to storage/app/public (which is accessible via /storage)
-        // The path from storePublicly already includes the directory structure
-        return '/storage/' . $path;
+        return ltrim(Storage::disk('public')->url($path), '/');
     }
 
     private function touchInsert(string $table, array &$payload): void

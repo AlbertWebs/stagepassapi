@@ -98,15 +98,7 @@ class ContentController extends Controller
                 ],
                 'hero' => $hero,
                 'about' => [
-                    'section' => $about ? (object) array_merge((array) $about, [
-                        // Styling metadata: Both descriptions should use the same font size
-                        'description_primary_font_size' => 'text-base',
-                        'description_secondary_font_size' => 'text-base', // Same as description_primary
-                        'description_primary_font_class' => 'text-base leading-relaxed',
-                        'description_secondary_font_class' => 'text-base leading-relaxed', // Same as description_primary
-                        // Normalize image URL
-                        'image_url' => $this->normalizeUrl($about->image_url),
-                    ]) : null,
+                    'section' => $about,
                     'highlights' => $aboutHighlights,
                 ],
                 'services' => [
@@ -294,55 +286,6 @@ class ContentController extends Controller
             ->header('Access-Control-Allow-Origin', '*');
     }
 
-    public function service(string $service, ?string $subservice = null): JsonResponse
-    {
-        $slug = $subservice ? "{$service}/{$subservice}" : $service;
-        $page = DB::table('service_pages')->where('slug', $slug)->first();
-        $settings = DB::table('site_settings')->pluck('value', 'key')->toArray();
-
-        return response()
-            ->json([
-                'page' => $page ? [
-                    'slug' => $page->slug,
-                    'title' => $page->title,
-                    'description' => $page->description,
-                    'content' => $page->content,
-                    'meta_description' => $page->meta_description,
-                    'meta_keywords' => $page->meta_keywords,
-                    'og_image' => $this->normalizeUrl($page->og_image),
-                ] : null,
-                'settings' => [
-                    'site_name' => $settings['site_name'] ?? null,
-                    'website_url' => $settings['website_url'] ?? null,
-                ],
-            ])
-            ->header('Access-Control-Allow-Origin', '*');
-    }
-
-    public function industry(string $id): JsonResponse
-    {
-        $page = DB::table('industry_pages')->where('slug', $id)->first();
-        $settings = DB::table('site_settings')->pluck('value', 'key')->toArray();
-
-        return response()
-            ->json([
-                'page' => $page ? [
-                    'slug' => $page->slug,
-                    'title' => $page->title,
-                    'description' => $page->description,
-                    'content' => $page->content,
-                    'meta_description' => $page->meta_description,
-                    'meta_keywords' => $page->meta_keywords,
-                    'og_image' => $this->normalizeUrl($page->og_image),
-                ] : null,
-                'settings' => [
-                    'site_name' => $settings['site_name'] ?? null,
-                    'website_url' => $settings['website_url'] ?? null,
-                ],
-            ])
-            ->header('Access-Control-Allow-Origin', '*');
-    }
-
     public function terms(): JsonResponse
     {
         $page = DB::table('terms_pages')->first();
@@ -384,6 +327,53 @@ class ContentController extends Controller
                     'hero_subtitle' => $page->hero_subtitle,
                     'content' => $page->content,
                     'last_updated' => $page->last_updated,
+                ] : null,
+                'settings' => [
+                    'site_name' => $settings['site_name'] ?? null,
+                    'website_url' => $settings['website_url'] ?? null,
+                ],
+            ])
+            ->header('Access-Control-Allow-Origin', '*');
+    }
+
+    public function service(string $service, ?string $subservice = null): JsonResponse
+    {
+        $slug = $subservice ? "{$service}/{$subservice}" : $service;
+        $page = DB::table('service_pages')->where('slug', $slug)->first();
+        $settings = DB::table('site_settings')->pluck('value', 'key')->toArray();
+
+        return response()
+            ->json([
+                'page' => $page ? [
+                    'title' => $page->title,
+                    'description' => $page->description,
+                    'content' => $page->content,
+                    'meta_description' => $page->meta_description,
+                    'meta_keywords' => $page->meta_keywords,
+                    'og_image' => $this->normalizeUrl($page->og_image),
+                ] : null,
+                'settings' => [
+                    'site_name' => $settings['site_name'] ?? null,
+                    'website_url' => $settings['website_url'] ?? null,
+                ],
+            ])
+            ->header('Access-Control-Allow-Origin', '*');
+    }
+
+    public function industry(string $id): JsonResponse
+    {
+        $page = DB::table('industry_pages')->where('slug', $id)->first();
+        $settings = DB::table('site_settings')->pluck('value', 'key')->toArray();
+
+        return response()
+            ->json([
+                'page' => $page ? [
+                    'title' => $page->title,
+                    'description' => $page->description,
+                    'content' => $page->content,
+                    'meta_description' => $page->meta_description,
+                    'meta_keywords' => $page->meta_keywords,
+                    'og_image' => $this->normalizeUrl($page->og_image),
                 ] : null,
                 'settings' => [
                     'site_name' => $settings['site_name'] ?? null,

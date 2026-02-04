@@ -391,7 +391,7 @@ class HomepageContentSeeder extends Seeder
         ]);
 
         $contactDetails = [
-            ['label' => 'Location', 'value' => "Jacaranda Close, Ridgeways,\nNairobi, Kenya", 'icon' => 'MapPin'],
+            ['label' => 'Location', 'value' => "Paa ya Paa Lane, Off Ridgeways Road\nNairobi, Kenya", 'icon' => 'MapPin'],
             ['label' => 'Phone', 'value' => '+254 729 171 351', 'icon' => 'Phone'],
             ['label' => 'Email', 'value' => 'info@stagepass.co.ke', 'icon' => 'Mail'],
             ['label' => 'Business Hours', 'value' => "Mon - Fri: 9:00 AM - 6:00 PM\nSat: 10:00 AM - 4:00 PM", 'icon' => 'Clock'],

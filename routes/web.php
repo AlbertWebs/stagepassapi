@@ -5,7 +5,6 @@ use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\AdminInstagramController;
 use App\Http\Controllers\AdminInstagramToolsController;
 use App\Http\Controllers\AdminLogsController;
-use App\Http\Controllers\AdminLoginController;
 use App\Http\Controllers\AdminProfileController;
 use App\Http\Controllers\AdminMaintenanceController;
 use App\Http\Controllers\AdminSectionController;
@@ -14,7 +13,9 @@ use App\Http\Controllers\ContentController;
 use App\Http\Controllers\InstagramPortfolioController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', [\App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/', function () {
+    return view('welcome');
+});
 
 // API Routes for Frontend
 Route::middleware('cors')->group(function () {
@@ -23,15 +24,14 @@ Route::get('/instagram/callback', [InstagramPortfolioController::class, 'callbac
 Route::get('/api/content/homepage', [ContentController::class, 'homepage']);
     Route::get('/api/content/about', [ContentController::class, 'about']);
     Route::get('/api/content/services', [ContentController::class, 'services']);
+    Route::get('/api/content/service/{service}', [ContentController::class, 'service']);
+    Route::get('/api/content/service/{service}/{subservice}', [ContentController::class, 'service']);
     Route::get('/api/content/our-work', [ContentController::class, 'ourWork']);
     Route::get('/api/content/industries', [ContentController::class, 'industries']);
+    Route::get('/api/content/industry/{id}', [ContentController::class, 'industry']);
     Route::get('/api/content/contact', [ContentController::class, 'contact']);
     Route::get('/api/content/terms-and-conditions', [ContentController::class, 'terms']);
     Route::get('/api/content/privacy', [ContentController::class, 'privacy']);
-    Route::get('/api/content/service/{service}', [ContentController::class, 'service']);
-    Route::get('/api/content/service/{service}/{subservice}', [ContentController::class, 'service']);
-    Route::get('/api/content/industry/{id}', [ContentController::class, 'industry']);
-    Route::post('/api/contact/submit', [\App\Http\Controllers\ContactController::class, 'submit']);
     Route::options('/api/{any}', function () {
         return response('', 200)
             ->header('Access-Control-Allow-Origin', '*')
@@ -105,15 +105,7 @@ Route::get('/sitemap.xml', function () {
         ->header('Content-Type', 'application/xml');
 });
 
-// Admin Login Routes (public)
-Route::prefix('admin')->group(function () {
-    Route::get('/login', [AdminLoginController::class, 'showLoginForm'])->name('admin.login');
-    Route::post('/login', [AdminLoginController::class, 'login']);
-    Route::post('/logout', [AdminLoginController::class, 'logout'])->name('admin.logout');
-});
-
-// Admin Protected Routes (require session authentication)
-Route::prefix('admin')->middleware('admin.session')->group(function () {
+Route::prefix('admin')->middleware('admin.basic')->group(function () {
     Route::get('/', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
 
     $sections = config('admin_sections.sections', []);
@@ -161,9 +153,9 @@ Route::prefix('admin')->middleware('admin.session')->group(function () {
     Route::get('/maintain', [AdminMaintenanceController::class, 'index'])->name('admin.maintain');
     Route::post('/maintain/{task}', [AdminMaintenanceController::class, 'run'])->name('admin.maintain.run');
 
-    Route::get('/logout-page', function () {
+    Route::get('/logout', function () {
         return view('admin.logout');
-    })->name('admin.logout-page');
+    })->name('admin.logout');
 
     Route::post('/instagram/fetch', [AdminInstagramController::class, 'fetch'])
         ->name('admin.instagram.fetch');
