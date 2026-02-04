@@ -14,9 +14,7 @@ use App\Http\Controllers\ContentController;
 use App\Http\Controllers\InstagramPortfolioController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [\App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 // API Routes for Frontend
 Route::middleware('cors')->group(function () {
