@@ -101,8 +101,8 @@ class HomepageContentSeeder extends Seeder
         $aboutId = DB::table('about_sections')->insertGetId([
             'badge_label' => 'About Us',
             'title' => 'Who We Are',
-            'description_primary' => 'StagePass Audio-Visual Limited is an integrated technical, consulting, planning, design and implementation provider for professional events based in Nairobi and operating within Africa.',
-            'description_secondary' => 'We specialize in rentals of Audio-Visual technology including Sound, Screens, Lighting, Content Management, Digital and Interactive technology and scenic design.',
+            'description_primary' => 'StagePass Audio-Visual Limited is an integrated technical, consulting, planning, design and implementation provider for professional events based in Nairobi and operating within Africa. <br><br> We specialize in rentals of Audio-Visual technology including Sound, Screens, Lighting, Content Management, Digital and Interactive technology and scenic design.',
+            'description_secondary' => '',
             'image_url' => 'https://stagepass.co.ke/uploads/banners/visionsp.jpg',
             'stat_value' => '2362+',
             'stat_label' => 'Successful Events',
