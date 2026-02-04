@@ -1,0 +1,28 @@
+# ============================================
+# STAGEPASS API - CRON JOB COMMANDS
+# ============================================
+# Copy and paste these commands into your cPanel Cron Jobs or crontab
+# ============================================
+
+# MAIN LARAVEL SCHEDULER (RECOMMENDED - Run this ONE command)
+# This runs every minute and Laravel handles all scheduling internally
+* * * * * /usr/local/bin/php /home/stagepassco/public_html/api.stagepass.co.ke/artisan schedule:run >> /dev/null 2>&1
+
+# ============================================
+# ALTERNATIVE: Individual Commands (if not using scheduler)
+# ============================================
+
+# Instagram Media Fetch - Every Hour
+0 * * * * /usr/local/bin/php /home/stagepassco/public_html/api.stagepass.co.ke/artisan instagram:fetch-media >> /dev/null 2>&1
+
+# Instagram Status Email - Daily at Midnight
+0 0 * * * /usr/local/bin/php /home/stagepassco/public_html/api.stagepass.co.ke/artisan instagram:send-status-email >> /dev/null 2>&1
+
+# Update Events Stat - Monthly on 1st at 1:00 AM
+0 1 1 * * /usr/local/bin/php /home/stagepassco/public_html/api.stagepass.co.ke/artisan stats:update-events >> /dev/null 2>&1
+
+# ============================================
+# WITH LOGGING (if you want to see output)
+# ============================================
+# Replace >> /dev/null 2>&1 with:
+# >> /home/stagepassco/public_html/api.stagepass.co.ke/storage/logs/cron.log 2>&1

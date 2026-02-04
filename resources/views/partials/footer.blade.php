@@ -1,8 +1,10 @@
 @php
     $homepageData = $homepageData ?? [];
+    $settings = $homepageData['settings'] ?? [];
     $footer = $homepageData['footer'] ?? null;
     $section = $footer['section'] ?? null;
-    $logoUrl = $section['logo_url'] ?? asset('uploads/StagePass-LOGO-y.png');
+    // Prioritize site_logo_url from settings, then footer section logo_url, then default
+    $logoUrl = $settings['site_logo_url'] ?? $section['logo_url'] ?? asset('uploads/StagePass-LOGO-y.png');
     $description = $section['description'] ?? "Africa's premier audio-visual and event technology provider, delivering excellence through innovation and expertise.";
     $copyright = $section['copyright'] ?? '© ' . date('Y') . ' StagePass Audio Visual Limited. All rights reserved. | Creative Solutions | Technical Excellence';
     $socialLinks = $footer['social_links'] ?? [];

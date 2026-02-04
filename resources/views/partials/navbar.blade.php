@@ -1,7 +1,9 @@
 @php
     $homepageData = $homepageData ?? [];
+    $settings = $homepageData['settings'] ?? [];
     $navigation = $homepageData['navigation'] ?? null;
-    $logoUrl = $navigation['logo_url'] ?? asset('uploads/StagePass-LOGO-y.png');
+    // Prioritize site_logo_url from settings, then navigation logo_url, then default
+    $logoUrl = $settings['site_logo_url'] ?? $navigation['logo_url'] ?? asset('uploads/StagePass-LOGO-y.png');
     $ctaLabel = $navigation['cta_label'] ?? 'Get AV Quote';
     $navLinks = $navigation['links'] ?? [
         ['label' => 'Home', 'href' => '#home'],

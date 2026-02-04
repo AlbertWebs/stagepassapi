@@ -15,7 +15,7 @@
             @endif
         </div>
 
-        <form method="POST" action="{{ route('admin.settings.update') }}" class="mt-6 space-y-8">
+        <form method="POST" action="{{ route('admin.settings.update') }}" enctype="multipart/form-data" class="mt-6 space-y-8">
             @csrf
             <div class="rounded-xl border border-slate-800 p-5 flex items-center justify-between">
                 <div>
@@ -43,6 +43,23 @@
             <div class="grid gap-6 lg:grid-cols-2">
                 <div class="rounded-xl border border-slate-800 p-5 space-y-4">
                     <h3 class="text-base font-bold text-white">Site Identity</h3>
+                    <div>
+                        <label class="text-sm text-slate-400">Site Logo</label>
+                        <div class="mt-2 space-y-3 rounded-xl border border-slate-800 bg-slate-950/60 p-4">
+                            <div>
+                                <label class="text-xs uppercase tracking-wide text-slate-500">Upload Logo</label>
+                                <input type="file" name="site_logo_upload" accept="image/*" class="mt-2 block w-full text-sm text-slate-200">
+                                <p class="mt-1 text-xs text-slate-500">PNG, JPG, or SVG recommended. Recommended size: 200x60px for header logo.</p>
+                            </div>
+                            @if(!empty($settings['site_logo_url']))
+                            <div class="mt-3">
+                                <p class="text-xs text-slate-500 mb-2">Current Logo:</p>
+                                <img src="{{ str_starts_with($settings['site_logo_url'], 'http') ? $settings['site_logo_url'] : asset($settings['site_logo_url']) }}" alt="Site logo preview" class="max-w-full h-auto rounded-lg border border-slate-800 bg-slate-900 object-contain max-h-24">
+                            </div>
+                            @endif
+                            <input type="hidden" name="site_logo_url" value="{{ $settings['site_logo_url'] ?? '' }}">
+                        </div>
+                    </div>
                     <div>
                         <label class="text-sm text-slate-400">Site name</label>
                         <input type="text" name="site_name" value="{{ $settings['site_name'] }}" class="mt-2 w-full rounded-xl bg-slate-950 border border-slate-800 px-4 py-2 text-sm text-slate-100" />

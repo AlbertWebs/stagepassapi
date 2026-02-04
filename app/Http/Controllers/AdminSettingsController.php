@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class AdminSettingsController extends Controller
 {
@@ -15,6 +16,7 @@ class AdminSettingsController extends Controller
         // Set defaults for missing settings
         $defaults = [
             'portfolio_source' => 'instagram',
+            'site_logo_url' => '',
             'site_name' => 'StagePass Audio Visual Limited',
             'site_tagline' => '',
             'website_url' => 'https://stagepass.co.ke',
@@ -61,8 +63,29 @@ class AdminSettingsController extends Controller
             ['value' => $portfolioSource, 'updated_at' => now()]
         );
         
+        // Handle logo upload
+        if ($request->hasFile('site_logo_upload')) {
+            $file = $request->file('site_logo_upload');
+            $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $uploadsPath = public_path('uploads');
+            
+            // Ensure uploads directory exists
+            if (!file_exists($uploadsPath)) {
+                mkdir($uploadsPath, 0755, true);
+            }
+            
+            $file->move($uploadsPath, $filename);
+            $logoUrl = 'uploads/' . $filename;
+            
+            DB::table('site_settings')->updateOrInsert(
+                ['key' => 'site_logo_url'],
+                ['value' => $logoUrl, 'updated_at' => now()]
+            );
+        }
+        
         // Update all other settings
         $settingsToUpdate = [
+            'site_logo_url',
             'site_name',
             'site_tagline',
             'website_url',
@@ -88,6 +111,11 @@ class AdminSettingsController extends Controller
         ];
         
         foreach ($settingsToUpdate as $key) {
+            // Skip logo_url if it was uploaded (already handled above)
+            if ($key === 'site_logo_url' && $request->hasFile('site_logo_upload')) {
+                continue;
+            }
+            
             if ($request->has($key)) {
                 DB::table('site_settings')->updateOrInsert(
                     ['key' => $key],

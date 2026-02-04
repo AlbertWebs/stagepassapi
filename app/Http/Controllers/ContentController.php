@@ -70,11 +70,17 @@ class ContentController extends Controller
             ->value('value') ?? 'instagram';
 
         $settings = DB::table('site_settings')->pluck('value', 'key')->toArray();
+        
+        // Get site logo URL from settings, fallback to navbar logo_url
+        $siteLogoUrl = !empty($settings['site_logo_url']) 
+            ? $this->normalizeUrl($settings['site_logo_url'])
+            : $this->normalizeUrl($navbar?->logo_url);
 
         return response()
             ->json([
                 'settings' => [
                     'portfolio_source' => $portfolioSource,
+                    'site_logo_url' => $siteLogoUrl,
                     'site_name' => $settings['site_name'] ?? null,
                     'site_tagline' => $settings['site_tagline'] ?? null,
                     'website_url' => $settings['website_url'] ?? null,
@@ -90,7 +96,7 @@ class ContentController extends Controller
                     'youtube_url' => $settings['youtube_url'] ?? null,
                 ],
                 'navigation' => [
-                    'logo_url' => $this->normalizeUrl($navbar?->logo_url),
+                    'logo_url' => $siteLogoUrl,
                     'cta_label' => $navbar?->cta_label,
                     'cta_href' => $navbar?->cta_href,
                     'links' => $navbarLinks,
