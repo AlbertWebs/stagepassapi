@@ -213,7 +213,7 @@ class HomepageContentSeeder extends Seeder
         $statsSectionId = DB::table('stats_sections')->insertGetId([
             'headline' => 'Sound reinforcement for 70,000 pax during',
             'subheadline' => 'EVERTON VS KARIOBANGI SHARKS Football Match',
-            'background_video_url' => 'https://stagepass.co.ke/uploads/video/sharks.mp4',
+            'background_video_url' => 'https://api.stagepass.co.ke/uploads/video/sharks.mp4',
             'created_at' => $now,
             'updated_at' => $now,
         ]);

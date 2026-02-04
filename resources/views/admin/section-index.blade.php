@@ -249,9 +249,17 @@
                                         @php
                                             $previewUrl = '';
                                             if (!empty($value)) {
-                                                $previewUrl = \Illuminate\Support\Str::startsWith($value, ['http://', 'https://'])
-                                                    ? $value
-                                                    : asset($value);
+                                                if (\Illuminate\Support\Str::startsWith($value, ['http://', 'https://'])) {
+                                                    $previewUrl = $value;
+                                                } else {
+                                                    // For storage paths, use full API URL
+                                                    $apiBaseUrl = env('APP_URL', 'https://api.stagepass.co.ke');
+                                                    // If APP_URL doesn't contain 'api', use the API URL
+                                                    if (!str_contains($apiBaseUrl, 'api')) {
+                                                        $apiBaseUrl = 'https://api.stagepass.co.ke';
+                                                    }
+                                                    $previewUrl = rtrim($apiBaseUrl, '/') . '/' . ltrim($value, '/');
+                                                }
                                             }
                                         @endphp
                                         <div class="mt-2 space-y-3 rounded-xl border border-slate-800 bg-slate-950/60 p-4">
@@ -550,9 +558,17 @@
                                                                             @php
                                                                                 $previewUrl = '';
                                                                                 if (!empty($value)) {
-                                                                                    $previewUrl = \Illuminate\Support\Str::startsWith($value, ['http://', 'https://'])
-                                                                                        ? $value
-                                                                                        : '/' . ltrim($value, '/');
+                                                                                    if (\Illuminate\Support\Str::startsWith($value, ['http://', 'https://'])) {
+                                                                                        $previewUrl = $value;
+                                                                                    } else {
+                                                                                        // For storage paths, use full API URL
+                                                                                        $apiBaseUrl = env('APP_URL', 'https://api.stagepass.co.ke');
+                                                                                        // If APP_URL doesn't contain 'api', use the API URL
+                                                                                        if (!str_contains($apiBaseUrl, 'api')) {
+                                                                                            $apiBaseUrl = 'https://api.stagepass.co.ke';
+                                                                                        }
+                                                                                        $previewUrl = rtrim($apiBaseUrl, '/') . '/' . ltrim($value, '/');
+                                                                                    }
                                                                                 }
                                                                             @endphp
                                                                             <div class="mt-2 space-y-3 rounded-xl border border-slate-800 bg-slate-950/60 p-4">
