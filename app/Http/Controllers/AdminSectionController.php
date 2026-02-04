@@ -260,6 +260,22 @@ class AdminSectionController extends Controller
     private function storeUpload(Request $request, string $column, string $table): string
     {
         $file = $request->file($column);
+        
+        // For about_sections image_url, upload to public/uploads directory
+        if ($table === 'about_sections' && $column === 'image_url') {
+            $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $uploadsPath = public_path('uploads');
+            
+            // Ensure uploads directory exists
+            if (!file_exists($uploadsPath)) {
+                mkdir($uploadsPath, 0755, true);
+            }
+            
+            $file->move($uploadsPath, $filename);
+            return 'uploads/' . $filename;
+        }
+        
+        // Default behavior for other uploads
         $dir = "admin/{$table}";
         $path = $file->storePublicly($dir, 'public');
 

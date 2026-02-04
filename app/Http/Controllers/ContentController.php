@@ -98,7 +98,9 @@ class ContentController extends Controller
                 ],
                 'hero' => $hero,
                 'about' => [
-                    'section' => $about,
+                    'section' => $about ? (object) array_merge((array) $about, [
+                        'image_url' => $this->normalizeUrl($about->image_url ?? null),
+                    ]) : null,
                     'highlights' => $aboutHighlights,
                 ],
                 'services' => [
@@ -391,6 +393,16 @@ class ContentController extends Controller
 
         if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
             return $path;
+        }
+
+        // For uploads directory, use API base URL
+        if (str_starts_with($path, 'uploads/')) {
+            $apiBaseUrl = env('APP_URL', 'https://api.stagepass.co.ke');
+            // If APP_URL doesn't contain 'api', use the API URL
+            if (!str_contains($apiBaseUrl, 'api')) {
+                $apiBaseUrl = 'https://api.stagepass.co.ke';
+            }
+            return rtrim($apiBaseUrl, '/') . '/' . ltrim($path, '/');
         }
 
         return asset($path);
