@@ -238,8 +238,16 @@ class AdminSectionController extends Controller
     {
         $payload = [];
         foreach ($columns as $column) {
+            // Check for file upload with _upload suffix (e.g., image_url_upload)
+            $uploadFieldName = $column . '_upload';
+            if ($request->hasFile($uploadFieldName)) {
+                $payload[$column] = $this->storeUpload($request, $uploadFieldName, $table, $column);
+                continue;
+            }
+            
+            // Also check for direct file upload (e.g., logo_url)
             if ($request->hasFile($column)) {
-                $payload[$column] = $this->storeUpload($request, $column, $table);
+                $payload[$column] = $this->storeUpload($request, $column, $table, $column);
                 continue;
             }
 
@@ -257,12 +265,14 @@ class AdminSectionController extends Controller
         return $payload;
     }
 
-    private function storeUpload(Request $request, string $column, string $table): string
+    private function storeUpload(Request $request, string $uploadFieldName, string $table, ?string $columnName = null): string
     {
-        $file = $request->file($column);
+        $file = $request->file($uploadFieldName);
+        // Use columnName if provided (for _upload suffix fields), otherwise use uploadFieldName
+        $column = $columnName ?? $uploadFieldName;
         
         // For about_sections image_url, upload to public/uploads directory
-        if ($table === 'about_sections' && $column === 'image_url') {
+        if ($table === 'about_sections' && ($column === 'image_url' || str_ends_with($uploadFieldName, 'image_url_upload'))) {
             $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
             $uploadsPath = public_path('uploads');
             
