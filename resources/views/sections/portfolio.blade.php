@@ -13,7 +13,7 @@
             <span class="text-sm font-bold text-yellow-600 tracking-wider uppercase bg-yellow-100 px-4 py-2 rounded-full">{{ $badgeLabel }}</span>
             <h2 class="text-5xl lg:text-6xl font-black text-[#172455] mt-6 mb-8">{{ $title }}</h2>
             <div class="h-2 w-32 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-full mx-auto mb-8"></div>
-            <p class="text-lg md:text-xl text-gray-700 font-medium max-w-3xl mx-auto">{{ $description }}</p>
+            <p class="text-xl text-gray-700 max-w-2xl mx-auto font-medium">{{ $description }}</p>
         </div>
         
         @if($portfolioSource === 'instagram')

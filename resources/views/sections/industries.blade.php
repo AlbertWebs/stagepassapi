@@ -32,7 +32,7 @@
                     {{ $title }}
                 @endif
             </h2>
-            <p class="text-lg md:text-xl text-gray-700 max-w-3xl mx-auto">
+            <p class="text-xl text-gray-700 max-w-2xl mx-auto font-medium">
                 {{ $subtitle }}
             </p>
         </div>
