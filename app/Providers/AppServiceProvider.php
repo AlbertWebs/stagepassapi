@@ -13,7 +13,39 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // Register a custom SMTP transport factory that sets SSL options from the start
+        if (config('mail.default') === 'smtp') {
+            $this->app->extend('swift.transport', function ($transport, $app) {
+                if ($transport instanceof Swift_SmtpTransport) {
+                    $streamOptions = [];
+                    
+                    // Set custom peer name if provided
+                    $peerName = env('MAIL_PEER_NAME');
+                    if ($peerName) {
+                        $streamOptions['ssl']['peer_name'] = $peerName;
+                    }
+                    
+                    // Disable SSL verification if configured
+                    $verifyPeerName = env('MAIL_VERIFY_PEER_NAME');
+                    if ($verifyPeerName === false || $verifyPeerName === 'false' || $verifyPeerName === '0') {
+                        $streamOptions['ssl']['verify_peer_name'] = false;
+                        $verifyPeer = env('MAIL_VERIFY_PEER');
+                        $streamOptions['ssl']['verify_peer'] = ($verifyPeer === false || $verifyPeer === 'false' || $verifyPeer === '0') ? false : true;
+                    }
+                    
+                    if (!empty($streamOptions)) {
+                        $transport->setStreamOptions($streamOptions);
+                        \Log::info('Mail SSL: Stream options configured in register()', [
+                            'peer_name' => $peerName ?? 'not set',
+                            'verify_peer_name' => $streamOptions['ssl']['verify_peer_name'] ?? 'not set',
+                            'verify_peer' => $streamOptions['ssl']['verify_peer'] ?? 'not set',
+                        ]);
+                    }
+                }
+                
+                return $transport;
+            });
+        }
     }
 
     /**
@@ -26,6 +58,12 @@ class AppServiceProvider extends ServiceProvider
         if (config('mail.default') === 'smtp') {
             // Configure SSL when mailer is first resolved (before any emails are sent)
             $this->app->afterResolving('mail.manager', function () {
+                $this->configureMailSsl();
+            });
+            
+            // Also configure SSL every time Mail facade is accessed (as a safety net)
+            // This ensures SSL is configured even if the mailer was created before our hook ran
+            $this->app->resolving('swift.mailer', function () {
                 $this->configureMailSsl();
             });
         }
@@ -47,27 +85,26 @@ class AppServiceProvider extends ServiceProvider
                 $streamOptions = [];
                 
                 // Set custom peer name if provided (to match actual certificate CN)
-                // This is production-safe - we're accepting the certificate that's actually presented
                 $peerName = env('MAIL_PEER_NAME');
                 if ($peerName) {
                     $streamOptions['ssl']['peer_name'] = $peerName;
-                    \Log::info('Mail SSL: Setting peer_name', ['peer_name' => $peerName]);
                 }
                 
-                // Disable SSL verification if configured (for testing only - not recommended for production)
+                // Disable SSL verification if configured
                 $verifyPeerName = env('MAIL_VERIFY_PEER_NAME');
                 if ($verifyPeerName === false || $verifyPeerName === 'false' || $verifyPeerName === '0') {
                     $streamOptions['ssl']['verify_peer_name'] = false;
                     $verifyPeer = env('MAIL_VERIFY_PEER');
                     $streamOptions['ssl']['verify_peer'] = ($verifyPeer === false || $verifyPeer === 'false' || $verifyPeer === '0') ? false : true;
-                    \Log::info('Mail SSL: Disabling peer verification');
                 }
                 
                 if (!empty($streamOptions)) {
                     $transport->setStreamOptions($streamOptions);
-                    \Log::info('Mail SSL: Stream options configured', ['options' => $streamOptions]);
-                } else {
-                    \Log::debug('Mail SSL: No SSL options to configure');
+                    \Log::info('Mail SSL: Stream options configured', [
+                        'peer_name' => $peerName ?? 'not set',
+                        'verify_peer_name' => $streamOptions['ssl']['verify_peer_name'] ?? 'not set',
+                        'verify_peer' => $streamOptions['ssl']['verify_peer'] ?? 'not set',
+                    ]);
                 }
             }
         } catch (\Exception $e) {

@@ -26,7 +26,7 @@ class AdminEmailTestController extends Controller
         ]);
 
         try {
-            // Configure SSL options if needed (before sending email)
+            // Configure SSL options RIGHT BEFORE sending email
             // This ensures SSL is configured even if AppServiceProvider hasn't run yet
             $this->configureMailSsl();
             
@@ -40,6 +40,9 @@ class AdminEmailTestController extends Controller
             $emailBody .= "Sent at: " . now()->format('Y-m-d H:i:s') . "\n";
             $emailBody .= "From: " . config('mail.from.address') . "\n";
 
+            // Configure SSL again right before sending (in case mailer was recreated)
+            $this->configureMailSsl();
+            
             Mail::raw($emailBody, function ($mail) use ($toEmail, $subject, $includeBcc) {
                 $mail->to($toEmail)
                     ->subject($subject)
@@ -90,6 +93,7 @@ class AdminEmailTestController extends Controller
             // Get the SwiftMailer instance
             $swiftMailer = Mail::getSwiftMailer();
             if (!$swiftMailer) {
+                Log::warning('Mail SSL: SwiftMailer not available');
                 return;
             }
 
@@ -97,7 +101,13 @@ class AdminEmailTestController extends Controller
             if ($transport instanceof Swift_SmtpTransport) {
                 $streamOptions = [];
                 
-                // Disable SSL verification if configured (for testing only)
+                // Set custom peer name if provided (to match actual certificate CN)
+                $peerName = env('MAIL_PEER_NAME');
+                if ($peerName) {
+                    $streamOptions['ssl']['peer_name'] = $peerName;
+                }
+                
+                // Disable SSL verification if configured
                 $verifyPeerName = env('MAIL_VERIFY_PEER_NAME');
                 if ($verifyPeerName === false || $verifyPeerName === 'false' || $verifyPeerName === '0') {
                     $streamOptions['ssl']['verify_peer_name'] = false;
@@ -105,18 +115,21 @@ class AdminEmailTestController extends Controller
                     $streamOptions['ssl']['verify_peer'] = ($verifyPeer === false || $verifyPeer === 'false' || $verifyPeer === '0') ? false : true;
                 }
                 
-                // Set custom peer name if provided (to match actual certificate CN)
-                if ($peerName = env('MAIL_PEER_NAME')) {
-                    $streamOptions['ssl']['peer_name'] = $peerName;
-                }
-                
                 if (!empty($streamOptions)) {
                     $transport->setStreamOptions($streamOptions);
+                    Log::info('Mail SSL: Stream options configured in EmailTestController', [
+                        'peer_name' => $peerName ?? 'not set',
+                        'verify_peer_name' => $streamOptions['ssl']['verify_peer_name'] ?? 'not set',
+                        'verify_peer' => $streamOptions['ssl']['verify_peer'] ?? 'not set',
+                    ]);
+                } else {
+                    Log::warning('Mail SSL: No SSL options to configure - check your .env file');
                 }
+            } else {
+                Log::warning('Mail SSL: Transport is not Swift_SmtpTransport', ['type' => get_class($transport)]);
             }
         } catch (\Exception $e) {
-            // Silently fail - SSL configuration is optional
-            Log::debug('Could not configure mail SSL options', ['error' => $e->getMessage()]);
+            Log::error('Mail SSL: Failed to configure SSL options', ['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
         }
     }
 }
