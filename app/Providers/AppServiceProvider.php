@@ -4,8 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Mail\MailManager;
-use Symfony\Component\Mailer\Transport\Smtp\EsmtpTransport;
-use Symfony\Component\Mailer\Transport\Smtp\Stream\SocketStream;
+use App\Mail\Transport\CustomSmtpTransportFactory;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -43,28 +42,26 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Ensure SSL context is set before any mail operations
-        // This is a fallback in case bootstrap/app.php didn't run
+        // Register custom SMTP transport factory to ensure SSL options are applied
         if (config('mail.default') === 'smtp') {
-            $verifyPeerName = env('MAIL_VERIFY_PEER_NAME');
-            if ($verifyPeerName === false || $verifyPeerName === 'false' || $verifyPeerName === '0') {
-                ini_set('openssl.cafile', '');
-                ini_set('openssl.capath', '');
-                
-                $sslOptions = [
-                    'verify_peer' => 0,
-                    'verify_peer_name' => 0,
-                    'allow_self_signed' => 1,
-                ];
-                
-                $peerName = env('MAIL_PEER_NAME');
-                if ($peerName) {
-                    $sslOptions['peer_name'] = $peerName;
-                }
-                
-                // Ensure default context is set
-                stream_context_set_default(['ssl' => $sslOptions]);
-            }
+            $this->app->afterResolving(MailManager::class, function (MailManager $mailManager) {
+                // Register our custom factory before the default one
+                $mailManager->extend('smtp', function (array $config) use ($mailManager) {
+                    // Use custom factory to create transport with SSL options
+                    $factory = new CustomSmtpTransportFactory();
+                    $dsn = \Symfony\Component\Mailer\Transport\Dsn::fromString(
+                        sprintf(
+                            'smtp://%s:%s@%s:%d',
+                            $config['username'] ?? '',
+                            $config['password'] ?? '',
+                            $config['host'] ?? '127.0.0.1',
+                            $config['port'] ?? 587
+                        )
+                    );
+                    
+                    return $factory->create($dsn);
+                });
+            });
         }
     }
 }
