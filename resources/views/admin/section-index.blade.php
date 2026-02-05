@@ -58,9 +58,15 @@
                         }
                         $thumbnailPreview = '';
                         if (!empty($thumbnailValue)) {
-                            $thumbnailPreview = \Illuminate\Support\Str::startsWith($thumbnailValue, ['http://', 'https://'])
-                                ? $thumbnailValue
-                                : (str_starts_with($thumbnailValue, 'uploads/') ? 'https://api.stagepass.co.ke/' . $thumbnailValue : '/' . ltrim($thumbnailValue, '/'));
+                            if (\Illuminate\Support\Str::startsWith($thumbnailValue, ['http://', 'https://'])) {
+                                $thumbnailPreview = $thumbnailValue;
+                            } elseif (str_starts_with($thumbnailValue, 'uploads/')) {
+                                $thumbnailPreview = 'https://api.stagepass.co.ke/' . $thumbnailValue;
+                            } elseif (str_starts_with($thumbnailValue, '/')) {
+                                $thumbnailPreview = 'https://api.stagepass.co.ke' . $thumbnailValue;
+                            } else {
+                                $thumbnailPreview = 'https://api.stagepass.co.ke/uploads/' . $thumbnailValue;
+                            }
                         }
                     @endphp
                     <form method="POST" action="{{ $action }}" class="mt-6 space-y-6" enctype="multipart/form-data">
@@ -113,10 +119,22 @@
                                             <input type="file" name="thumbnail_url_upload" accept="image/*" class="mt-2 block w-full text-sm text-slate-200" />
                                             <p class="mt-1 text-xs text-slate-500">Recommended size: 1920x1080px or same aspect ratio as video.</p>
                                         </div>
-                                        @if ($thumbnailPreview)
-                                            <div class="mt-3">
-                                                <p class="text-xs text-slate-500 mb-2">Current Thumbnail:</p>
-                                                <img src="{{ $thumbnailPreview }}" alt="Thumbnail preview" class="max-w-full h-auto rounded-lg border border-slate-800 bg-slate-900 object-contain max-h-48" />
+                                        @if (!empty($thumbnailValue) && $thumbnailPreview)
+                                            <div class="mt-3 rounded-xl border border-slate-800 bg-slate-950/50 p-4">
+                                                <p class="text-xs text-slate-400 mb-3 font-semibold uppercase tracking-wide">Current Thumbnail Preview</p>
+                                                <div class="relative rounded-lg overflow-hidden border border-slate-800 bg-slate-900">
+                                                    <img 
+                                                        src="{{ $thumbnailPreview }}" 
+                                                        alt="Thumbnail preview" 
+                                                        class="w-full h-auto rounded-lg object-contain max-h-64 mx-auto"
+                                                        onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'225\'%3E%3Crect fill=\'%231e293b\' width=\'400\' height=\'225\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' dominant-baseline=\'middle\' text-anchor=\'middle\' fill=\'%23475569\' font-family=\'Arial\' font-size=\'14\'%3EImage not found%3C/text%3E%3C/svg%3E';"
+                                                    />
+                                                </div>
+                                                <p class="mt-2 text-xs text-slate-500 break-all">{{ $thumbnailPreview }}</p>
+                                            </div>
+                                        @else
+                                            <div class="mt-3 rounded-xl border border-slate-800/50 border-dashed bg-slate-950/30 p-6 text-center">
+                                                <p class="text-xs text-slate-500">No thumbnail uploaded yet</p>
                                             </div>
                                         @endif
                                         @if (!empty($thumbnailValue))
