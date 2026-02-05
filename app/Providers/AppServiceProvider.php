@@ -49,14 +49,15 @@ class AppServiceProvider extends ServiceProvider
                 $mailManager->extend('smtp', function (array $config) use ($mailManager) {
                     // Use custom factory to create transport with SSL options
                     $factory = new CustomSmtpTransportFactory();
+                    
+                    // Create DSN with properly URL-encoded credentials
+                    $username = rawurlencode($config['username'] ?? '');
+                    $password = rawurlencode($config['password'] ?? '');
+                    $host = $config['host'] ?? '127.0.0.1';
+                    $port = $config['port'] ?? 587;
+                    
                     $dsn = \Symfony\Component\Mailer\Transport\Dsn::fromString(
-                        sprintf(
-                            'smtp://%s:%s@%s:%d',
-                            $config['username'] ?? '',
-                            $config['password'] ?? '',
-                            $config['host'] ?? '127.0.0.1',
-                            $config['port'] ?? 587
-                        )
+                        sprintf('smtp://%s:%s@%s:%d', $username, $password, $host, $port)
                     );
                     
                     return $factory->create($dsn);
