@@ -48,6 +48,13 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin.session' => \App\Http\Middleware\AdminSessionAuth::class,
             'cors' => \App\Http\Middleware\CorsMiddleware::class,
         ]);
+        
+        // Exclude API routes from CSRF verification
+        $middleware->validateCsrfTokens([
+            'api/*',
+            'api/contact/submit',
+            'api/quote/submit',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
