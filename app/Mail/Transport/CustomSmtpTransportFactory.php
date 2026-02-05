@@ -7,7 +7,6 @@ use Symfony\Component\Mailer\Transport\Dsn;
 use Symfony\Component\Mailer\Transport\TransportInterface;
 use Symfony\Component\Mailer\Transport\Smtp\EsmtpTransport;
 use Symfony\Component\Mailer\Transport\Smtp\Stream\SocketStream;
-use App\Mail\Stream\CustomSocketStream;
 
 class CustomSmtpTransportFactory implements Transport\TransportFactoryInterface
 {
@@ -18,7 +17,7 @@ class CustomSmtpTransportFactory implements Transport\TransportFactoryInterface
         $username = $dsn->getUser();
         $password = $dsn->getPassword();
         
-        // Get SSL options from config FIRST - before creating transport
+        // Get SSL options from config
         $sslOptions = [];
         $mailer = config('mail.default');
         
@@ -31,35 +30,34 @@ class CustomSmtpTransportFactory implements Transport\TransportFactoryInterface
             $sslOptions = config('mail.mailers.smtp.stream.ssl', []);
         }
         
-        // Create custom stream with SSL options if needed
-        $stream = null;
-        if (!empty($sslOptions)) {
-            $customStream = new CustomSocketStream();
-            $customStream->setHost($host);
-            $customStream->setPort($port);
-            $customStream->setStreamOptions(['ssl' => $sslOptions]);
-            $stream = $customStream;
-            
-            \Log::info('Using custom socket stream with SSL options', [
-                'mailer' => $mailer,
-                'host' => $host,
-                'ssl_options' => $sslOptions
-            ]);
-        }
-        
-        // Create transport with custom stream (or default if no SSL options)
-        $transport = new EsmtpTransport($host, $port, false, null, null, $stream);
+        // Create transport
+        $transport = new EsmtpTransport($host, $port, false);
         
         if ($username && $password) {
             $transport->setUsername($username);
             $transport->setPassword($password);
         }
         
-        // Fallback: if we didn't use custom stream, set options on default stream
-        if (empty($stream) && !empty($sslOptions)) {
-            $defaultStream = $transport->getStream();
-            if ($defaultStream instanceof SocketStream) {
-                $defaultStream->setStreamOptions(['ssl' => $sslOptions]);
+        // Set SSL options on the stream BEFORE it's initialized
+        // This must be done before any connection is attempted
+        if (!empty($sslOptions)) {
+            try {
+                $stream = $transport->getStream();
+                if ($stream instanceof SocketStream) {
+                    // Set stream options before initialization
+                    $stream->setStreamOptions(['ssl' => $sslOptions]);
+                    \Log::info('SSL options set on SMTP stream', [
+                        'mailer' => $mailer,
+                        'host' => $host,
+                        'port' => $port,
+                        'ssl_options' => $sslOptions,
+                    ]);
+                }
+            } catch (\Exception $e) {
+                \Log::warning('Failed to set SSL options on SMTP stream', [
+                    'error' => $e->getMessage(),
+                    'mailer' => $mailer,
+                ]);
             }
         }
         
