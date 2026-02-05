@@ -28,11 +28,6 @@ class AppServiceProvider extends ServiceProvider
             $this->app->afterResolving('mail.manager', function () {
                 $this->configureMailSsl();
             });
-            
-            // Also configure before sending (as a fallback)
-            Mail::sending(function () {
-                $this->configureMailSsl();
-            });
         }
     }
 
