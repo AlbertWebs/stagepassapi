@@ -60,6 +60,9 @@ class AdminSectionController extends Controller
         $columns = $this->getInputColumns($table);
         $payload = $this->extractPayload($request, $columns, $table);
 
+        // Handle foreign key relationships for child tables
+        $this->handleForeignKeyRelationships($table, $payload);
+
         if (!empty($tableConfig['single'])) {
             $existingId = DB::table($table)->orderBy('id')->value('id');
             if ($existingId) {
@@ -380,6 +383,77 @@ class AdminSectionController extends Controller
     {
         if (Schema::hasColumn($table, 'updated_at') && !array_key_exists('updated_at', $payload)) {
             $payload['updated_at'] = now();
+        }
+    }
+
+    private function handleForeignKeyRelationships(string $table, array &$payload): void
+    {
+        // Handle client_logos -> clients_sections relationship
+        // Always use the first (and only) clients_section since it's a single record table
+        if ($table === 'client_logos') {
+            $clientsSection = DB::table('clients_sections')->first();
+            if (!$clientsSection) {
+                // Create a default clients_section if it doesn't exist
+                $clientsSectionId = DB::table('clients_sections')->insertGetId([
+                    'badge_label' => 'The Power Behind Us',
+                    'title' => 'Our Clients',
+                    'description' => 'With forward-thinking brands and organizations that demand reliability, creativity, and flawless execution.',
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            } else {
+                $clientsSectionId = $clientsSection->id;
+            }
+            $payload['clients_section_id'] = $clientsSectionId;
+        }
+
+        // Handle other similar relationships if needed
+        // about_highlights -> about_sections
+        if ($table === 'about_highlights' && !isset($payload['about_section_id'])) {
+            $aboutSection = DB::table('about_sections')->first();
+            if ($aboutSection) {
+                $payload['about_section_id'] = $aboutSection->id;
+            }
+        }
+
+        // services -> services_sections
+        if ($table === 'services' && !isset($payload['services_section_id'])) {
+            $servicesSection = DB::table('services_sections')->first();
+            if ($servicesSection) {
+                $payload['services_section_id'] = $servicesSection->id;
+            }
+        }
+
+        // stats -> stats_sections
+        if ($table === 'stats' && !isset($payload['stats_section_id'])) {
+            $statsSection = DB::table('stats_sections')->first();
+            if ($statsSection) {
+                $payload['stats_section_id'] = $statsSection->id;
+            }
+        }
+
+        // portfolio_items -> portfolio_sections
+        if ($table === 'portfolio_items' && !isset($payload['portfolio_section_id'])) {
+            $portfolioSection = DB::table('portfolio_sections')->first();
+            if ($portfolioSection) {
+                $payload['portfolio_section_id'] = $portfolioSection->id;
+            }
+        }
+
+        // industries -> industries_sections
+        if ($table === 'industries' && !isset($payload['industries_section_id'])) {
+            $industriesSection = DB::table('industries_sections')->first();
+            if ($industriesSection) {
+                $payload['industries_section_id'] = $industriesSection->id;
+            }
+        }
+
+        // contact_details -> contact_sections
+        if ($table === 'contact_details' && !isset($payload['contact_section_id'])) {
+            $contactSection = DB::table('contact_sections')->first();
+            if ($contactSection) {
+                $payload['contact_section_id'] = $contactSection->id;
+            }
         }
     }
 }
