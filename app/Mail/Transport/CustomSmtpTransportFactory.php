@@ -24,8 +24,18 @@ class CustomSmtpTransportFactory implements Transport\TransportFactoryInterface
             $transport->setPassword($password);
         }
         
-        // Get SSL options from config and set them on the stream BEFORE it's initialized
-        $sslOptions = config('mail.mailers.smtp.stream.ssl', []);
+        // Get SSL options from config - check all mailers to find the one being used
+        $sslOptions = [];
+        $mailer = config('mail.default');
+        
+        // Try to get SSL options from the current mailer config
+        $mailerConfig = config("mail.mailers.{$mailer}", []);
+        if (!empty($mailerConfig['stream']['ssl'])) {
+            $sslOptions = $mailerConfig['stream']['ssl'];
+        } else {
+            // Fallback to smtp config if available
+            $sslOptions = config('mail.mailers.smtp.stream.ssl', []);
+        }
         
         if (!empty($sslOptions)) {
             try {
@@ -36,7 +46,8 @@ class CustomSmtpTransportFactory implements Transport\TransportFactoryInterface
                 }
             } catch (\Exception $e) {
                 \Log::warning('Failed to set SSL options on SMTP stream', [
-                    'error' => $e->getMessage()
+                    'error' => $e->getMessage(),
+                    'mailer' => $mailer
                 ]);
             }
         }
