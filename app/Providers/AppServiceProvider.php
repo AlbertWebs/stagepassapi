@@ -18,17 +18,19 @@ class AppServiceProvider extends ServiceProvider
             $sslOptions = [
                 'verify_peer_name' => false,
                 'verify_peer' => (env('MAIL_VERIFY_PEER') === false || env('MAIL_VERIFY_PEER') === 'false' || env('MAIL_VERIFY_PEER') === '0') ? false : true,
+                'allow_self_signed' => true, // Allow self-signed certificates from proxy
             ];
             
             $peerName = env('MAIL_PEER_NAME');
             if ($peerName) {
+                // When verify_peer_name is false, peer_name should still be set to match proxy's CN
                 $sslOptions['peer_name'] = $peerName;
             }
             
-            // Set default stream context with SSL options
+            // Set default stream context with SSL options - use array_replace_recursive to override
             $currentContext = stream_context_get_default();
             $currentOptions = $currentContext ? stream_context_get_options($currentContext) : [];
-            $newOptions = array_merge_recursive($currentOptions, ['ssl' => $sslOptions]);
+            $newOptions = array_replace_recursive($currentOptions, ['ssl' => $sslOptions]);
             stream_context_set_default($newOptions);
         }
     }

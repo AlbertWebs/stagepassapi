@@ -10,8 +10,9 @@ use Illuminate\Foundation\Configuration\Middleware;
 $verifyPeerName = getenv('MAIL_VERIFY_PEER_NAME');
 if ($verifyPeerName === false || $verifyPeerName === 'false' || $verifyPeerName === '0') {
     $sslOptions = [
+        'verify_peer' => false,
         'verify_peer_name' => false,
-        'verify_peer' => (getenv('MAIL_VERIFY_PEER') === false || getenv('MAIL_VERIFY_PEER') === 'false' || getenv('MAIL_VERIFY_PEER') === '0') ? false : true,
+        'allow_self_signed' => true,
     ];
     
     $peerName = getenv('MAIL_PEER_NAME');
@@ -19,17 +20,16 @@ if ($verifyPeerName === false || $verifyPeerName === 'false' || $verifyPeerName 
         $sslOptions['peer_name'] = $peerName;
     }
     
-    if (!empty($sslOptions)) {
-        // Get current default context options
-        $currentContext = stream_context_get_default();
-        $currentOptions = $currentContext ? stream_context_get_options($currentContext) : [];
-        
-        // Merge SSL options
-        $newOptions = array_merge_recursive($currentOptions, ['ssl' => $sslOptions]);
-        
-        // Set default context with merged options
-        stream_context_set_default($newOptions);
-    }
+    // Set default stream context - this will be used by all stream operations
+    stream_context_set_default([
+        'ssl' => $sslOptions
+    ]);
+    
+    // Also set for http and https contexts
+    stream_context_set_default([
+        'http' => [],
+        'https' => ['ssl' => $sslOptions],
+    ]);
 }
 
 return Application::configure(basePath: dirname(__DIR__))

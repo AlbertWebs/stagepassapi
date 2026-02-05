@@ -51,6 +51,9 @@ return [
                 'ssl' => array_filter([
                     'verify_peer' => filter_var(env('MAIL_VERIFY_PEER', true), FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ?? true,
                     'verify_peer_name' => filter_var(env('MAIL_VERIFY_PEER_NAME', true), FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ?? true,
+                    'allow_self_signed' => (env('MAIL_VERIFY_PEER_NAME') === false || env('MAIL_VERIFY_PEER_NAME') === 'false' || env('MAIL_VERIFY_PEER_NAME') === '0') 
+                        ? true 
+                        : (filter_var(env('MAIL_ALLOW_SELF_SIGNED', false), FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ?? false),
                     'peer_name' => env('MAIL_PEER_NAME') ?: null,
                 ], fn($value) => $value !== null),
             ],
