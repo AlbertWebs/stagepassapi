@@ -49,10 +49,10 @@ return [
             'local_domain' => env('MAIL_EHLO_DOMAIN', parse_url((string) env('APP_URL', 'http://localhost'), PHP_URL_HOST)),
             'stream' => [
                 'ssl' => [
-                    'verify_peer' => env('MAIL_VERIFY_PEER', true),
-                    'verify_peer_name' => env('MAIL_VERIFY_PEER_NAME', true),
-                    'allow_self_signed' => env('MAIL_ALLOW_SELF_SIGNED', false),
-                    'peer_name' => env('MAIL_PEER_NAME'), // Override expected peer name if needed
+                    'verify_peer' => filter_var(env('MAIL_VERIFY_PEER', true), FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ?? true,
+                    'verify_peer_name' => filter_var(env('MAIL_VERIFY_PEER_NAME', true), FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ?? true,
+                    'allow_self_signed' => filter_var(env('MAIL_ALLOW_SELF_SIGNED', false), FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ?? false,
+                    'peer_name' => env('MAIL_PEER_NAME') ?: null, // Override expected peer name if needed
                 ],
             ],
         ],
