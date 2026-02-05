@@ -9,10 +9,14 @@ use Illuminate\Foundation\Configuration\Middleware;
 // Set it at the PHP level before Laravel even starts
 $verifyPeerName = getenv('MAIL_VERIFY_PEER_NAME');
 if ($verifyPeerName === false || $verifyPeerName === 'false' || $verifyPeerName === '0') {
+    // Disable OpenSSL CA verification at PHP ini level as fallback
+    ini_set('openssl.cafile', '');
+    ini_set('openssl.capath', '');
+    
     $sslOptions = [
-        'verify_peer' => false,
-        'verify_peer_name' => false,
-        'allow_self_signed' => true,
+        'verify_peer' => 0, // Use 0 instead of false for stream context
+        'verify_peer_name' => 0, // Use 0 instead of false for stream context
+        'allow_self_signed' => 1,
     ];
     
     $peerName = getenv('MAIL_PEER_NAME');
@@ -23,12 +27,6 @@ if ($verifyPeerName === false || $verifyPeerName === 'false' || $verifyPeerName 
     // Set default stream context - this will be used by all stream operations
     stream_context_set_default([
         'ssl' => $sslOptions
-    ]);
-    
-    // Also set for http and https contexts
-    stream_context_set_default([
-        'http' => [],
-        'https' => ['ssl' => $sslOptions],
     ]);
 }
 
