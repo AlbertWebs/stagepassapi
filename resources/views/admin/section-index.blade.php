@@ -119,7 +119,9 @@
                                                 <img src="{{ $thumbnailPreview }}" alt="Thumbnail preview" class="max-w-full h-auto rounded-lg border border-slate-800 bg-slate-900 object-contain max-h-48" />
                                             </div>
                                         @endif
-                                        <input type="hidden" name="thumbnail_url" value="{{ $thumbnailValue }}">
+                                        @if (!empty($thumbnailValue))
+                                            <input type="hidden" name="thumbnail_url" value="{{ $thumbnailValue }}">
+                                        @endif
                                     </div>
                                 </div>
                             </div>

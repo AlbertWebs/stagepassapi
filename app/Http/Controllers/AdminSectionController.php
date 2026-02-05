@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -83,13 +84,30 @@ class AdminSectionController extends Controller
             abort(403);
         }
 
-        $columns = $this->getInputColumns($table);
-        $payload = $this->extractPayload($request, $columns, $table);
-        $this->touchUpdate($table, $payload);
+        try {
+            $columns = $this->getInputColumns($table);
+            $payload = $this->extractPayload($request, $columns, $table);
+            
+            if (empty($payload)) {
+                return back()->with('status', 'No changes to save.');
+            }
+            
+            $this->touchUpdate($table, $payload);
 
-        DB::table($table)->where('id', $id)->update($payload);
+            DB::table($table)->where('id', $id)->update($payload);
 
-        return back()->with('status', 'Updated successfully.');
+            return back()->with('status', 'Updated successfully.');
+        } catch (\Exception $e) {
+            Log::error('Error updating section', [
+                'section' => $sectionKey,
+                'table' => $table,
+                'id' => $id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+            
+            return back()->with('error', 'Failed to update: ' . $e->getMessage());
+        }
     }
 
     public function destroy(string $sectionKey, string $table, int $id): RedirectResponse
@@ -241,7 +259,19 @@ class AdminSectionController extends Controller
             // Check for file upload with _upload suffix (e.g., image_url_upload)
             $uploadFieldName = $column . '_upload';
             if ($request->hasFile($uploadFieldName)) {
-                $payload[$column] = $this->storeUpload($request, $uploadFieldName, $table, $column);
+                try {
+                    $uploadedPath = $this->storeUpload($request, $uploadFieldName, $table, $column);
+                    $payload[$column] = $uploadedPath;
+                    Log::info("File uploaded for {$table}.{$column}", [
+                        'path' => $uploadedPath,
+                        'field' => $uploadFieldName,
+                    ]);
+                } catch (\Exception $e) {
+                    Log::error("Failed to upload file for {$table}.{$column}", [
+                        'error' => $e->getMessage(),
+                        'field' => $uploadFieldName,
+                    ]);
+                }
                 continue;
             }
             
@@ -252,10 +282,21 @@ class AdminSectionController extends Controller
             }
 
             $value = $request->input($column);
+            
+            // For nullable columns like thumbnail_url, preserve existing value if not provided
+            if ($column === 'thumbnail_url' && empty($value)) {
+                // Skip if empty - will preserve existing database value
+                continue;
+            }
+            
             if ($column === 'sort_order' && $value === null) {
                 $value = 0;
             }
-            $payload[$column] = $value;
+            
+            // Only set if value is not null
+            if ($value !== null) {
+                $payload[$column] = $value;
+            }
         }
 
         if (Schema::hasColumn($table, 'posted_at') && $request->filled('posted_at')) {
