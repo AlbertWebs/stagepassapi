@@ -14,7 +14,25 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // Set SSL options EARLY in register() to ensure they're applied before any connections
+        // This is critical for cPanel servers behind proxies
+        if (env('MAIL_VERIFY_PEER_NAME') === false || env('MAIL_VERIFY_PEER_NAME') === 'false' || env('MAIL_VERIFY_PEER_NAME') === '0') {
+            $sslOptions = [
+                'verify_peer_name' => false,
+                'verify_peer' => (env('MAIL_VERIFY_PEER') === false || env('MAIL_VERIFY_PEER') === 'false' || env('MAIL_VERIFY_PEER') === '0') ? false : true,
+            ];
+            
+            $peerName = env('MAIL_PEER_NAME');
+            if ($peerName) {
+                $sslOptions['peer_name'] = $peerName;
+            }
+            
+            // Set default stream context immediately
+            $currentContext = stream_context_get_default();
+            $currentOptions = stream_context_get_options($currentContext);
+            $newOptions = array_merge_recursive($currentOptions, ['ssl' => $sslOptions]);
+            stream_context_set_default($newOptions);
+        }
     }
 
     /**
@@ -41,7 +59,7 @@ class AppServiceProvider extends ServiceProvider
                 $sslOptions['verify_peer'] = ($verifyPeer === false || $verifyPeer === 'false' || $verifyPeer === '0') ? false : true;
             }
             
-            // Apply SSL options if configured
+            // Apply SSL options if configured (redundant but ensures it's set)
             if (!empty($sslOptions)) {
                 // Set default SSL context options for all stream operations
                 $currentDefault = stream_context_get_default();
@@ -49,7 +67,7 @@ class AppServiceProvider extends ServiceProvider
                 $mergedOptions = array_merge_recursive($currentOptions, ['ssl' => $sslOptions]);
                 stream_context_set_default($mergedOptions);
                 
-                \Log::info('Mail SSL: Custom SSL options applied', [
+                \Log::info('Mail SSL: Custom SSL options applied in boot()', [
                     'peer_name' => $peerName ?? 'not set',
                     'verify_peer_name' => $sslOptions['verify_peer_name'] ?? 'not set',
                     'verify_peer' => $sslOptions['verify_peer'] ?? 'not set',
