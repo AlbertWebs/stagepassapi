@@ -76,6 +76,12 @@ Route::get('/sitemap.xml', function () {
             'priority' => '0.7',
         ],
         [
+            'loc' => $baseUrl . '/portfolio',
+            'lastmod' => $lastmod,
+            'changefreq' => 'weekly',
+            'priority' => '0.8',
+        ],
+        [
             'loc' => $baseUrl . '/industries',
             'lastmod' => $lastmod,
             'changefreq' => 'monthly',
