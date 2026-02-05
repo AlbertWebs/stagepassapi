@@ -34,7 +34,10 @@ class QuoteRequestController extends Controller
             'email' => ['required', 'email', 'max:255'],
             'phone' => ['nullable', 'string', 'max:50'],
             'message' => ['required', 'string', 'min:10', 'max:5000'],
+            'math_answer' => ['required', 'integer'],
+            'math_challenge' => ['required', 'string'],
             'honeypot' => ['nullable', 'string'], // Must be empty (checked separately)
+            'form_timestamp' => ['required', 'integer'], // Time-based validation
         ]);
 
         if ($validator->fails()) {
@@ -57,6 +60,60 @@ class QuoteRequestController extends Controller
                 'success' => false,
                 'message' => 'Invalid submission.',
             ], 400)->header('Access-Control-Allow-Origin', '*');
+        }
+
+        // Arithmetic captcha validation
+        $mathChallenge = $request->input('math_challenge');
+        $mathAnswer = (int) $request->input('math_answer');
+        
+        // Parse challenge (format: "a+b" or "a-b")
+        if (preg_match('/^(\d+)\s*([+\-])\s*(\d+)$/', $mathChallenge, $matches)) {
+            $a = (int) $matches[1];
+            $operator = $matches[2];
+            $b = (int) $matches[3];
+            
+            $expectedAnswer = $operator === '+' ? ($a + $b) : ($a - $b);
+            
+            if ($mathAnswer !== $expectedAnswer) {
+                RateLimiter::hit($key);
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Math challenge answer is incorrect. Please try again.',
+                ], 422)->header('Access-Control-Allow-Origin', '*');
+            }
+        } else {
+            RateLimiter::hit($key);
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid math challenge format.',
+            ], 422)->header('Access-Control-Allow-Origin', '*');
+        }
+
+        // Time-based validation: form must be submitted within reasonable time (5 seconds to 1 hour)
+        $formTimestamp = (int) $request->input('form_timestamp');
+        $currentTime = time();
+        $timeDiff = $currentTime - $formTimestamp;
+        
+        if ($timeDiff < 5) {
+            // Submitted too quickly (likely automated)
+            Log::warning('Quote form submitted too quickly', [
+                'ip' => $request->ip(),
+                'time_diff' => $timeDiff,
+            ]);
+            RateLimiter::hit($key);
+            return response()->json([
+                'success' => false,
+                'message' => 'Form submitted too quickly. Please take your time.',
+            ], 422)->header('Access-Control-Allow-Origin', '*');
+        }
+        
+        if ($timeDiff > 3600) {
+            // Form is too old (1 hour)
+            RateLimiter::hit($key);
+            return response()->json([
+                'success' => false,
+                'message' => 'Form session expired. Please refresh and try again.',
+            ], 422)->header('Access-Control-Allow-Origin', '*');
         }
 
         // Additional spam checks

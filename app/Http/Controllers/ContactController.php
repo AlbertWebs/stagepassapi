@@ -211,7 +211,11 @@ class ContactController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'An error occurred. Please try again later.',
-            ], 500)->header('Access-Control-Allow-Origin', '*');
+            ], 500)
+                ->header('Access-Control-Allow-Origin', '*')
+                ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS')
+                ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin')
+                ->header('Access-Control-Allow-Credentials', 'true');
         }
     }
 }
