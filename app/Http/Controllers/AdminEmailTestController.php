@@ -27,6 +27,7 @@ class AdminEmailTestController extends Controller
 
         try {
             // Configure SSL options if needed (before sending email)
+            // This ensures SSL is configured even if AppServiceProvider hasn't run yet
             $this->configureMailSsl();
             
             $toEmail = $request->input('to_email');
