@@ -95,17 +95,31 @@ class QuoteRequestController extends Controller
 
         try {
             $name = $request->input('name');
-            $phone = $request->input('phone');
+            $phone = $request->input('phone', null);
             
             // Save to database
-            DB::table('quote_requests')->insert([
-                'name' => $name,
-                'email' => $email,
-                'phone' => $phone,
-                'message' => $message,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
+            try {
+                DB::table('quote_requests')->insert([
+                    'name' => $name,
+                    'email' => $email,
+                    'phone' => $phone,
+                    'message' => $message,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            } catch (\Exception $dbException) {
+                Log::error('Database error saving quote request', [
+                    'error' => $dbException->getMessage(),
+                    'trace' => $dbException->getTraceAsString(),
+                    'data' => [
+                        'name' => $name,
+                        'email' => $email,
+                        'phone' => $phone,
+                        'message_length' => strlen($message),
+                    ],
+                ]);
+                throw $dbException; // Re-throw to be caught by outer catch
+            }
 
             // Send email
             try {
@@ -148,14 +162,23 @@ class QuoteRequestController extends Controller
         } catch (\Exception $e) {
             Log::error('Error saving quote request', [
                 'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
                 'ip' => $request->ip(),
+                'request_data' => $request->except(['password', 'honeypot']),
             ]);
             
             RateLimiter::hit($key);
             
+            // Provide more specific error message in development
+            $errorMessage = 'An error occurred. Please try again later.';
+            if (config('app.debug')) {
+                $errorMessage .= ' Error: ' . $e->getMessage();
+            }
+            
             return response()->json([
                 'success' => false,
-                'message' => 'An error occurred. Please try again later.',
+                'message' => $errorMessage,
+                'error' => config('app.debug') ? $e->getMessage() : null,
             ], 500)->header('Access-Control-Allow-Origin', '*');
         }
     }

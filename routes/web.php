@@ -10,8 +10,10 @@ use App\Http\Controllers\AdminProfileController;
 use App\Http\Controllers\AdminMaintenanceController;
 use App\Http\Controllers\AdminSectionController;
 use App\Http\Controllers\AdminSettingsController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ContentController;
 use App\Http\Controllers\InstagramPortfolioController;
+use App\Http\Controllers\QuoteRequestController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -23,7 +25,7 @@ Route::middleware('cors')->group(function () {
 Route::get('/api/portfolio/instagram', [InstagramPortfolioController::class, 'index']);
 Route::get('/instagram/callback', [InstagramPortfolioController::class, 'callback']);
 Route::post('/api/contact/submit', [ContactController::class, 'submit']);
-Route::post('/api/quote/submit', [App\Http\Controllers\QuoteRequestController::class, 'submit']);
+Route::post('/api/quote/submit', [QuoteRequestController::class, 'submit']);
 Route::get('/api/content/homepage', [ContentController::class, 'homepage']);
     Route::get('/api/content/about', [ContentController::class, 'about']);
     Route::get('/api/content/services', [ContentController::class, 'services']);
