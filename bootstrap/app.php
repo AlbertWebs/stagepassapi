@@ -25,8 +25,14 @@ if ($verifyPeerName === false || $verifyPeerName === 'false' || $verifyPeerName 
     }
     
     // Set default stream context - this will be used by all stream operations
+    // IMPORTANT: This must be set before any stream_socket_client() calls
     stream_context_set_default([
         'ssl' => $sslOptions
+    ]);
+    
+    // Also set for tcp context (SMTP uses tcp://)
+    stream_context_set_default([
+        'tcp' => ['ssl' => $sslOptions],
     ]);
 }
 
