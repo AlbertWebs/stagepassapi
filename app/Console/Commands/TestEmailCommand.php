@@ -30,12 +30,19 @@ class TestEmailCommand extends Command
         $toEmail = $this->argument('to');
         
         $this->info('Testing email configuration...');
-        $this->line('Mail Driver: ' . config('mail.default'));
-        $this->line('Mail Host: ' . config('mail.mailers.smtp.host'));
-        $this->line('Mail Port: ' . config('mail.mailers.smtp.port'));
+        $mailer = config('mail.default');
+        $this->line('Mail Driver: ' . $mailer);
+        
+        $mailerConfig = config("mail.mailers.{$mailer}", []);
+        if (!empty($mailerConfig)) {
+            $this->line('Mail Host: ' . ($mailerConfig['host'] ?? 'N/A'));
+            $this->line('Mail Port: ' . ($mailerConfig['port'] ?? 'N/A'));
+            $this->line('Mail Username: ' . ($mailerConfig['username'] ?? 'N/A'));
+        }
+        
         $this->line('Mail From: ' . config('mail.from.address'));
         
-        $sslConfig = config('mail.mailers.smtp.stream.ssl', []);
+        $sslConfig = $mailerConfig['stream']['ssl'] ?? [];
         if (!empty($sslConfig)) {
             $this->line('SSL Config: ' . json_encode($sslConfig));
         }
@@ -56,7 +63,23 @@ class TestEmailCommand extends Command
             });
             
             $this->info('✓ Email sent successfully!');
-            Log::info('Test email sent successfully via command', ['to' => $toEmail]);
+            $this->newLine();
+            $this->line('Email Details:');
+            $this->line('  To: ' . $toEmail);
+            $this->line('  From: ' . config('mail.from.address'));
+            $this->line('  Subject: StagePass API - Test Email');
+            $this->newLine();
+            $this->warn('⚠ If you don\'t receive the email:');
+            $this->line('  1. Check your spam/junk folder');
+            $this->line('  2. Verify the "From" address matches your Gmail account');
+            $this->line('  3. Check Gmail security settings (Less secure app access)');
+            $this->line('  4. Verify SPF/DKIM records for your domain');
+            
+            Log::info('Test email sent successfully via command', [
+                'to' => $toEmail,
+                'from' => config('mail.from.address'),
+                'mailer' => config('mail.default'),
+            ]);
             return 0;
         } catch (\Exception $e) {
             $this->error('✗ Failed to send email: ' . $e->getMessage());

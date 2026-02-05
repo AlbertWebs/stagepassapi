@@ -73,6 +73,26 @@ return [
             'transport' => 'resend',
         ],
 
+        'mailjet' => [
+            'transport' => 'smtp',
+            'scheme' => env('MAIL_SCHEME'),
+            'url' => env('MAIL_URL'),
+            'host' => env('MAILJET_HOST', 'in-v3.mailjet.com'),
+            'port' => env('MAILJET_PORT', 587),
+            'username' => env('MAILJET_APIKEY'),
+            'password' => env('MAILJET_APISECRET'),
+            'timeout' => null,
+            'local_domain' => env('MAIL_EHLO_DOMAIN', parse_url((string) env('APP_URL', 'http://localhost'), PHP_URL_HOST)),
+            'stream' => [
+                'ssl' => array_filter([
+                    'verify_peer' => (env('MAIL_VERIFY_PEER') === false || env('MAIL_VERIFY_PEER') === 'false' || env('MAIL_VERIFY_PEER') === '0') ? 0 : 1,
+                    'verify_peer_name' => (env('MAIL_VERIFY_PEER_NAME') === false || env('MAIL_VERIFY_PEER_NAME') === 'false' || env('MAIL_VERIFY_PEER_NAME') === '0') ? 0 : 1,
+                    'allow_self_signed' => (env('MAIL_VERIFY_PEER_NAME') === false || env('MAIL_VERIFY_PEER_NAME') === 'false' || env('MAIL_VERIFY_PEER_NAME') === '0') ? 1 : 0,
+                    'peer_name' => env('MAIL_PEER_NAME') ?: null,
+                ], fn($value) => $value !== null),
+            ],
+        ],
+
         'sendmail' => [
             'transport' => 'sendmail',
             'path' => env('MAIL_SENDMAIL_PATH', '/usr/sbin/sendmail -bs -i'),

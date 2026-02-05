@@ -43,12 +43,14 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         // Register custom SMTP transport factory to ensure SSL options are applied
-        if (config('mail.default') === 'smtp') {
-            $this->app->afterResolving(MailManager::class, function (MailManager $mailManager) {
+        // This works for both 'smtp' and 'mailjet' mailers since both use SMTP transport
+        $mailer = config('mail.default');
+        if (in_array($mailer, ['smtp', 'mailjet'])) {
+            $this->app->afterResolving(MailManager::class, function (MailManager $mailManager) use ($mailer) {
                 // Use a static flag to prevent infinite recursion
                 static $extending = false;
                 
-                $mailManager->extend('smtp', function (array $config) use ($mailManager, &$extending) {
+                $mailManager->extend($mailer, function (array $config) use ($mailManager, &$extending) {
                     if ($extending) {
                         // If we're already extending, use the default factory to avoid recursion
                         return null; // Let Laravel use default

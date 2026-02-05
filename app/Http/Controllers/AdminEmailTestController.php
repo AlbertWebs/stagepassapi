@@ -48,6 +48,8 @@ class AdminEmailTestController extends Controller
             Log::info('Test email sent successfully', [
                 'to' => $toEmail,
                 'subject' => $subject,
+                'from' => config('mail.from.address'),
+                'mailer' => config('mail.default'),
             ]);
 
             return back()->with('status', "Test email sent successfully to {$toEmail}!");
