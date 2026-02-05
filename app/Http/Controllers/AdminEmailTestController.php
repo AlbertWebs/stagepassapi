@@ -30,6 +30,22 @@ class AdminEmailTestController extends Controller
             $message = $request->input('message');
             $includeBcc = $request->has('include_bcc');
 
+            // Log current mail configuration and SSL settings
+            $mailConfig = config('mail.mailers.smtp');
+            $sslConfig = $mailConfig['stream']['ssl'] ?? [];
+            $defaultContext = stream_context_get_default();
+            $defaultSslOptions = $defaultContext ? stream_context_get_options($defaultContext)['ssl'] ?? [] : [];
+            
+            Log::info('Email test: Current mail and SSL configuration', [
+                'mail_host' => $mailConfig['host'] ?? 'not set',
+                'mail_port' => $mailConfig['port'] ?? 'not set',
+                'config_ssl' => $sslConfig,
+                'default_context_ssl' => $defaultSslOptions,
+                'env_verify_peer_name' => env('MAIL_VERIFY_PEER_NAME'),
+                'env_verify_peer' => env('MAIL_VERIFY_PEER'),
+                'env_peer_name' => env('MAIL_PEER_NAME'),
+            ]);
+
             $emailBody = "This is a test email from StagePass Admin Panel.\n\n";
             $emailBody .= "Message:\n{$message}\n\n";
             $emailBody .= "Sent at: " . now()->format('Y-m-d H:i:s') . "\n";
