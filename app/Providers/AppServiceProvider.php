@@ -45,22 +45,35 @@ class AppServiceProvider extends ServiceProvider
         // Register custom SMTP transport factory to ensure SSL options are applied
         if (config('mail.default') === 'smtp') {
             $this->app->afterResolving(MailManager::class, function (MailManager $mailManager) {
-                // Register our custom factory before the default one
-                $mailManager->extend('smtp', function (array $config) use ($mailManager) {
-                    // Use custom factory to create transport with SSL options
-                    $factory = new CustomSmtpTransportFactory();
+                // Use a static flag to prevent infinite recursion
+                static $extending = false;
+                
+                $mailManager->extend('smtp', function (array $config) use ($mailManager, &$extending) {
+                    if ($extending) {
+                        // If we're already extending, use the default factory to avoid recursion
+                        return null; // Let Laravel use default
+                    }
                     
-                    // Create DSN with properly URL-encoded credentials
-                    $username = rawurlencode($config['username'] ?? '');
-                    $password = rawurlencode($config['password'] ?? '');
-                    $host = $config['host'] ?? '127.0.0.1';
-                    $port = $config['port'] ?? 587;
+                    $extending = true;
                     
-                    $dsn = \Symfony\Component\Mailer\Transport\Dsn::fromString(
-                        sprintf('smtp://%s:%s@%s:%d', $username, $password, $host, $port)
-                    );
-                    
-                    return $factory->create($dsn);
+                    try {
+                        // Use custom factory to create transport with SSL options
+                        $factory = new CustomSmtpTransportFactory();
+                        
+                        // Create DSN with properly URL-encoded credentials
+                        $username = rawurlencode($config['username'] ?? '');
+                        $password = rawurlencode($config['password'] ?? '');
+                        $host = $config['host'] ?? '127.0.0.1';
+                        $port = $config['port'] ?? 587;
+                        
+                        $dsn = \Symfony\Component\Mailer\Transport\Dsn::fromString(
+                            sprintf('smtp://%s:%s@%s:%d', $username, $password, $host, $port)
+                        );
+                        
+                        return $factory->create($dsn);
+                    } finally {
+                        $extending = false;
+                    }
                 });
             });
         }
