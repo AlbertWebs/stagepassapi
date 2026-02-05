@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Log;
@@ -99,26 +100,63 @@ class QuoteRequestController extends Controller
             
             // Save to database
             try {
-                DB::table('quote_requests')->insert([
+                // Build insert data
+                $insertData = [
                     'name' => $name,
                     'email' => $email,
-                    'phone' => $phone,
                     'message' => $message,
                     'created_at' => now(),
                     'updated_at' => now(),
-                ]);
+                ];
+                
+                // Only include phone if column exists (for backward compatibility)
+                if (Schema::hasColumn('quote_requests', 'phone')) {
+                    $insertData['phone'] = $phone;
+                }
+                
+                DB::table('quote_requests')->insert($insertData);
             } catch (\Exception $dbException) {
-                Log::error('Database error saving quote request', [
-                    'error' => $dbException->getMessage(),
-                    'trace' => $dbException->getTraceAsString(),
-                    'data' => [
-                        'name' => $name,
-                        'email' => $email,
-                        'phone' => $phone,
-                        'message_length' => strlen($message),
-                    ],
-                ]);
-                throw $dbException; // Re-throw to be caught by outer catch
+                // If error is about missing column, try without phone
+                if (str_contains($dbException->getMessage(), 'phone') || 
+                    str_contains($dbException->getMessage(), 'Unknown column') ||
+                    str_contains($dbException->getMessage(), 'does not exist')) {
+                    try {
+                        DB::table('quote_requests')->insert([
+                            'name' => $name,
+                            'email' => $email,
+                            'message' => $message,
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ]);
+                        Log::info('Quote request saved without phone column (migration may not be run)', [
+                            'email' => $email,
+                        ]);
+                    } catch (\Exception $retryException) {
+                        Log::error('Database error saving quote request (retry failed)', [
+                            'error' => $retryException->getMessage(),
+                            'trace' => $retryException->getTraceAsString(),
+                            'data' => [
+                                'name' => $name,
+                                'email' => $email,
+                                'phone' => $phone,
+                                'message_length' => strlen($message),
+                            ],
+                        ]);
+                        throw $retryException;
+                    }
+                } else {
+                    Log::error('Database error saving quote request', [
+                        'error' => $dbException->getMessage(),
+                        'trace' => $dbException->getTraceAsString(),
+                        'data' => [
+                            'name' => $name,
+                            'email' => $email,
+                            'phone' => $phone,
+                            'message_length' => strlen($message),
+                        ],
+                    ]);
+                    throw $dbException; // Re-throw to be caught by outer catch
+                }
             }
 
             // Send email
