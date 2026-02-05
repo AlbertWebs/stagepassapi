@@ -23,18 +23,17 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         // Configure SSL options for SMTP to handle certificate mismatch issues
-        // This only applies custom SSL options if explicitly configured in .env
-        // For Gmail and other properly configured SMTP servers, default SSL verification is used
+        // This is needed when behind a proxy/load balancer that intercepts SMTP connections
         if (config('mail.default') === 'smtp') {
             $sslOptions = [];
             
-            // Only set peer name if explicitly provided (for certificate mismatch issues)
+            // Set peer name if provided (to match actual certificate CN from proxy)
             $peerName = env('MAIL_PEER_NAME');
             if ($peerName) {
                 $sslOptions['peer_name'] = $peerName;
             }
             
-            // Only disable SSL verification if explicitly configured (not recommended for production)
+            // Disable SSL verification if configured (needed when behind proxy)
             $verifyPeerName = env('MAIL_VERIFY_PEER_NAME');
             if ($verifyPeerName === false || $verifyPeerName === 'false' || $verifyPeerName === '0') {
                 $sslOptions['verify_peer_name'] = false;
@@ -42,14 +41,13 @@ class AppServiceProvider extends ServiceProvider
                 $sslOptions['verify_peer'] = ($verifyPeer === false || $verifyPeer === 'false' || $verifyPeer === '0') ? false : true;
             }
             
-            // Only apply SSL options if they were explicitly set
+            // Apply SSL options if configured
             if (!empty($sslOptions)) {
                 // Set default SSL context options for all stream operations
-                $defaultContext = stream_context_get_default(['ssl' => $sslOptions]);
-                stream_context_set_default(['ssl' => array_merge(
-                    stream_context_get_options($defaultContext)['ssl'] ?? [],
-                    $sslOptions
-                )]);
+                $currentDefault = stream_context_get_default();
+                $currentOptions = stream_context_get_options($currentDefault);
+                $mergedOptions = array_merge_recursive($currentOptions, ['ssl' => $sslOptions]);
+                stream_context_set_default($mergedOptions);
                 
                 \Log::info('Mail SSL: Custom SSL options applied', [
                     'peer_name' => $peerName ?? 'not set',
