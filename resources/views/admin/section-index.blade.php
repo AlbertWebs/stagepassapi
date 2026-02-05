@@ -355,6 +355,16 @@
                                             >{{ html_entity_decode($value, ENT_QUOTES, 'UTF-8') }}</textarea>
                                         </div>
                                         <p class="mt-1 text-xs text-slate-500">Rich text editor for formatted content. Formatting will be saved as HTML.</p>
+                                    @elseif ($columnLower === 'overlay_description' && $table === 'industries')
+                                        <div class="mt-2">
+                                            <div id="overlay_description_editor" style="height: 200px; background-color: #0f172a; color: #e2e8f0;"></div>
+                                            <textarea 
+                                                id="overlay_description_hidden" 
+                                                name="{{ $column }}" 
+                                                style="display: none;"
+                                            >{{ html_entity_decode($value, ENT_QUOTES, 'UTF-8') }}</textarea>
+                                        </div>
+                                        <p class="mt-1 text-xs text-slate-500">Rich text editor for overlay content. This content will be displayed in the hover overlay on the frontend.</p>
                                     @elseif ($isTextarea)
                                         <textarea name="{{ $column }}" rows="3" class="mt-2 w-full rounded-xl bg-slate-950 border border-slate-800 px-4 py-2 text-sm text-slate-100">{{ $value }}</textarea>
                                     @else
@@ -669,6 +679,16 @@
                                                                                     </div>
                                                                                 @endif
                                                                             </div>
+                                                                        @elseif (strtolower($column) === 'overlay_description' && $table['name'] === 'industries')
+                                                                            <div class="mt-2">
+                                                                                <div id="overlay_description_editor_{{ $record->id }}" style="height: 200px; background-color: #0f172a; color: #e2e8f0;"></div>
+                                                                                <textarea 
+                                                                                    id="overlay_description_hidden_{{ $record->id }}" 
+                                                                                    name="{{ $column }}" 
+                                                                                    style="display: none;"
+                                                                                >{{ html_entity_decode($value, ENT_QUOTES, 'UTF-8') }}</textarea>
+                                                                            </div>
+                                                                            <p class="mt-1 text-xs text-slate-500">Rich text editor for overlay content. This content will be displayed in the hover overlay on the frontend.</p>
                                                                         @elseif ($isTextarea)
                                                                             <textarea name="{{ $column }}" rows="3" class="mt-2 w-full rounded-xl bg-slate-950 border border-slate-800 px-4 py-2 text-sm text-slate-100">{{ $value }}</textarea>
                                                                         @else
@@ -706,9 +726,10 @@
         @endforeach
     </div>
 
-    @if(isset($sectionKey) && $sectionKey === 'about')
+    @if(isset($sectionKey) && ($sectionKey === 'about' || $sectionKey === 'industries'))
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Initialize description_primary editor for about sections
             const editorElement = document.getElementById('description_primary_editor');
             const hiddenTextarea = document.getElementById('description_primary_hidden');
             
@@ -746,6 +767,81 @@
                     });
                 }
             }
+
+            // Initialize overlay_description editor for industries (create form)
+            const overlayEditorElement = document.getElementById('overlay_description_editor');
+            const overlayHiddenTextarea = document.getElementById('overlay_description_hidden');
+            
+            if (overlayEditorElement && overlayHiddenTextarea && typeof Quill !== 'undefined') {
+                const overlayQuill = new Quill('#overlay_description_editor', {
+                    theme: 'snow',
+                    modules: {
+                        toolbar: [
+                            [{ 'header': [1, 2, 3, false] }],
+                            ['bold', 'italic', 'underline', 'strike'],
+                            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                            ['link'],
+                            ['clean']
+                        ]
+                    },
+                    placeholder: 'Enter overlay description...'
+                });
+                
+                if (overlayHiddenTextarea.value) {
+                    overlayQuill.root.innerHTML = overlayHiddenTextarea.value;
+                }
+                
+                overlayQuill.on('text-change', function() {
+                    overlayHiddenTextarea.value = overlayQuill.root.innerHTML;
+                });
+                
+                const overlayForm = overlayEditorElement.closest('form');
+                if (overlayForm) {
+                    overlayForm.addEventListener('submit', function() {
+                        overlayHiddenTextarea.value = overlayQuill.root.innerHTML;
+                    });
+                }
+            }
+
+            // Initialize overlay_description editors for industries (edit forms)
+            const editOverlayEditors = document.querySelectorAll('[id^="overlay_description_editor_"]');
+            editOverlayEditors.forEach(function(editorEl) {
+                const editorId = editorEl.id;
+                const recordId = editorId.replace('overlay_description_editor_', '');
+                const hiddenId = 'overlay_description_hidden_' + recordId;
+                const hiddenTextareaEl = document.getElementById(hiddenId);
+                
+                if (hiddenTextareaEl && typeof Quill !== 'undefined') {
+                    const editQuill = new Quill('#' + editorId, {
+                        theme: 'snow',
+                        modules: {
+                            toolbar: [
+                                [{ 'header': [1, 2, 3, false] }],
+                                ['bold', 'italic', 'underline', 'strike'],
+                                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                                ['link'],
+                                ['clean']
+                            ]
+                        },
+                        placeholder: 'Enter overlay description...'
+                    });
+                    
+                    if (hiddenTextareaEl.value) {
+                        editQuill.root.innerHTML = hiddenTextareaEl.value;
+                    }
+                    
+                    editQuill.on('text-change', function() {
+                        hiddenTextareaEl.value = editQuill.root.innerHTML;
+                    });
+                    
+                    const editForm = editorEl.closest('form');
+                    if (editForm) {
+                        editForm.addEventListener('submit', function() {
+                            hiddenTextareaEl.value = editQuill.root.innerHTML;
+                        });
+                    }
+                }
+            });
         });
     </script>
     <style>
