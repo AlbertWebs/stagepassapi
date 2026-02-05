@@ -22,6 +22,15 @@ Route::get('/', function () {
 
 // API Routes for Frontend
 Route::middleware('cors')->group(function () {
+Route::get('/api/test', function () {
+    return response()->json([
+        'status' => 'success',
+        'message' => 'API endpoints are accessible! All systems operational. 🚀',
+        'timestamp' => now()->toIso8601String(),
+        'server' => 'StagePass API',
+        'version' => '1.0.0'
+    ], 200)->header('Access-Control-Allow-Origin', '*');
+});
 Route::get('/api/portfolio/instagram', [InstagramPortfolioController::class, 'index']);
 Route::get('/instagram/callback', [InstagramPortfolioController::class, 'callback']);
 Route::post('/api/contact/submit', [ContactController::class, 'submit']);
