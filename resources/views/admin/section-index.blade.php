@@ -58,14 +58,20 @@
                         }
                         $thumbnailPreview = '';
                         if (!empty($thumbnailValue)) {
-                            if (\Illuminate\Support\Str::startsWith($thumbnailValue, ['http://', 'https://'])) {
-                                $thumbnailPreview = $thumbnailValue;
-                            } elseif (str_starts_with($thumbnailValue, 'uploads/')) {
-                                $thumbnailPreview = 'https://api.stagepass.co.ke/' . $thumbnailValue;
-                            } elseif (str_starts_with($thumbnailValue, '/')) {
-                                $thumbnailPreview = 'https://api.stagepass.co.ke' . $thumbnailValue;
-                            } else {
-                                $thumbnailPreview = 'https://api.stagepass.co.ke/uploads/' . $thumbnailValue;
+                            $trimmedValue = trim($thumbnailValue);
+                            if (\Illuminate\Support\Str::startsWith($trimmedValue, ['http://', 'https://'])) {
+                                $thumbnailPreview = $trimmedValue;
+                            } elseif (str_starts_with($trimmedValue, 'uploads/')) {
+                                $thumbnailPreview = 'https://api.stagepass.co.ke/' . $trimmedValue;
+                            } elseif (str_starts_with($trimmedValue, '/')) {
+                                $thumbnailPreview = 'https://api.stagepass.co.ke' . $trimmedValue;
+                            } elseif (!empty($trimmedValue)) {
+                                // If it's just a filename or relative path, try different formats
+                                if (str_contains($trimmedValue, '/')) {
+                                    $thumbnailPreview = 'https://api.stagepass.co.ke/' . ltrim($trimmedValue, '/');
+                                } else {
+                                    $thumbnailPreview = 'https://api.stagepass.co.ke/uploads/' . $trimmedValue;
+                                }
                             }
                         }
                     @endphp
@@ -119,18 +125,27 @@
                                             <input type="file" name="thumbnail_url_upload" accept="image/*" class="mt-2 block w-full text-sm text-slate-200" />
                                             <p class="mt-1 text-xs text-slate-500">Recommended size: 1920x1080px or same aspect ratio as video.</p>
                                         </div>
-                                        @if (!empty($thumbnailValue) && $thumbnailPreview)
+                                        @if (!empty($thumbnailValue))
                                             <div class="mt-3 rounded-xl border border-slate-800 bg-slate-950/50 p-4">
                                                 <p class="text-xs text-slate-400 mb-3 font-semibold uppercase tracking-wide">Current Thumbnail Preview</p>
-                                                <div class="relative rounded-lg overflow-hidden border border-slate-800 bg-slate-900">
-                                                    <img 
-                                                        src="{{ $thumbnailPreview }}" 
-                                                        alt="Thumbnail preview" 
-                                                        class="w-full h-auto rounded-lg object-contain max-h-64 mx-auto"
-                                                        onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'225\'%3E%3Crect fill=\'%231e293b\' width=\'400\' height=\'225\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' dominant-baseline=\'middle\' text-anchor=\'middle\' fill=\'%23475569\' font-family=\'Arial\' font-size=\'14\'%3EImage not found%3C/text%3E%3C/svg%3E';"
-                                                    />
-                                                </div>
-                                                <p class="mt-2 text-xs text-slate-500 break-all">{{ $thumbnailPreview }}</p>
+                                                @if ($thumbnailPreview)
+                                                    <div class="relative rounded-lg overflow-hidden border border-slate-800 bg-slate-900">
+                                                        <img 
+                                                            src="{{ $thumbnailPreview }}" 
+                                                            alt="Thumbnail preview" 
+                                                            class="w-full h-auto rounded-lg object-contain max-h-64 mx-auto"
+                                                            onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'225\'%3E%3Crect fill=\'%231e293b\' width=\'400\' height=\'225\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' dominant-baseline=\'middle\' text-anchor=\'middle\' fill=\'%23475569\' font-family=\'Arial\' font-size=\'14\'%3EImage not found%3C/text%3E%3C/svg%3E';"
+                                                        />
+                                                    </div>
+                                                @endif
+                                                <p class="mt-2 text-xs text-slate-500 break-all">
+                                                    <span class="font-semibold">Database Value:</span> {{ $thumbnailValue }}
+                                                </p>
+                                                @if ($thumbnailPreview)
+                                                    <p class="mt-1 text-xs text-slate-500 break-all">
+                                                        <span class="font-semibold">Preview URL:</span> {{ $thumbnailPreview }}
+                                                    </p>
+                                                @endif
                                             </div>
                                         @else
                                             <div class="mt-3 rounded-xl border border-slate-800/50 border-dashed bg-slate-950/30 p-6 text-center">

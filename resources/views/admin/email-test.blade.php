@@ -174,6 +174,13 @@
                         <li>Verify SMTP credentials if using SMTP driver</li>
                         <li>Check server logs: <code class="text-slate-300">storage/logs/laravel.log</code></li>
                         <li>Ensure firewall allows outbound SMTP connections (port 25, 587, or 465)</li>
+                        <li><strong>SSL Certificate Issues:</strong> If you see certificate mismatch errors, add to your <code class="text-slate-300">.env</code>:
+                            <ul class="list-disc list-inside ml-6 mt-1">
+                                <li><code class="text-slate-300">MAIL_VERIFY_PEER_NAME=false</code> (for testing only)</li>
+                                <li><code class="text-slate-300">MAIL_VERIFY_PEER=false</code> (for testing only)</li>
+                                <li>Or set <code class="text-slate-300">MAIL_PEER_NAME</code> to match the actual certificate CN</li>
+                            </ul>
+                        </li>
                     </ul>
                 </div>
             </div>

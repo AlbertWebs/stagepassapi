@@ -6,6 +6,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
+use Swift_SmtpTransport;
 
 class AdminEmailTestController extends Controller
 {
@@ -25,6 +26,9 @@ class AdminEmailTestController extends Controller
         ]);
 
         try {
+            // Configure SSL options if needed (before sending email)
+            $this->configureMailSsl();
+            
             $toEmail = $request->input('to_email');
             $subject = $request->input('subject');
             $message = $request->input('message');
@@ -55,9 +59,63 @@ class AdminEmailTestController extends Controller
             Log::error('Failed to send test email', [
                 'error' => $e->getMessage(),
                 'to' => $request->input('to_email'),
+                'trace' => $e->getTraceAsString(),
             ]);
 
-            return back()->with('error', 'Failed to send test email: ' . $e->getMessage());
+            $errorMessage = $e->getMessage();
+            
+            // Provide helpful guidance for SSL certificate errors
+            if (str_contains($errorMessage, 'certificate') || str_contains($errorMessage, 'SSL') || str_contains($errorMessage, 'TLS')) {
+                $errorMessage .= "\n\nTip: If you're experiencing SSL certificate issues, you can temporarily disable SSL verification by adding this to your .env file:\n";
+                $errorMessage .= "MAIL_VERIFY_PEER_NAME=false\n";
+                $errorMessage .= "MAIL_VERIFY_PEER=false\n\n";
+                $errorMessage .= "Note: This is not recommended for production. For production, ensure your SMTP server's certificate matches the expected hostname.";
+            }
+
+            return back()->with('error', 'Failed to send test email: ' . $errorMessage);
+        }
+    }
+
+    /**
+     * Configure SSL options for SMTP transport to handle certificate issues
+     */
+    private function configureMailSsl(): void
+    {
+        if (config('mail.default') !== 'smtp') {
+            return;
+        }
+
+        try {
+            // Get the SwiftMailer instance
+            $swiftMailer = Mail::getSwiftMailer();
+            if (!$swiftMailer) {
+                return;
+            }
+
+            $transport = $swiftMailer->getTransport();
+            if ($transport instanceof Swift_SmtpTransport) {
+                $streamOptions = [];
+                
+                // Disable SSL verification if configured (for testing only)
+                $verifyPeerName = env('MAIL_VERIFY_PEER_NAME');
+                if ($verifyPeerName === false || $verifyPeerName === 'false' || $verifyPeerName === '0') {
+                    $streamOptions['ssl']['verify_peer_name'] = false;
+                    $verifyPeer = env('MAIL_VERIFY_PEER');
+                    $streamOptions['ssl']['verify_peer'] = ($verifyPeer === false || $verifyPeer === 'false' || $verifyPeer === '0') ? false : true;
+                }
+                
+                // Set custom peer name if provided (to match actual certificate CN)
+                if ($peerName = env('MAIL_PEER_NAME')) {
+                    $streamOptions['ssl']['peer_name'] = $peerName;
+                }
+                
+                if (!empty($streamOptions)) {
+                    $transport->setStreamOptions($streamOptions);
+                }
+            }
+        } catch (\Exception $e) {
+            // Silently fail - SSL configuration is optional
+            Log::debug('Could not configure mail SSL options', ['error' => $e->getMessage()]);
         }
     }
 }

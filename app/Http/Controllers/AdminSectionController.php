@@ -284,8 +284,9 @@ class AdminSectionController extends Controller
             $value = $request->input($column);
             
             // For nullable columns like thumbnail_url, preserve existing value if not provided
-            if ($column === 'thumbnail_url' && empty($value)) {
-                // Skip if empty - will preserve existing database value
+            // BUT only if no file was uploaded (file uploads are handled above)
+            if ($column === 'thumbnail_url' && empty($value) && !$request->hasFile('thumbnail_url_upload')) {
+                // Skip if empty and no file upload - will preserve existing database value
                 continue;
             }
             
