@@ -17,14 +17,7 @@ class CustomSmtpTransportFactory implements Transport\TransportFactoryInterface
         $username = $dsn->getUser();
         $password = $dsn->getPassword();
         
-        $transport = new EsmtpTransport($host, $port, false);
-        
-        if ($username && $password) {
-            $transport->setUsername($username);
-            $transport->setPassword($password);
-        }
-        
-        // Get SSL options from config - check all mailers to find the one being used
+        // Get SSL options from config FIRST - before creating transport
         $sslOptions = [];
         $mailer = config('mail.default');
         
@@ -37,19 +30,52 @@ class CustomSmtpTransportFactory implements Transport\TransportFactoryInterface
             $sslOptions = config('mail.mailers.smtp.stream.ssl', []);
         }
         
+        $transport = new EsmtpTransport($host, $port, false);
+        
+        if ($username && $password) {
+            $transport->setUsername($username);
+            $transport->setPassword($password);
+        }
+        
+        // Set SSL options on the stream BEFORE it's initialized
         if (!empty($sslOptions)) {
             try {
+                // Ensure global stream context is also set as fallback
+                $currentContext = stream_context_get_default();
+                $currentOptions = $currentContext ? stream_context_get_options($currentContext) : [];
+                $mergedOptions = array_merge_recursive($currentOptions, ['ssl' => $sslOptions]);
+                stream_context_set_default($mergedOptions);
+                
+                // Get the stream and set options before any initialization
                 $stream = $transport->getStream();
                 if ($stream instanceof SocketStream) {
-                    // Set stream options - this will be used when the socket is created
+                    // Set stream options - these will be used when initialize() is called
+                    // The options should be at the root level with 'ssl' key
                     $stream->setStreamOptions(['ssl' => $sslOptions]);
+                    
+                    // Verify the options were set
+                    $setOptions = $stream->getStreamOptions();
+                    \Log::info('SSL options set on SMTP stream', [
+                        'mailer' => $mailer,
+                        'host' => $host,
+                        'ssl_options_set' => $sslOptions,
+                        'stream_options_retrieved' => $setOptions
+                    ]);
                 }
             } catch (\Exception $e) {
-                \Log::warning('Failed to set SSL options on SMTP stream', [
+                \Log::error('Failed to set SSL options on SMTP stream', [
                     'error' => $e->getMessage(),
-                    'mailer' => $mailer
+                    'mailer' => $mailer,
+                    'host' => $host,
+                    'ssl_options' => $sslOptions,
+                    'trace' => $e->getTraceAsString()
                 ]);
             }
+        } else {
+            \Log::warning('No SSL options found for mailer', [
+                'mailer' => $mailer,
+                'mailer_config' => $mailerConfig ?? 'not found'
+            ]);
         }
         
         return $transport;
