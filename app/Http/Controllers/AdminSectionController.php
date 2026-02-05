@@ -341,6 +341,23 @@ class AdminSectionController extends Controller
             return 'uploads/' . $filename;
         }
         
+        // For client_logos, upload to storage and return remote server URL
+        if ($table === 'client_logos' && ($column === 'logo_path' || str_ends_with($uploadFieldName, 'logo_path_upload'))) {
+            $dir = "admin/{$table}";
+            $path = $file->storePublicly($dir, 'public');
+            
+            // Get the remote server URL
+            $apiBaseUrl = env('APP_URL', 'https://api.stagepass.co.ke');
+            // If APP_URL doesn't contain 'api', use the API URL
+            if (!str_contains($apiBaseUrl, 'api')) {
+                $apiBaseUrl = 'https://api.stagepass.co.ke';
+            }
+            
+            // Return the full remote URL
+            $relativePath = ltrim($path, '/');
+            return rtrim($apiBaseUrl, '/') . '/storage/' . $relativePath;
+        }
+        
         // Default behavior for other uploads
         $dir = "admin/{$table}";
         $path = $file->storePublicly($dir, 'public');
