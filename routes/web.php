@@ -22,6 +22,8 @@ Route::get('/', function () {
 Route::middleware('cors')->group(function () {
 Route::get('/api/portfolio/instagram', [InstagramPortfolioController::class, 'index']);
 Route::get('/instagram/callback', [InstagramPortfolioController::class, 'callback']);
+Route::post('/api/contact/submit', [ContactController::class, 'submit']);
+Route::post('/api/quote/submit', [App\Http\Controllers\QuoteRequestController::class, 'submit']);
 Route::get('/api/content/homepage', [ContentController::class, 'homepage']);
     Route::get('/api/content/about', [ContentController::class, 'about']);
     Route::get('/api/content/services', [ContentController::class, 'services']);
@@ -160,6 +162,9 @@ Route::prefix('admin')->middleware('admin.session')->group(function () {
 
     Route::get('/maintain', [AdminMaintenanceController::class, 'index'])->name('admin.maintain');
     Route::post('/maintain/{task}', [AdminMaintenanceController::class, 'run'])->name('admin.maintain.run');
+
+    Route::get('/email-test', [App\Http\Controllers\AdminEmailTestController::class, 'index'])->name('admin.email-test');
+    Route::post('/email-test', [App\Http\Controllers\AdminEmailTestController::class, 'test'])->name('admin.email-test.test');
 
     Route::get('/logout', function () {
         return view('admin.logout');

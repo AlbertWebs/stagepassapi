@@ -28,6 +28,7 @@
                 ['key' => 'contact-messages', 'label' => 'Contact Messages', 'href' => route('admin.contact-messages')],
                 ['key' => 'quote-requests', 'label' => 'Quote Requests', 'href' => route('admin.quote-requests')],
                 ['key' => 'cron-jobs', 'label' => 'Cron Jobs', 'href' => route('admin.cron-jobs')],
+                ['key' => 'email-test', 'label' => 'Email Test', 'href' => route('admin.email-test')],
             ];
             
             $pageItems = [
@@ -174,6 +175,7 @@
                                 <a href="{{ route('admin.settings') }}" class="block px-4 py-3 text-sm text-slate-200 hover:bg-slate-800">Settings</a>
                                 <a href="{{ route('admin.backup') }}" class="block px-4 py-3 text-sm text-slate-200 hover:bg-slate-800">Backup</a>
                                 <a href="{{ route('admin.maintain') }}" class="block px-4 py-3 text-sm text-slate-200 hover:bg-slate-800">Maintain</a>
+                                <a href="{{ route('admin.email-test') }}" class="block px-4 py-3 text-sm text-slate-200 hover:bg-slate-800">Email Test</a>
                                 <div class="border-t border-slate-800"></div>
                                 <form method="POST" action="{{ route('admin.logout') }}" class="block">
                                     @csrf

@@ -102,7 +102,10 @@ class ContentController extends Controller
                     'links' => $navbarLinks,
                     'bottom_links' => $bottomLinks,
                 ],
-                'hero' => $hero,
+                'hero' => $hero ? (object) array_merge((array) $hero, [
+                    'background_video_url' => $this->normalizeUrl($hero->background_video_url ?? null),
+                    'thumbnail_url' => $this->normalizeUrl($hero->thumbnail_url ?? null),
+                ]) : null,
                 'about' => [
                     'section' => $about ? (object) array_merge((array) $about, [
                         'image_url' => $this->normalizeUrl($about->image_url ?? null),

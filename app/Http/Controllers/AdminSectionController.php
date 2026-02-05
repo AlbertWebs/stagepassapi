@@ -285,6 +285,20 @@ class AdminSectionController extends Controller
             return 'uploads/' . $filename;
         }
         
+        // For hero_sections thumbnail_url, upload to public/uploads directory
+        if ($table === 'hero_sections' && ($column === 'thumbnail_url' || str_ends_with($uploadFieldName, 'thumbnail_url_upload'))) {
+            $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $uploadsPath = public_path('uploads');
+            
+            // Ensure uploads directory exists
+            if (!file_exists($uploadsPath)) {
+                mkdir($uploadsPath, 0755, true);
+            }
+            
+            $file->move($uploadsPath, $filename);
+            return 'uploads/' . $filename;
+        }
+        
         // Default behavior for other uploads
         $dir = "admin/{$table}";
         $path = $file->storePublicly($dir, 'public');

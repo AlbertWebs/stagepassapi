@@ -26,12 +26,21 @@
                     .then(data => {
                         const container = document.getElementById('instagram-portfolio');
                         if (data.data && data.data.length) {
-                            container.innerHTML = data.data.map(item => `
+                            container.innerHTML = data.data.map(item => {
+                                const caption = item.caption || '';
+                                const truncatedCaption = caption.length > 100 ? caption.substring(0, 100) + '...' : caption;
+                                return `
                                 <div class="group relative overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
-                                    <img src="${item.media_url}" alt="${item.caption || 'Portfolio item'}" class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500" />
-                                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                    <img src="${item.media_url}" alt="${caption || 'Portfolio item'}" class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500" />
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 hidden md:block"></div>
+                                    ${caption ? `
+                                    <div class="absolute bottom-0 left-0 right-0 p-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 hidden md:block">
+                                        <p class="text-sm line-clamp-2">${truncatedCaption}</p>
+                                    </div>
+                                    ` : ''}
                                 </div>
-                            `).join('');
+                            `;
+                            }).join('');
                         }
                     })
                     .catch(err => console.error('Failed to load Instagram portfolio:', err));

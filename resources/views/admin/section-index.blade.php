@@ -49,11 +49,18 @@
                             : route('admin.section.store', ['sectionKey' => $sectionKey, 'table' => $table['name']]);
                         $headlineValue = old('headline', $record->headline ?? '');
                         $videoValue = old('background_video_url', $record->background_video_url ?? '');
+                        $thumbnailValue = old('thumbnail_url', $record->thumbnail_url ?? '');
                         $videoPreview = '';
                         if (!empty($videoValue)) {
                             $videoPreview = \Illuminate\Support\Str::startsWith($videoValue, ['http://', 'https://'])
                                 ? $videoValue
                                 : '/' . ltrim($videoValue, '/');
+                        }
+                        $thumbnailPreview = '';
+                        if (!empty($thumbnailValue)) {
+                            $thumbnailPreview = \Illuminate\Support\Str::startsWith($thumbnailValue, ['http://', 'https://'])
+                                ? $thumbnailValue
+                                : (str_starts_with($thumbnailValue, 'uploads/') ? 'https://api.stagepass.co.ke/' . $thumbnailValue : '/' . ltrim($thumbnailValue, '/'));
                         }
                     @endphp
                     <form method="POST" action="{{ $action }}" class="mt-6 space-y-6" enctype="multipart/form-data">
@@ -90,6 +97,30 @@
                                     @if ($videoPreview)
                                         <video class="w-full rounded-xl border border-slate-800 bg-black" src="{{ $videoPreview }}" controls preload="metadata"></video>
                                     @endif
+                                </div>
+
+                                <div class="rounded-2xl border border-slate-800 bg-slate-950/70 p-6 space-y-4">
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <h3 class="text-sm font-semibold text-white">Video Thumbnail</h3>
+                                            <p class="mt-1 text-xs text-slate-500">Upload a thumbnail image for the video (shown while video loads).</p>
+                                        </div>
+                                        <span class="text-xs text-slate-500">JPG/PNG</span>
+                                    </div>
+                                    <div class="space-y-3">
+                                        <div>
+                                            <label class="text-xs uppercase tracking-wide text-slate-500">Upload Thumbnail</label>
+                                            <input type="file" name="thumbnail_url_upload" accept="image/*" class="mt-2 block w-full text-sm text-slate-200" />
+                                            <p class="mt-1 text-xs text-slate-500">Recommended size: 1920x1080px or same aspect ratio as video.</p>
+                                        </div>
+                                        @if ($thumbnailPreview)
+                                            <div class="mt-3">
+                                                <p class="text-xs text-slate-500 mb-2">Current Thumbnail:</p>
+                                                <img src="{{ $thumbnailPreview }}" alt="Thumbnail preview" class="max-w-full h-auto rounded-lg border border-slate-800 bg-slate-900 object-contain max-h-48" />
+                                            </div>
+                                        @endif
+                                        <input type="hidden" name="thumbnail_url" value="{{ $thumbnailValue }}">
+                                    </div>
                                 </div>
                             </div>
 
