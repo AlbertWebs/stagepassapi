@@ -57,5 +57,30 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        // Add CORS headers to all API error responses
+        $exceptions->render(function (\Throwable $e, \Illuminate\Http\Request $request) {
+            // Only add CORS headers for API routes
+            if ($request->is('api/*')) {
+                $status = 500;
+                if (method_exists($e, 'getStatusCode')) {
+                    $status = $e->getStatusCode();
+                } elseif (method_exists($e, 'getCode') && $e->getCode() >= 400 && $e->getCode() < 600) {
+                    $status = $e->getCode();
+                }
+                
+                $message = $e->getMessage() ?: 'Server Error';
+                
+                return response()->json([
+                    'success' => false,
+                    'message' => config('app.debug') ? $message : 'An error occurred. Please try again later.',
+                    'error' => config('app.debug') ? $message : null,
+                ], $status)
+                    ->header('Access-Control-Allow-Origin', '*')
+                    ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS')
+                    ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin')
+                    ->header('Access-Control-Allow-Credentials', 'true');
+            }
+            
+            return null; // Let Laravel handle it normally for non-API routes
+        });
     })->create();
