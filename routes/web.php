@@ -15,6 +15,7 @@ use App\Http\Controllers\ContentController;
 use App\Http\Controllers\InstagramPortfolioController;
 use App\Http\Controllers\QuoteRequestController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\DB;
 
 Route::get('/', function () {
     return view('welcome');
@@ -55,6 +56,85 @@ Route::get('/api/content/homepage', [ContentController::class, 'homepage']);
             ->header('Access-Control-Max-Age', '86400');
     })->where('any', '.*');
 });
+
+Route::get('/manifest.json', function () {
+    $settings = DB::table('site_settings')->pluck('value', 'key')->toArray();
+    $faviconUrl = null;
+    
+    if (!empty($settings['favicon_url'])) {
+        $faviconUrl = str_starts_with($settings['favicon_url'], 'http') 
+            ? $settings['favicon_url'] 
+            : '/' . ltrim($settings['favicon_url'], '/');
+    } else {
+        // Use existing favicon.ico as fallback if no custom favicon is set
+        $faviconUrl = '/favicon.ico';
+    }
+    
+    // Only include icons if favicon exists (check local files only, skip external URLs)
+    $icons = [];
+    if ($faviconUrl) {
+        $isExternal = str_starts_with($faviconUrl, 'http');
+        $fileExists = $isExternal || file_exists(public_path(ltrim(parse_url($faviconUrl, PHP_URL_PATH), '/')));
+        
+        if ($fileExists) {
+            $iconType = str_ends_with(strtolower($faviconUrl), '.ico') ? 'image/x-icon' : 'image/png';
+            $icons = [
+                [
+                    'src' => $faviconUrl,
+                    'sizes' => '192x192',
+                    'type' => $iconType,
+                    'purpose' => 'any maskable'
+                ],
+                [
+                    'src' => $faviconUrl,
+                    'sizes' => '512x512',
+                    'type' => $iconType,
+                    'purpose' => 'any maskable'
+                ]
+            ];
+        }
+    }
+    
+    $manifest = [
+        'short_name' => $settings['site_name'] ?? 'StagePass',
+        'name' => $settings['site_name'] ?? 'StagePass Audio Visual',
+        'description' => $settings['seo_meta_description'] ?? "Kenya's leading Audio Visual and Event Production company",
+        'icons' => $icons,
+        'start_url' => '/',
+        'display' => 'standalone',
+        'theme_color' => '#172455',
+        'background_color' => '#ffffff',
+        'orientation' => 'portrait-primary',
+        'scope' => '/',
+        'categories' => ['business', 'productivity'],
+        'screenshots' => [],
+        'shortcuts' => []
+    ];
+    
+    // Only add shortcuts with icons if favicon exists
+    if (!empty($icons)) {
+        $iconType = str_ends_with(strtolower($faviconUrl), '.ico') ? 'image/x-icon' : 'image/png';
+        $manifest['shortcuts'] = [
+            [
+                'name' => 'Contact',
+                'short_name' => 'Contact',
+                'description' => 'Get in touch with us',
+                'url' => '/contact',
+                'icons' => [['src' => $faviconUrl, 'sizes' => '192x192', 'type' => $iconType]]
+            ],
+            [
+                'name' => 'Services',
+                'short_name' => 'Services',
+                'description' => 'View our services',
+                'url' => '/services',
+                'icons' => [['src' => $faviconUrl, 'sizes' => '192x192', 'type' => $iconType]]
+            ]
+        ];
+    }
+    ];
+    
+    return response()->json($manifest)->header('Content-Type', 'application/manifest+json');
+})->name('manifest');
 
 Route::get('/sitemap.xml', function () {
     $baseUrl = 'http://stagepass.co.ke';

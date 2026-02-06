@@ -1,15 +1,26 @@
+@php
+    $faviconUrl = \Illuminate\Support\Facades\DB::table('site_settings')->where('key', 'favicon_url')->value('value');
+    if (!empty($faviconUrl)) {
+        $faviconUrl = str_starts_with($faviconUrl, 'http') ? $faviconUrl : asset($faviconUrl);
+    } else {
+        // Use existing favicon.ico as fallback if no custom favicon is set
+        $faviconUrl = asset('favicon.ico');
+    }
+    $faviconType = str_ends_with(strtolower($faviconUrl), '.ico') ? 'image/x-icon' : 'image/png';
+@endphp
 <!doctype html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-    <link rel="icon" type="image/png" href="{{ asset('logo/favicon.png') }}" />
+    <link rel="icon" type="{{ $faviconType }}" href="{{ $faviconUrl }}" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#172455" />
-    <link rel="manifest" href="{{ asset('manifest.json') }}" />
+    <link rel="manifest" href="{{ route('manifest') }}" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="StagePass" />
-    <link rel="apple-touch-icon" href="{{ asset('logo/favicon.png') }}" />
+    <link rel="apple-touch-icon" href="{{ $faviconUrl }}" />
     
     <!-- Primary SEO -->
     <title>@yield('title', 'The Best Audio Visual Company in Kenya — StagePass Audio Visual Limited')</title>

@@ -61,6 +61,23 @@
                         </div>
                     </div>
                     <div>
+                        <label class="text-sm text-slate-400">Favicon</label>
+                        <div class="mt-2 space-y-3 rounded-xl border border-slate-800 bg-slate-950/60 p-4">
+                            <div>
+                                <label class="text-xs uppercase tracking-wide text-slate-500">Upload Favicon</label>
+                                <input type="file" name="favicon_upload" accept="image/png,image/x-icon,image/vnd.microsoft.icon" class="mt-2 block w-full text-sm text-slate-200">
+                                <p class="mt-1 text-xs text-slate-500">PNG or ICO format. Recommended sizes: 32x32px, 192x192px, or 512x512px for PWA support.</p>
+                            </div>
+                            @if(!empty($settings['favicon_url']))
+                            <div class="mt-3">
+                                <p class="text-xs text-slate-500 mb-2">Current Favicon:</p>
+                                <img src="{{ str_starts_with($settings['favicon_url'], 'http') ? $settings['favicon_url'] : asset($settings['favicon_url']) }}" alt="Favicon preview" class="w-16 h-16 rounded-lg border border-slate-800 bg-slate-900 object-contain">
+                            </div>
+                            @endif
+                            <input type="hidden" name="favicon_url" value="{{ $settings['favicon_url'] ?? '' }}">
+                        </div>
+                    </div>
+                    <div>
                         <label class="text-sm text-slate-400">Site name</label>
                         <input type="text" name="site_name" value="{{ $settings['site_name'] }}" class="mt-2 w-full rounded-xl bg-slate-950 border border-slate-800 px-4 py-2 text-sm text-slate-100" />
                     </div>

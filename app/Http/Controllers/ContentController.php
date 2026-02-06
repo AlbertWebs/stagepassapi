@@ -76,11 +76,17 @@ class ContentController extends Controller
             ? $this->normalizeUrl($settings['site_logo_url'])
             : $this->normalizeUrl($navbar?->logo_url);
 
+        // Get favicon URL from settings
+        $faviconUrl = !empty($settings['favicon_url']) 
+            ? $this->normalizeUrl($settings['favicon_url'])
+            : null;
+
         return response()
             ->json([
                 'settings' => [
                     'portfolio_source' => $portfolioSource,
                     'site_logo_url' => $siteLogoUrl,
+                    'favicon_url' => $faviconUrl,
                     'site_name' => $settings['site_name'] ?? null,
                     'site_tagline' => $settings['site_tagline'] ?? null,
                     'website_url' => $settings['website_url'] ?? null,

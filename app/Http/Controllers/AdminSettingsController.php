@@ -17,6 +17,7 @@ class AdminSettingsController extends Controller
         $defaults = [
             'portfolio_source' => 'instagram',
             'site_logo_url' => '',
+            'favicon_url' => '',
             'site_name' => 'StagePass Audio Visual Limited',
             'site_tagline' => '',
             'website_url' => 'https://stagepass.co.ke',
@@ -83,9 +84,30 @@ class AdminSettingsController extends Controller
             );
         }
         
+        // Handle favicon upload
+        if ($request->hasFile('favicon_upload')) {
+            $file = $request->file('favicon_upload');
+            $filename = 'favicon_' . time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $uploadsPath = public_path('uploads');
+            
+            // Ensure uploads directory exists
+            if (!file_exists($uploadsPath)) {
+                mkdir($uploadsPath, 0755, true);
+            }
+            
+            $file->move($uploadsPath, $filename);
+            $faviconUrl = 'uploads/' . $filename;
+            
+            DB::table('site_settings')->updateOrInsert(
+                ['key' => 'favicon_url'],
+                ['value' => $faviconUrl, 'updated_at' => now()]
+            );
+        }
+        
         // Update all other settings
         $settingsToUpdate = [
             'site_logo_url',
+            'favicon_url',
             'site_name',
             'site_tagline',
             'website_url',
@@ -113,6 +135,11 @@ class AdminSettingsController extends Controller
         foreach ($settingsToUpdate as $key) {
             // Skip logo_url if it was uploaded (already handled above)
             if ($key === 'site_logo_url' && $request->hasFile('site_logo_upload')) {
+                continue;
+            }
+            
+            // Skip favicon_url if it was uploaded (already handled above)
+            if ($key === 'favicon_url' && $request->hasFile('favicon_upload')) {
                 continue;
             }
             
