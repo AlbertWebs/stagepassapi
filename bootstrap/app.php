@@ -50,6 +50,12 @@ return Application::configure(basePath: dirname(__DIR__))
             'accept.json' => \App\Http\Middleware\AcceptJsonMiddleware::class,
         ]);
         
+        // Ensure accept.json middleware runs early for API routes
+        $middleware->priority([
+            \App\Http\Middleware\AcceptJsonMiddleware::class,
+            \App\Http\Middleware\CorsMiddleware::class,
+        ]);
+        
         // Exclude API routes from CSRF verification
         $middleware->validateCsrfTokens([
             'api/*',
@@ -58,6 +64,22 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
+        // Handle 415 Unsupported Media Type errors specifically
+        $exceptions->render(function (\Symfony\Component\HttpKernel\Exception\UnsupportedMediaTypeHttpException $e, \Illuminate\Http\Request $request) {
+            if ($request->is('api/*')) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Unsupported media type. Please ensure your request has Content-Type: application/json header.',
+                    'error' => config('app.debug') ? $e->getMessage() : null,
+                ], 415)
+                    ->header('Access-Control-Allow-Origin', '*')
+                    ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS')
+                    ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin, X-CSRF-TOKEN')
+                    ->header('Access-Control-Allow-Credentials', 'true');
+            }
+            return null;
+        });
+        
         // Add CORS headers to all API error responses
         $exceptions->render(function (\Throwable $e, \Illuminate\Http\Request $request) {
             // Only add CORS headers for API routes

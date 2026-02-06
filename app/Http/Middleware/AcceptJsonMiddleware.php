@@ -20,11 +20,51 @@ class AcceptJsonMiddleware
     {
         // Only apply to API routes
         if ($request->is('api/*')) {
+            // For GET, HEAD, OPTIONS requests, skip Content-Type processing
+            // These methods don't have request bodies
+            if (in_array($request->method(), ['GET', 'HEAD', 'OPTIONS'])) {
+                // Remove Content-Type header if present on GET requests to prevent 415 errors
+                if ($request->hasHeader('Content-Type')) {
+                    $request->headers->remove('Content-Type');
+                }
+                return $next($request);
+            }
+            
+            // For POST, PUT, PATCH, DELETE - handle Content-Type
             $contentType = $request->header('Content-Type', '');
             
-            // If no content type is set, default to application/json
-            if (empty($contentType) && $request->isMethod('POST')) {
+            // Remove charset if present for comparison
+            $contentTypeBase = trim(explode(';', $contentType)[0]);
+            
+            // Accept multiple content types
+            $acceptedTypes = [
+                'application/json',
+                'application/x-www-form-urlencoded',
+                'multipart/form-data',
+                'text/plain',
+            ];
+            
+            // If no content type is set or it's empty, default to application/json for POST/PUT/PATCH
+            if (empty($contentTypeBase) && in_array($request->method(), ['POST', 'PUT', 'PATCH', 'DELETE'])) {
                 $request->headers->set('Content-Type', 'application/json');
+            }
+            // If content type is not in accepted list but we have a body, try to parse as JSON
+            elseif (!empty($contentTypeBase) && !in_array($contentTypeBase, $acceptedTypes)) {
+                $content = $request->getContent();
+                if (!empty($content)) {
+                    // Try to parse as JSON
+                    $jsonData = json_decode($content, true);
+                    if (json_last_error() === JSON_ERROR_NONE) {
+                        $request->merge($jsonData);
+                        $request->headers->set('Content-Type', 'application/json');
+                    } else {
+                        // If not JSON, accept it anyway for API routes
+                        $request->headers->set('Content-Type', 'application/json');
+                    }
+                } else {
+                    // No content, remove the problematic Content-Type header
+                    $request->headers->remove('Content-Type');
+                }
             }
             
             // If content is form-urlencoded but body looks like JSON, parse it as JSON
@@ -41,6 +81,20 @@ class AcceptJsonMiddleware
             }
         }
 
-        return $next($request);
+        try {
+            return $next($request);
+        } catch (\Symfony\Component\HttpKernel\Exception\UnsupportedMediaTypeHttpException $e) {
+            // Catch 415 errors and return a proper response
+            if ($request->is('api/*')) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Content type not supported. Please send application/json.',
+                ], 415)
+                    ->header('Access-Control-Allow-Origin', '*')
+                    ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS')
+                    ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin, X-CSRF-TOKEN');
+            }
+            throw $e;
+        }
     }
 }
