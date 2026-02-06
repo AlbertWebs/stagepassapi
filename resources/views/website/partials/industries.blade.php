@@ -60,16 +60,27 @@ class="py-20 bg-gradient-to-b from-gray-100 via-gray-50 to-white">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
             @foreach($industryData as $index => $industry)
                 @php
-                    $iconName = $industry->icon_name ?? $industry['icon_name'] ?? 'Building2';
-                    $iconUrl = $industry->icon_url ?? $industry['icon_url'] ?? null;
-                    $overlayDescription = $industry->overlay_description ?? $industry['overlay_description'] ?? null;
+                    // Handle both array and object data
+                    if (is_array($industry)) {
+                        $iconName = $industry['icon_name'] ?? 'Building2';
+                        $iconUrl = $industry['icon_url'] ?? null;
+                        $overlayDescription = $industry['overlay_description'] ?? null;
+                        $industryTitle = $industry['title'] ?? '';
+                        $industryDescription = $industry['description'] ?? '';
+                    } else {
+                        $iconName = $industry->icon_name ?? 'Building2';
+                        $iconUrl = $industry->icon_url ?? null;
+                        $overlayDescription = $industry->overlay_description ?? null;
+                        $industryTitle = $industry->title ?? '';
+                        $industryDescription = $industry->description ?? '';
+                    }
                 @endphp
                 <div :class="isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'"
                      class="transition-all duration-1000 transform"
                      style="transition-delay: {{ $index * 100 }}ms">
                     <!-- Desktop: Hover overlay -->
                     <div class="relative h-72 rounded-2xl overflow-hidden group transition-all duration-500 transform hover:-translate-y-3 hover:shadow-2xl hover:shadow-yellow-500/20 bg-white/80 backdrop-blur border border-yellow-100 hidden md:block cursor-pointer"
-                         @mouseenter="selectedIndustry = @js($industry)"
+                         @mouseenter="selectedIndustry = @js((is_array($industry) ? $industry : (array)$industry))"
                          @mouseleave="selectedIndustry = null">
                         <div class="absolute inset-0 bg-gradient-to-br from-yellow-50 via-white to-blue-50 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                         <div class="absolute -top-10 -right-10 h-32 w-32 rounded-full bg-yellow-200/40 blur-2xl group-hover:scale-110 transition-transform duration-500"></div>
@@ -78,39 +89,39 @@ class="py-20 bg-gradient-to-b from-gray-100 via-gray-50 to-white">
                         <div class="absolute inset-0 flex flex-col items-center justify-center p-6 rounded-2xl transition-transform duration-500 group-hover:scale-95">
                             <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#172455] to-[#1e3a8a] flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform duration-500">
                                 @if($iconUrl)
-                                    <img src="{{ $iconUrl }}" alt="{{ $industry->title ?? $industry['title'] ?? '' }}" class="h-10 w-10 object-contain" />
+                                    <img src="{{ $iconUrl }}" alt="{{ $industryTitle }}" class="h-10 w-10 object-contain" />
                                 @else
                                     <svg class="text-yellow-300 w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         {!! getIconSvg($iconName) !!}
                                     </svg>
                                 @endif
                             </div>
-                            <h3 class="text-2xl font-extrabold text-[#172455] mt-6 text-center">{{ $industry->title ?? $industry['title'] ?? '' }}</h3>
+                            <h3 class="text-2xl font-extrabold text-[#172455] mt-6 text-center">{{ $industryTitle }}</h3>
                             <p class="text-sm text-gray-500 mt-2 text-center">Tailored event solutions</p>
                         </div>
 
                         <!-- Hover Overlay with Details -->
-                        <div :class="selectedIndustry && selectedIndustry.title === '{{ $industry->title ?? $industry['title'] ?? '' }}' ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'"
+                        <div :class="selectedIndustry && selectedIndustry.title === '{{ $industryTitle }}' ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'"
                              class="absolute inset-0 bg-gradient-to-br from-[#172455] to-[#1e3a8a] text-white p-6 rounded-2xl flex flex-col justify-center items-center transition-all duration-500 overflow-y-auto">
                             @if($iconUrl)
-                                <img src="{{ $iconUrl }}" alt="{{ $industry->title ?? $industry['title'] ?? '' }}" class="h-12 w-12 object-contain mb-4" />
+                                <img src="{{ $iconUrl }}" alt="{{ $industryTitle }}" class="h-12 w-12 object-contain mb-4" />
                             @else
                                 <svg class="text-yellow-400 mb-4 w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     {!! getIconSvg($iconName) !!}
                                 </svg>
                             @endif
-                            <h3 class="font-bold text-yellow-400 text-xl mb-3 text-center">{{ $industry->title ?? $industry['title'] ?? '' }}</h3>
+                            <h3 class="font-bold text-yellow-400 text-xl mb-3 text-center">{{ $industryTitle }}</h3>
                             @if($overlayDescription)
                                 <div class="text-sm text-slate-200 text-center leading-relaxed prose prose-invert prose-sm max-w-none">{!! $overlayDescription !!}</div>
                             @else
-                                <p class="text-sm text-slate-200 text-center leading-relaxed line-clamp-4">{{ $industry->description ?? $industry['description'] ?? '' }}</p>
+                                <p class="text-sm text-slate-200 text-center leading-relaxed line-clamp-4">{{ $industryDescription }}</p>
                             @endif
                         </div>
                     </div>
 
                     <!-- Mobile: Tap to open modal -->
                     <div class="relative h-72 rounded-2xl overflow-hidden group transition-all duration-500 transform active:scale-95 bg-white/80 backdrop-blur border border-yellow-100 block md:hidden cursor-pointer"
-                         @click="handleCardTap(@js($industry))">
+                         @click="handleCardTap(@js((is_array($industry) ? $industry : (array)$industry)))">
                         <div class="absolute inset-0 bg-gradient-to-br from-yellow-50 via-white to-blue-50 opacity-0 group-active:opacity-100 transition-opacity duration-200"></div>
                         <div class="absolute -top-10 -right-10 h-32 w-32 rounded-full bg-yellow-200/40 blur-2xl"></div>
                         
@@ -118,14 +129,14 @@ class="py-20 bg-gradient-to-b from-gray-100 via-gray-50 to-white">
                         <div class="absolute inset-0 flex flex-col items-center justify-center p-6 rounded-2xl">
                             <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#172455] to-[#1e3a8a] flex items-center justify-center shadow-2xl">
                                 @if($iconUrl)
-                                    <img src="{{ $iconUrl }}" alt="{{ $industry->title ?? $industry['title'] ?? '' }}" class="h-10 w-10 object-contain" />
+                                    <img src="{{ $iconUrl }}" alt="{{ $industryTitle }}" class="h-10 w-10 object-contain" />
                                 @else
                                     <svg class="text-yellow-300 w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         {!! getIconSvg($iconName) !!}
                                     </svg>
                                 @endif
                             </div>
-                            <h3 class="text-2xl font-extrabold text-[#172455] mt-6 text-center">{{ $industry->title ?? $industry['title'] ?? '' }}</h3>
+                            <h3 class="text-2xl font-extrabold text-[#172455] mt-6 text-center">{{ $industryTitle }}</h3>
                             <p class="text-sm text-gray-500 mt-2 text-center">Tap for details</p>
                         </div>
                     </div>

@@ -1,3 +1,4 @@
+
 @php
 $data = $data ?? null;
 
@@ -86,6 +87,7 @@ startTimeout = setTimeout(() => {
 ";
 @endphp
 
+@verbatim
 <section
     x-data='{!! $xDataJson !!}'
     x-init="{!! $xInitJs !!}"
@@ -132,3 +134,4 @@ startTimeout = setTimeout(() => {
         </h1>
     </div>
 </section>
+@endverbatim

@@ -34,11 +34,21 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             @foreach($galleryItems as $index => $item)
                 @php
-                    $isVideo = ($item->type ?? $item['type'] ?? '') === 'video';
-                    $itemTitle = $item->title ?? $item['title'] ?? 'Portfolio Item';
-                    $thumbnail = $item->thumbnail ?? $item['thumbnail'] ?? '';
-                    $youtubeId = $item->youtube_id ?? $item['youtube_id'] ?? null;
-                    $mediaUrl = $item->media_url ?? $item['media_url'] ?? $thumbnail;
+                    // Handle both array and object data
+                    if (is_array($item)) {
+                        $itemType = $item['type'] ?? '';
+                        $itemTitle = $item['title'] ?? 'Portfolio Item';
+                        $thumbnail = $item['thumbnail'] ?? '';
+                        $youtubeId = $item['youtube_id'] ?? null;
+                        $mediaUrl = $item['media_url'] ?? $thumbnail;
+                    } else {
+                        $itemType = $item->type ?? '';
+                        $itemTitle = $item->title ?? 'Portfolio Item';
+                        $thumbnail = $item->thumbnail ?? '';
+                        $youtubeId = $item->youtube_id ?? null;
+                        $mediaUrl = $item->media_url ?? $thumbnail;
+                    }
+                    $isVideo = $itemType === 'video';
                     
                     if ($isVideo && $youtubeId) {
                         $clickHandler = "currentYouTubeId = " . json_encode($youtubeId) . "; isYouTubeModalOpen = true;";

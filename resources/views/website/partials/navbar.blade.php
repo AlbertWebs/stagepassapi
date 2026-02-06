@@ -75,11 +75,6 @@
                 <div class="hidden lg:flex items-center space-x-8">
                     @foreach($navLinks as $index => $link)
                         @php
-                            $isActive = $isPage 
-                                ? ($activeLink === $link['href'] ?? false)
-                                : ($activeLink === ($link['href'] ?? ''));
-                        @endphp
-                        @php
                             $linkHref = $link['href'] ?? '';
                             $isActive = $isPage 
                                 ? ($currentPath === $linkHref)
@@ -133,9 +128,10 @@
                 <div class="flex flex-col space-y-4">
                     @foreach($navLinks as $index => $link)
                         @php
+                            $linkHref = $link['href'] ?? '';
                             $isActive = $isPage 
-                                ? ($activeLink === $link['href'] ?? false)
-                                : ($activeLink === ($link['href'] ?? ''));
+                                ? ($currentPath === $linkHref)
+                                : false;
                         @endphp
                         @if(($link['isLink'] ?? false))
                             <a href="{{ $link['href'] }}" 
