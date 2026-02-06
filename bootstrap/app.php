@@ -47,6 +47,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin.basic' => \App\Http\Middleware\AdminBasicAuth::class,
             'admin.session' => \App\Http\Middleware\AdminSessionAuth::class,
             'cors' => \App\Http\Middleware\CorsMiddleware::class,
+            'accept.json' => \App\Http\Middleware\AcceptJsonMiddleware::class,
         ]);
         
         // Exclude API routes from CSRF verification
@@ -77,7 +78,7 @@ return Application::configure(basePath: dirname(__DIR__))
                 ], $status)
                     ->header('Access-Control-Allow-Origin', '*')
                     ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS')
-                    ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin')
+                    ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin, X-CSRF-TOKEN')
                     ->header('Access-Control-Allow-Credentials', 'true');
             }
             

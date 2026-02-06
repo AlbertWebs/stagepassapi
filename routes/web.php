@@ -22,7 +22,7 @@ Route::get('/', function () {
 });
 
 // API Routes for Frontend
-Route::middleware('cors')->group(function () {
+Route::middleware(['cors', 'accept.json'])->group(function () {
 Route::get('/api/test', function () {
     return response()->json([
         'status' => 'success',
@@ -51,7 +51,7 @@ Route::get('/api/content/homepage', [ContentController::class, 'homepage']);
         return response('', 200)
             ->header('Access-Control-Allow-Origin', '*')
             ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS')
-            ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin')
+            ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin, X-CSRF-TOKEN')
             ->header('Access-Control-Allow-Credentials', 'true')
             ->header('Access-Control-Max-Age', '86400');
     })->where('any', '.*');
