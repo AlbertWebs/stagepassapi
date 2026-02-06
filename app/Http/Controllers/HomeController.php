@@ -14,7 +14,7 @@ class HomeController extends Controller
         $contentController = new ContentController();
         $homepageData = json_decode($contentController->homepage()->getContent(), true);
         
-        return view('home', [
+        return view('website.pages.home', [
             'homepageData' => $homepageData,
             'isPage' => false,
         ]);

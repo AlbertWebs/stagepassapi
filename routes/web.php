@@ -14,12 +14,25 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ContentController;
 use App\Http\Controllers\InstagramPortfolioController;
 use App\Http\Controllers\QuoteRequestController;
+use App\Http\Controllers\PageController;
+use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\DB;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Blade Frontend Routes
+Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/about', [PageController::class, 'about'])->name('about');
+Route::get('/services', [PageController::class, 'services'])->name('services');
+Route::get('/services/{service}', [PageController::class, 'service'])->name('service');
+Route::get('/services/{service}/{subservice}', [PageController::class, 'service'])->name('service.subservice');
+Route::get('/contact', [PageController::class, 'contact'])->name('contact');
+Route::get('/portfolio', [PageController::class, 'portfolio'])->name('portfolio');
+Route::get('/our-work', [PageController::class, 'portfolio'])->name('our-work'); // Alias
+Route::get('/industries', [PageController::class, 'industries'])->name('industries');
+Route::get('/privacy', [PageController::class, 'privacy'])->name('privacy');
+Route::get('/privacy-policy', [PageController::class, 'privacy'])->name('privacy-policy'); // Alias
+Route::get('/terms-and-conditions', [PageController::class, 'terms'])->name('terms');
+Route::get('/terms', [PageController::class, 'terms'])->name('terms.short'); // Alias
 
 // API Routes for Frontend
 Route::middleware(['cors', 'accept.json'])->group(function () {
