@@ -81,12 +81,24 @@ class ContentController extends Controller
             ? $this->normalizeUrl($settings['favicon_url'])
             : null;
 
+        // Static file paths - these should point to frontend domain or relative paths
+        $staticFilesBaseUrl = $settings['static_files_base_url'] ?? $settings['website_url'] ?? 'https://stagepass.co.ke';
+        $staticCssPath = $settings['static_css_path'] ?? '/static/css/main.css';
+        $staticJsPath = $settings['static_js_path'] ?? '/static/js/main.js';
+
         return response()
             ->json([
                 'settings' => [
                     'portfolio_source' => $portfolioSource,
                     'site_logo_url' => $siteLogoUrl,
                     'favicon_url' => $faviconUrl,
+                    'static_files' => [
+                        'base_url' => $staticFilesBaseUrl,
+                        'css_path' => $staticCssPath,
+                        'js_path' => $staticJsPath,
+                        'css_url' => rtrim($staticFilesBaseUrl, '/') . '/' . ltrim($staticCssPath, '/'),
+                        'js_url' => rtrim($staticFilesBaseUrl, '/') . '/' . ltrim($staticJsPath, '/'),
+                    ],
                     'site_name' => $settings['site_name'] ?? null,
                     'site_tagline' => $settings['site_tagline'] ?? null,
                     'website_url' => $settings['website_url'] ?? null,

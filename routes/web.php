@@ -153,6 +153,36 @@ Route::options('/manifest.json', function () {
         ->header('Access-Control-Max-Age', '86400');
 });
 
+// Handle frontend static file requests
+// Option 1: Return 204 No Content to prevent 404 errors (frontend should use paths from API settings)
+Route::get('/static/css/main.css', function () {
+    return response('', 204)
+        ->header('Content-Type', 'text/css')
+        ->header('Access-Control-Allow-Origin', '*')
+        ->header('Cache-Control', 'no-cache, no-store, must-revalidate');
+});
+
+Route::get('/static/js/main.js', function () {
+    return response('', 204)
+        ->header('Content-Type', 'application/javascript')
+        ->header('Access-Control-Allow-Origin', '*')
+        ->header('Cache-Control', 'no-cache, no-store, must-revalidate');
+});
+
+// Option 2: Redirect to frontend domain if configured
+// Uncomment and configure if you want to redirect these requests
+/*
+Route::get('/static/css/main.css', function () {
+    $frontendUrl = config('app.frontend_url', 'https://stagepass.co.ke');
+    return redirect($frontendUrl . '/static/css/main.css', 301);
+});
+
+Route::get('/static/js/main.js', function () {
+    $frontendUrl = config('app.frontend_url', 'https://stagepass.co.ke');
+    return redirect($frontendUrl . '/static/js/main.js', 301);
+});
+*/
+
 Route::get('/sitemap.xml', function () {
     $baseUrl = 'http://stagepass.co.ke';
     $lastmod = now()->toDateString();
