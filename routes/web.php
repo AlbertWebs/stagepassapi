@@ -131,7 +131,6 @@ Route::get('/manifest.json', function () {
             ]
         ];
     }
-    ];
     
     return response()->json($manifest)->header('Content-Type', 'application/manifest+json');
 })->name('manifest');
