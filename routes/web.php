@@ -66,8 +66,12 @@ Route::get('/manifest.json', function () {
             ? $settings['favicon_url'] 
             : '/' . ltrim($settings['favicon_url'], '/');
     } else {
-        // Use existing favicon.ico as fallback if no custom favicon is set
-        $faviconUrl = '/favicon.ico';
+        // Check if logo/favicon.png exists, otherwise use favicon.ico
+        if (file_exists(public_path('logo/favicon.png'))) {
+            $faviconUrl = '/logo/favicon.png';
+        } else {
+            $faviconUrl = '/favicon.ico';
+        }
     }
     
     // Only include icons if favicon exists (check local files only, skip external URLs)
@@ -132,8 +136,22 @@ Route::get('/manifest.json', function () {
         ];
     }
     
-    return response()->json($manifest)->header('Content-Type', 'application/manifest+json');
+    return response()->json($manifest)
+        ->header('Content-Type', 'application/manifest+json')
+        ->header('Access-Control-Allow-Origin', '*')
+        ->header('Access-Control-Allow-Methods', 'GET, OPTIONS')
+        ->header('Access-Control-Allow-Headers', 'Content-Type, Accept, Origin')
+        ->header('Cache-Control', 'public, max-age=3600');
 })->name('manifest');
+
+// Add OPTIONS route for manifest.json CORS preflight
+Route::options('/manifest.json', function () {
+    return response('', 200)
+        ->header('Access-Control-Allow-Origin', '*')
+        ->header('Access-Control-Allow-Methods', 'GET, OPTIONS')
+        ->header('Access-Control-Allow-Headers', 'Content-Type, Accept, Origin')
+        ->header('Access-Control-Max-Age', '86400');
+});
 
 Route::get('/sitemap.xml', function () {
     $baseUrl = 'http://stagepass.co.ke';

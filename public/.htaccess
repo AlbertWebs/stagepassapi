@@ -146,8 +146,17 @@
     </FilesMatch>
     
     # Enable CORS for fonts and images
-    <FilesMatch "\.(ttf|ttc|otf|eot|woff|woff2|font.css|css|jpg|jpeg|png|gif|webp|svg)$">
+    <FilesMatch "\.(ttf|ttc|otf|eot|woff|woff2|font.css|css|jpg|jpeg|png|gif|webp|svg|ico)$">
         Header set Access-Control-Allow-Origin "*"
+        Header set Access-Control-Allow-Methods "GET, OPTIONS"
+        Header set Access-Control-Allow-Headers "Content-Type, Accept, Origin"
+    </FilesMatch>
+    
+    # Enable CORS for manifest.json
+    <FilesMatch "manifest\.json$">
+        Header set Access-Control-Allow-Origin "*"
+        Header set Access-Control-Allow-Methods "GET, OPTIONS"
+        Header set Access-Control-Allow-Headers "Content-Type, Accept, Origin"
     </FilesMatch>
 </IfModule>
 
