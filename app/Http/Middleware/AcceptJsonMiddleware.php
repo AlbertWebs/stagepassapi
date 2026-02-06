@@ -22,11 +22,25 @@ class AcceptJsonMiddleware
         if ($request->is('api/*')) {
             // For GET, HEAD, OPTIONS requests, skip Content-Type processing
             // These methods don't have request bodies
+            // Safari on Mac sometimes sends Content-Type on GET requests, which causes 415 errors
             if (in_array($request->method(), ['GET', 'HEAD', 'OPTIONS'])) {
-                // Remove Content-Type header if present on GET requests to prevent 415 errors
-                if ($request->hasHeader('Content-Type')) {
+                // Always remove Content-Type header on GET/HEAD/OPTIONS to prevent Safari 415 errors
+                // This must be done before Laravel validates the request
+                $request->headers->remove('Content-Type');
+                
+                // Safari-specific handling
+                $userAgent = $request->header('User-Agent', '');
+                $isSafari = str_contains($userAgent, 'Safari') && !str_contains($userAgent, 'Chrome');
+                
+                if ($isSafari) {
+                    // Safari on Mac can send problematic headers - remove them all
                     $request->headers->remove('Content-Type');
+                    // Also ensure Accept header is properly set
+                    if (!$request->hasHeader('Accept') || empty($request->header('Accept'))) {
+                        $request->headers->set('Accept', 'application/json, text/plain, */*');
+                    }
                 }
+                
                 return $next($request);
             }
             
@@ -46,7 +60,13 @@ class AcceptJsonMiddleware
             
             // If no content type is set or it's empty, default to application/json for POST/PUT/PATCH
             if (empty($contentTypeBase) && in_array($request->method(), ['POST', 'PUT', 'PATCH', 'DELETE'])) {
-                $request->headers->set('Content-Type', 'application/json');
+                // Only set if there's actual content
+                if ($request->getContent()) {
+                    $request->headers->set('Content-Type', 'application/json');
+                } else {
+                    // No content, remove Content-Type header to prevent Safari 415 errors
+                    $request->headers->remove('Content-Type');
+                }
             }
             // If content type is not in accepted list but we have a body, try to parse as JSON
             elseif (!empty($contentTypeBase) && !in_array($contentTypeBase, $acceptedTypes)) {
@@ -84,7 +104,7 @@ class AcceptJsonMiddleware
         try {
             return $next($request);
         } catch (\Symfony\Component\HttpKernel\Exception\UnsupportedMediaTypeHttpException $e) {
-            // Catch 415 errors and return a proper response
+            // Catch 415 errors and return a proper response with CORS headers for Safari
             if ($request->is('api/*')) {
                 return response()->json([
                     'success' => false,
@@ -92,7 +112,21 @@ class AcceptJsonMiddleware
                 ], 415)
                     ->header('Access-Control-Allow-Origin', '*')
                     ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS')
-                    ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin, X-CSRF-TOKEN');
+                    ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin, X-CSRF-TOKEN')
+                    ->header('Access-Control-Allow-Credentials', 'true');
+            }
+            throw $e;
+        } catch (\Exception $e) {
+            // Catch any other exceptions that might cause 415 errors
+            if ($request->is('api/*') && str_contains($e->getMessage(), 'Unsupported Media Type')) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Content type not supported.',
+                ], 415)
+                    ->header('Access-Control-Allow-Origin', '*')
+                    ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS')
+                    ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin, X-CSRF-TOKEN')
+                    ->header('Access-Control-Allow-Credentials', 'true');
             }
             throw $e;
         }
