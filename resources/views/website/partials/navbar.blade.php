@@ -99,7 +99,7 @@
                         @endif
                     @endforeach
                     <button @click="document.dispatchEvent(new CustomEvent('open-quote-modal'))" 
-                            class="bg-gradient-to-r from-[#172455] to-[#1e3a8a] hover:from-[#0f1b3d] hover:to-[#172455] text-white px-8 py-6 rounded-full shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-110 font-bold border-2 border-yellow-500 animate-border-pulse">
+                            class="bg-gradient-to-r from-[#172455] to-[#1e3a8a] hover:from-[#0f1b3d] hover:to-[#172455] text-white px-4 py-2 rounded-full shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-110 font-bold border-2 border-yellow-500 animate-border-pulse text-sm">
                         {{ $ctaLabel }}
                     </button>
                 </div>
@@ -150,7 +150,7 @@
                         @endif
                     @endforeach
                     <button @click="document.dispatchEvent(new CustomEvent('open-quote-modal')); isMobileMenuOpen = false" 
-                            class="bg-gradient-to-r from-[#172455] to-[#1e3a8a] hover:from-[#0f1b3d] hover:to-[#172455] text-white w-full rounded-full py-6 font-bold">
+                            class="bg-gradient-to-r from-[#172455] to-[#1e3a8a] hover:from-[#0f1b3d] hover:to-[#172455] text-white w-full rounded-full py-3 font-bold text-sm">
                         {{ $ctaLabel }}
                     </button>
                 </div>

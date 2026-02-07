@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\ContentController;
 use App\Http\Controllers\InstagramPortfolioController;
 
@@ -17,12 +16,26 @@ class PageController extends Controller
     }
     
     /**
-     * Get homepage data for views
+     * Get homepage data for views (same as API route)
      */
     protected function getHomepageData()
     {
-        $homepageResponse = $this->contentController->homepage();
-        return json_decode($homepageResponse->getContent(), true);
+        $response = $this->contentController->homepage();
+        return json_decode($response->getContent(), true);
+    }
+    
+    /**
+     * Fetch data from ContentController (same as API route)
+     */
+    protected function fetchPageData($method, ...$args)
+    {
+        try {
+            $response = call_user_func_array([$this->contentController, $method], $args);
+            return json_decode($response->getContent(), true);
+        } catch (\Exception $e) {
+            \Log::error("Failed to fetch data via {$method}: " . $e->getMessage());
+            return null;
+        }
     }
     
     /**
@@ -31,13 +44,12 @@ class PageController extends Controller
     public function about()
     {
         $homepageData = $this->getHomepageData();
-        $pageResponse = $this->contentController->about();
-        $pageData = json_decode($pageResponse->getContent(), true);
+        $pageData = $this->fetchPageData('about');
         
         return view('website.pages.about', [
             'homepageData' => $homepageData,
             'pageData' => $pageData,
-            'loadError' => null,
+            'loadError' => $pageData ? null : 'Unable to load about content.',
             'isPage' => true,
         ]);
     }
@@ -48,13 +60,12 @@ class PageController extends Controller
     public function services()
     {
         $homepageData = $this->getHomepageData();
-        $pageResponse = $this->contentController->services();
-        $pageData = json_decode($pageResponse->getContent(), true);
+        $pageData = $this->fetchPageData('services');
         
         return view('website.pages.services', [
             'homepageData' => $homepageData,
             'pageData' => $pageData,
-            'loadError' => null,
+            'loadError' => $pageData ? null : 'Unable to load services content.',
             'isPage' => true,
         ]);
     }
@@ -65,13 +76,12 @@ class PageController extends Controller
     public function contact()
     {
         $homepageData = $this->getHomepageData();
-        $pageResponse = $this->contentController->contact();
-        $pageData = json_decode($pageResponse->getContent(), true);
+        $pageData = $this->fetchPageData('contact');
         
         return view('website.pages.contact', [
             'homepageData' => $homepageData,
             'pageData' => $pageData,
-            'loadError' => null,
+            'loadError' => $pageData ? null : 'Unable to load contact content.',
             'isPage' => true,
         ]);
     }
@@ -83,19 +93,24 @@ class PageController extends Controller
     {
         $homepageData = $this->getHomepageData();
         
-        // Fetch Instagram portfolio
-        $instagramController = new InstagramPortfolioController();
-        $instagramResponse = $instagramController->index(new Request(['limit' => 50]));
-        $instagramData = json_decode($instagramResponse->getContent(), true);
-        
-        $instagramItems = $instagramData['data'] ?? [];
-        $isLoading = false;
-        $error = '';
+        // Fetch Instagram portfolio (same as API route)
+        try {
+            $instagramController = new InstagramPortfolioController();
+            $request = new Request(['limit' => 50]);
+            $instagramResponse = $instagramController->index($request);
+            $instagramData = json_decode($instagramResponse->getContent(), true);
+            $instagramItems = $instagramData['data'] ?? [];
+            $error = '';
+        } catch (\Exception $e) {
+            $instagramItems = [];
+            $error = 'Unable to load portfolio.';
+            \Log::error('Failed to fetch Instagram portfolio: ' . $e->getMessage());
+        }
         
         return view('website.pages.portfolio', [
             'homepageData' => $homepageData,
             'instagramItems' => $instagramItems,
-            'isLoading' => $isLoading,
+            'isLoading' => false,
             'error' => $error,
             'isPage' => true,
         ]);
@@ -107,13 +122,12 @@ class PageController extends Controller
     public function industries()
     {
         $homepageData = $this->getHomepageData();
-        $pageResponse = $this->contentController->industries();
-        $pageData = json_decode($pageResponse->getContent(), true);
+        $pageData = $this->fetchPageData('industries');
         
         return view('website.pages.industries', [
             'homepageData' => $homepageData,
             'pageData' => $pageData,
-            'loadError' => null,
+            'loadError' => $pageData ? null : 'Unable to load industries content.',
             'isPage' => true,
         ]);
     }
@@ -124,13 +138,12 @@ class PageController extends Controller
     public function privacy()
     {
         $homepageData = $this->getHomepageData();
-        $pageResponse = $this->contentController->privacy();
-        $pageData = json_decode($pageResponse->getContent(), true);
+        $pageData = $this->fetchPageData('privacy');
         
         return view('website.pages.privacy', [
             'homepageData' => $homepageData,
             'pageData' => $pageData,
-            'loadError' => null,
+            'loadError' => $pageData ? null : 'Unable to load privacy content.',
             'isPage' => true,
         ]);
     }
@@ -141,13 +154,12 @@ class PageController extends Controller
     public function terms()
     {
         $homepageData = $this->getHomepageData();
-        $pageResponse = $this->contentController->terms();
-        $pageData = json_decode($pageResponse->getContent(), true);
+        $pageData = $this->fetchPageData('terms');
         
         return view('website.pages.terms', [
             'homepageData' => $homepageData,
             'pageData' => $pageData,
-            'loadError' => null,
+            'loadError' => $pageData ? null : 'Unable to load terms content.',
             'isPage' => true,
         ]);
     }
@@ -158,35 +170,21 @@ class PageController extends Controller
     public function service($service, $subservice = null)
     {
         $homepageData = $this->getHomepageData();
+        $pageData = $this->fetchPageData('service', $service, $subservice);
         
-        try {
-            $pageResponse = $this->contentController->service($service, $subservice);
-            $pageData = json_decode($pageResponse->getContent(), true);
-            
-            $content = $pageData['page'] ?? $pageData ?? [
-                'title' => $service ? ucfirst(str_replace('-', ' ', $service)) : 'Service',
-                'description' => 'Professional AV services for your event needs.'
-            ];
-            
-            return view('website.pages.service', [
-                'homepageData' => $homepageData,
-                'pageData' => $content,
-                'service' => $service,
-                'subservice' => $subservice,
-                'loading' => false,
-                'error' => null,
-                'isPage' => true,
-            ]);
-        } catch (\Exception $e) {
-            return view('website.pages.service', [
-                'homepageData' => $homepageData,
-                'pageData' => null,
-                'service' => $service,
-                'subservice' => $subservice,
-                'loading' => false,
-                'error' => 'Service page not found',
-                'isPage' => true,
-            ]);
-        }
+        $content = $pageData['page'] ?? $pageData ?? [
+            'title' => $service ? ucfirst(str_replace('-', ' ', $service)) : 'Service',
+            'description' => 'Professional AV services for your event needs.'
+        ];
+        
+        return view('website.pages.service', [
+            'homepageData' => $homepageData,
+            'pageData' => $content,
+            'service' => $service,
+            'subservice' => $subservice,
+            'loading' => false,
+            'error' => ($pageData && isset($pageData['page'])) ? null : 'Service page not found',
+            'isPage' => true,
+        ]);
     }
 }
