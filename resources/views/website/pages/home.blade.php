@@ -50,7 +50,14 @@
 @section('content')
 <div class="min-h-screen bg-gray-900">
     <main id="home" class="relative">
-        @include('website.partials.hero', ['data' => $homepageData['hero'] ?? null])
+        @php
+            // Ensure hero data is an array (it comes as object from ContentController, then array after JSON decode)
+            $heroData = $homepageData['hero'] ?? null;
+            if ($heroData && !is_array($heroData)) {
+                $heroData = (array) $heroData;
+            }
+        @endphp
+        @include('website.partials.hero', ['data' => $heroData])
     </main>
     
     @if(isset($loadError) && $loadError)

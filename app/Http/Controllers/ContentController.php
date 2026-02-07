@@ -120,45 +120,56 @@ class ContentController extends Controller
                     'links' => $navbarLinks,
                     'bottom_links' => $bottomLinks,
                 ],
-                'hero' => $hero ? (object) array_merge((array) $hero, [
+                'hero' => $hero ? array_merge((array) $hero, [
+                    'headline' => $hero->headline ?? null,
                     'background_video_url' => $this->normalizeUrl($hero->background_video_url ?? null),
                     'thumbnail_url' => $this->normalizeUrl($hero->thumbnail_url ?? null),
                 ]) : null,
                 'about' => [
-                    'section' => $about ? (object) array_merge((array) $about, [
+                    'section' => $about ? array_merge((array) $about, [
                         'image_url' => $this->normalizeUrl($about->image_url ?? null),
                     ]) : null,
-                    'highlights' => $aboutHighlights,
+                    'highlights' => $aboutHighlights->map(function($item) {
+                        return (array) $item;
+                    })->toArray(),
                 ],
                 'services' => [
-                    'section' => $servicesSection,
-                    'items' => $services,
+                    'section' => $servicesSection ? (array) $servicesSection : null,
+                    'items' => $services->map(function($item) {
+                        return (array) $item;
+                    })->toArray(),
                 ],
                 'stats' => [
-                    'section' => $statsSection,
-                    'items' => $stats,
+                    'section' => $statsSection ? (array) $statsSection : null,
+                    'items' => $stats->map(function($item) {
+                        return (array) $item;
+                    })->toArray(),
                 ],
                 'portfolio' => [
-                    'section' => $portfolioSection,
+                    'section' => $portfolioSection ? (array) $portfolioSection : null,
                     'items' => $portfolioItems->map(function ($item) {
                         $item->thumbnail = $this->normalizeUrl($item->thumbnail);
-                        return $item;
-                    }),
+                        return (array) $item;
+                    })->toArray(),
                 ],
                 'industries' => [
-                    'section' => $industriesSection,
-                    'items' => $industries,
+                    'section' => $industriesSection ? (array) $industriesSection : null,
+                    'items' => $industries->map(function($item) {
+                        return (array) $item;
+                    })->toArray(),
                 ],
                 'clients' => [
-                    'section' => $clientsSection,
+                    'section' => $clientsSection ? (array) $clientsSection : null,
                     'logos' => $clientLogos->map(function ($logo) {
                         $logo->logo_path = $this->normalizeUrl($logo->logo_path);
-                        return $logo;
-                    }),
+                        return (array) $logo;
+                    })->toArray(),
                 ],
                 'contact' => [
-                    'section' => $contactSection,
-                    'details' => $contactDetails,
+                    'section' => $contactSection ? (array) $contactSection : null,
+                    'details' => $contactDetails->map(function($item) {
+                        return (array) $item;
+                    })->toArray(),
                 ],
                 'footer' => [
                     'section' => [

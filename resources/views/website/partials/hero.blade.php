@@ -7,11 +7,13 @@ $backgroundVideo = asset('uploads/stagepass-audio-visual-safaricom-ceo-awade.mp4
 $thumbnailUrl = null;
 
 if ($data) {
+    // Handle both array (from JSON decode) and object (from direct DB query)
     if (is_array($data)) {
         $fullText = $data['headline'] ?? $fullText;
         $backgroundVideo = $data['background_video_url'] ?? $backgroundVideo;
         $thumbnailUrl = $data['thumbnail_url'] ?? null;
     } else {
+        // Handle stdClass object
         $fullText = $data->headline ?? $fullText;
         $backgroundVideo = $data->background_video_url ?? $backgroundVideo;
         $thumbnailUrl = $data->thumbnail_url ?? null;

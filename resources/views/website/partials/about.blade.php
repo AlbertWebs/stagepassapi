@@ -1,22 +1,74 @@
 @php
     $data = $data ?? null;
-    $section = $data->section ?? null;
-    $highlights = $data->highlights ?? collect([
-        (object)['text' => 'Integrated technical consulting'],
-        (object)['text' => 'Professional event planning & design'],
-        (object)['text' => 'Complete implementation support'],
-        (object)['text' => 'Africa-wide operations'],
-    ]);
     
-    $badgeLabel = $section->badge_label ?? 'About Us';
-    $title = $section->title ?? 'Who We Are';
-    $descriptionPrimary = $section->description_primary ?? 'StagePass Audio-Visual Limited is an integrated technical, consulting, planning, design and implementation provider for professional events based in Nairobi and operating within Africa.';
-    $descriptionSecondary = $section->description_secondary ?? '';
-    $imageUrl = $section->image_url ?? asset('uploads/banners/visionsp.jpg');
-    $statValue = $section->stat_value ?? '2362+';
-    $statLabel = $section->stat_label ?? 'Successful Events';
-    $visionTitle = $section->vision_title ?? 'Our Vision';
-    $visionText = $section->vision_text ?? "TO BE AFRICA'S REVOLUTIONARY EVENTS TECHNOLOGY EXPERTS";
+    // Handle both array (from JSON decode) and object (from direct DB query)
+    $section = null;
+    $highlights = null;
+    if ($data) {
+        if (is_array($data)) {
+            $section = $data['section'] ?? null;
+            $highlights = $data['highlights'] ?? null;
+        } else {
+            $section = $data->section ?? null;
+            $highlights = $data->highlights ?? null;
+        }
+    }
+    
+    // Default highlights if none provided
+    if (!$highlights) {
+        $highlights = collect([
+            (object)['text' => 'Integrated technical consulting'],
+            (object)['text' => 'Professional event planning & design'],
+            (object)['text' => 'Complete implementation support'],
+            (object)['text' => 'Africa-wide operations'],
+        ]);
+    }
+    
+    // Extract section properties (handle both array and object)
+    $badgeLabel = null;
+    $title = null;
+    $descriptionPrimary = null;
+    $descriptionSecondary = null;
+    $imageUrl = null;
+    $statValue = null;
+    $statLabel = null;
+    $visionTitle = null;
+    $visionText = null;
+    
+    if ($section) {
+        if (is_array($section)) {
+            $badgeLabel = $section['badge_label'] ?? null;
+            $title = $section['title'] ?? null;
+            $descriptionPrimary = $section['description_primary'] ?? null;
+            $descriptionSecondary = $section['description_secondary'] ?? null;
+            $imageUrl = $section['image_url'] ?? null;
+            $statValue = $section['stat_value'] ?? null;
+            $statLabel = $section['stat_label'] ?? null;
+            $visionTitle = $section['vision_title'] ?? null;
+            $visionText = $section['vision_text'] ?? null;
+        } else {
+            $badgeLabel = $section->badge_label ?? null;
+            $title = $section->title ?? null;
+            $descriptionPrimary = $section->description_primary ?? null;
+            $descriptionSecondary = $section->description_secondary ?? null;
+            $imageUrl = $section->image_url ?? null;
+            $statValue = $section->stat_value ?? null;
+            $statLabel = $section->stat_label ?? null;
+            $visionTitle = $section->vision_title ?? null;
+            $visionText = $section->vision_text ?? null;
+        }
+    }
+    
+    // Set defaults
+    $badgeLabel = $badgeLabel ?? 'About Us';
+    $title = $title ?? 'Who We Are';
+    $descriptionPrimary = $descriptionPrimary ?? 'StagePass Audio-Visual Limited is an integrated technical, consulting, planning, design and implementation provider for professional events based in Nairobi and operating within Africa.';
+    $descriptionSecondary = $descriptionSecondary ?? '';
+    $imageUrl = $imageUrl ?? asset('uploads/banners/visionsp.jpg');
+    $statValue = $statValue ?? '2362+';
+    $statLabel = $statLabel ?? 'Successful Events';
+    $visionTitle = $visionTitle ?? 'Our Vision';
+    $visionText = $visionText ?? "TO BE AFRICA'S REVOLUTIONARY EVENTS TECHNOLOGY EXPERTS";
 @endphp
 <div class="h-12 bg-gradient-to-b from-white to-gray-50 relative">
     <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-transparent via-[#172455] to-transparent"></div>
