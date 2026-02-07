@@ -1,9 +1,20 @@
 @php
     $data = $data ?? null;
-    $section = $data->section ?? null;
+    $homepageData = $homepageData ?? [];
     $isHomepage = request()->path() === '/';
     
-    $socialLinks = $data->social_links ?? [
+    // Get section data (handle both array and object)
+    $section = null;
+    if ($data) {
+        $section = is_array($data) ? ($data['section'] ?? null) : ($data->section ?? null);
+    }
+    
+    // Get social links
+    $socialLinks = null;
+    if ($data) {
+        $socialLinks = is_array($data) ? ($data['social_links'] ?? null) : ($data->social_links ?? null);
+    }
+    $socialLinks = $socialLinks ?? [
         ['platform' => 'Facebook', 'url' => '#'],
         ['platform' => 'Twitter', 'url' => '#'],
         ['platform' => 'Instagram', 'url' => '#'],
@@ -11,8 +22,16 @@
         ['platform' => 'Youtube', 'url' => '#'],
     ];
     
-    $quickLinks = ($isHomepage && isset($data->quick_links) && count($data->quick_links)) 
-        ? collect($data->quick_links)->map(fn($link) => array_merge((array)$link, ['isPage' => str_starts_with($link->href ?? '', '/')]))->toArray()
+    // Get quick links
+    $quickLinksData = null;
+    if ($data) {
+        $quickLinksData = is_array($data) ? ($data['quick_links'] ?? null) : ($data->quick_links ?? null);
+    }
+    $quickLinks = ($isHomepage && $quickLinksData && count($quickLinksData)) 
+        ? collect($quickLinksData)->map(function($link) {
+            $linkArray = is_array($link) ? $link : (array)$link;
+            return array_merge($linkArray, ['isPage' => str_starts_with($linkArray['href'] ?? '', '/')]);
+        })->toArray()
         : [
             ['label' => 'About Us', 'href' => $isHomepage ? '#about' : '/about', 'isPage' => !$isHomepage],
             ['label' => 'Services', 'href' => $isHomepage ? '#services' : '/services', 'isPage' => !$isHomepage],
@@ -27,7 +46,12 @@
         ['label' => 'Get AV Quote', 'href' => '#quote', 'isPage' => false, 'isQuote' => true],
     ];
     
-    $serviceItems = $data->service_items ?? [
+    // Get service items
+    $serviceItems = null;
+    if ($data) {
+        $serviceItems = is_array($data) ? ($data['service_items'] ?? null) : ($data->service_items ?? null);
+    }
+    $serviceItems = $serviceItems ?? [
         ['label' => 'Full Production'],
         ['label' => 'Visual & Screens'],
         ['label' => 'Staging Services'],
@@ -36,9 +60,28 @@
         ['label' => 'Equipment Rentals'],
     ];
     
-    $logoUrl = $section->logo_url ?? asset('uploads/StagePass-LOGO-y.png');
-    $description = $section->description ?? "Africa's premier audio-visual and event technology provider, delivering excellence through innovation and expertise.";
-    $copyright = $section->copyright ?? '© ' . date('Y') . ' StagePass Audio Visual Limited. All rights reserved. | Creative Solutions | Technical Excellence';
+    // Get logo URL - prioritize from footer section, then settings, then default
+    $logoUrl = null;
+    if ($section) {
+        $logoUrl = is_array($section) ? ($section['logo_url'] ?? null) : ($section->logo_url ?? null);
+    }
+    if (!$logoUrl && isset($homepageData['settings']['site_logo_url'])) {
+        $logoUrl = $homepageData['settings']['site_logo_url'];
+    }
+    $logoUrl = $logoUrl ?? asset('uploads/StagePass-LOGO-y.png');
+    
+    // Get description and copyright
+    $description = null;
+    if ($section) {
+        $description = is_array($section) ? ($section['description'] ?? null) : ($section->description ?? null);
+    }
+    $description = $description ?? "Africa's premier audio-visual and event technology provider, delivering excellence through innovation and expertise.";
+    
+    $copyright = null;
+    if ($section) {
+        $copyright = is_array($section) ? ($section['copyright'] ?? null) : ($section->copyright ?? null);
+    }
+    $copyright = $copyright ?? '© ' . date('Y') . ' StagePass Audio Visual Limited. All rights reserved. | Creative Solutions | Technical Excellence';
 @endphp
 <footer x-data="{ isVisible: false }" 
         x-intersect="isVisible = true"

@@ -4,15 +4,17 @@
 @section('description', 'StagePass Audio Visual Limited is Kenya\'s leading events and audio-visual company — offering professional sound systems, event production, video conferencing, stage lighting, LED screens and technical event support in Nairobi and across Kenya.')
 
 @section('structured_data')
-@verbatim
+@php
+    $logoUrl = $homepageData['settings']['site_logo_url'] ?? $homepageData['navigation']['logo_url'] ?? 'https://api.stagepass.co.ke/uploads/StagePass-LOGO-y.png';
+@endphp
 <script type="application/ld+json">
 {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
     "name": "StagePass Audio Visual Limited",
     "url": "https://stagepass.co.ke",
-    "logo": "https://stagepass.co.ke/uploads/StagePass-LOGO-y.png",
-    "image": "https://stagepass.co.ke/uploads/StagePass-LOGO-y.png",
+    "logo": "{{ $logoUrl }}",
+    "image": "{{ $logoUrl }}",
     "description": "StagePass Audio Visual Limited provides professional audio visual, sound engineering, stage lighting, LED screens, and event production services across Kenya.",
     "address": {
         "@type": "PostalAddress",
@@ -42,7 +44,6 @@
 }
 </script>
 @endsection
-@endverbatim
 
 @section('content')
 <div class="min-h-screen bg-gray-900">

@@ -1,8 +1,24 @@
 @php
     $data = $data ?? null;
+    $homepageData = $homepageData ?? [];
     $isPage = $isPage ?? false;
-    $logoUrl = $data->logo_url ?? asset('uploads/StagePass-LOGO-y.png');
-    $ctaLabel = $data->cta_label ?? 'Get AV Quote';
+    
+    // Get logo URL - prioritize from navigation, then settings, then default
+    $logoUrl = null;
+    if ($data) {
+        $logoUrl = is_array($data) ? ($data['logo_url'] ?? null) : ($data->logo_url ?? null);
+    }
+    if (!$logoUrl && isset($homepageData['settings']['site_logo_url'])) {
+        $logoUrl = $homepageData['settings']['site_logo_url'];
+    }
+    $logoUrl = $logoUrl ?? asset('uploads/StagePass-LOGO-y.png');
+    
+    // Get CTA label
+    $ctaLabel = null;
+    if ($data) {
+        $ctaLabel = is_array($data) ? ($data['cta_label'] ?? null) : ($data->cta_label ?? null);
+    }
+    $ctaLabel = $ctaLabel ?? 'Get AV Quote';
     
     // Build nav links
     if ($isPage) {
@@ -15,7 +31,11 @@
             ['label' => 'Contact Us', 'href' => '/contact', 'isLink' => true],
         ];
     } else {
-        $navLinks = $data->links ?? [
+        $links = null;
+        if ($data) {
+            $links = is_array($data) ? ($data['links'] ?? null) : ($data->links ?? null);
+        }
+        $navLinks = $links ?? [
             ['label' => 'Home', 'href' => '#home'],
             ['label' => 'About Us', 'href' => '#about'],
             ['label' => 'Services', 'href' => '#services'],

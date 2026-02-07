@@ -49,7 +49,10 @@
     <meta property="og:url" content="{{ url()->current() }}">
     <meta property="og:title" content="@yield('og_title', 'The Best Audio Visual Company in Kenya — StagePass Audio Visual Limited')">
     <meta property="og:description" content="@yield('og_description', 'Kenya\'s trusted Audio Visual & Event Production company — professional sound engineering, staging, LED screens, event technology and conferencing solutions.')">
-    <meta property="og:image" content="@yield('og_image', asset('uploads/StagePass-LOGO-y.png'))">
+    @php
+        $defaultLogo = $homepageData['settings']['site_logo_url'] ?? $homepageData['navigation']['logo_url'] ?? asset('uploads/StagePass-LOGO-y.png');
+    @endphp
+    <meta property="og:image" content="@yield('og_image', $defaultLogo)">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
 
@@ -58,7 +61,7 @@
     <meta name="twitter:url" content="{{ url()->current() }}">
     <meta name="twitter:title" content="@yield('twitter_title', 'The Best Audio Visual Company in Kenya — StagePass Audio Visual Limited')">
     <meta name="twitter:description" content="@yield('twitter_description', 'Events & Audio Visual production company in Kenya — sound systems, staging, lighting, LED screens, conferencing & event technology.')">
-    <meta name="twitter:image" content="@yield('twitter_image', asset('uploads/StagePass-LOGO-y.png'))">
+    <meta name="twitter:image" content="@yield('twitter_image', $defaultLogo)">
     <meta name="twitter:site" content="@stagepass">
     <meta name="twitter:creator" content="@stagepass">
 
@@ -158,13 +161,13 @@
     @stack('styles')
 </head>
 <body class="bg-gray-900">
-    @include('website.partials.navbar', ['data' => $homepageData['navigation'] ?? null, 'isPage' => $isPage])
+    @include('website.partials.navbar', ['data' => $homepageData['navigation'] ?? null, 'homepageData' => $homepageData, 'isPage' => $isPage])
     
     <main>
         @yield('content')
     </main>
     
-    @include('website.partials.footer', ['data' => $homepageData['footer'] ?? null])
+    @include('website.partials.footer', ['data' => $homepageData['footer'] ?? null, 'homepageData' => $homepageData])
     @include('website.partials.quote-modal')
     @include('website.partials.bottom-navbar', ['data' => $homepageData['navigation']['bottom_links'] ?? null, 'isPage' => $isPage])
     
