@@ -34,6 +34,8 @@
     $statLabel = null;
     $visionTitle = null;
     $visionText = null;
+    $peopleTitle = null;
+    $peopleDescription = null;
     
     if ($section) {
         if (is_array($section)) {
@@ -46,6 +48,8 @@
             $statLabel = $section['stat_label'] ?? null;
             $visionTitle = $section['vision_title'] ?? null;
             $visionText = $section['vision_text'] ?? null;
+            $peopleTitle = $section['people_title'] ?? null;
+            $peopleDescription = $section['people_description'] ?? null;
         } else {
             $badgeLabel = $section->badge_label ?? null;
             $title = $section->title ?? null;
@@ -56,6 +60,8 @@
             $statLabel = $section->stat_label ?? null;
             $visionTitle = $section->vision_title ?? null;
             $visionText = $section->vision_text ?? null;
+            $peopleTitle = $section->people_title ?? null;
+            $peopleDescription = $section->people_description ?? null;
         }
     }
     
@@ -69,6 +75,8 @@
     $statLabel = $statLabel ?? 'Successful Events';
     $visionTitle = $visionTitle ?? 'Our Vision';
     $visionText = $visionText ?? "TO BE AFRICA'S REVOLUTIONARY EVENTS TECHNOLOGY EXPERTS";
+    $peopleTitle = $peopleTitle ?? 'Our People';
+    $peopleDescription = $peopleDescription ?? "While we've got the most trusted audiovisual, staging and lighting brands available to you, it is our unparalleled team that will exceed your expectations.";
 @endphp
 <div class="h-12 bg-gradient-to-b from-white to-gray-50 relative">
     <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-transparent via-[#172455] to-transparent"></div>
@@ -147,6 +155,20 @@
                 <p class="text-2xl md:text-4xl lg:text-5xl font-black text-white leading-tight">{{ $visionText }}</p>
             </div>
         </div>
+
+        <!-- Our People Section -->
+        @if($peopleTitle && $peopleDescription)
+        <div class="mt-8 md:mt-16 mb-8 text-center animate-fade-in-up">
+            <div class="max-w-5xl mx-auto bg-gradient-to-br from-gray-50 to-white rounded-3xl p-8 md:p-16 border-2 border-gray-100 shadow-2xl relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-64 h-64 bg-yellow-200 rounded-full blur-3xl opacity-30"></div>
+                <div class="text-center max-w-3xl mx-auto relative z-10">
+                    <h3 class="text-3xl md:text-4xl font-black text-[#172455] mb-4 md:mb-6">{{ $peopleTitle }}</h3>
+                    <div class="h-2 w-24 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-full mx-auto mb-6"></div>
+                    <p class="text-lg md:text-2xl text-gray-700 leading-relaxed font-medium">{{ $peopleDescription }}</p>
+                </div>
+            </div>
+        </div>
+        @endif
     </div>
 </section>
 

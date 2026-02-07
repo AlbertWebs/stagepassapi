@@ -4,8 +4,6 @@
     $badgeLabel = $section['badge_label'] ?? 'Our Capabilities';
     $title = $section['title'] ?? 'One-Stop-Solution For All Your AV Services';
     $description = $section['description'] ?? 'From concept to set-up to on-site support, we are there every step of the way to provide you with the exceptional product and service you deserve.';
-    $peopleTitle = $section['people_title'] ?? 'Our People';
-    $peopleDescription = $section['people_description'] ?? "While we've got the most trusted audiovisual, staging and lighting brands available to you, it is our unparalleled team that will exceed your expectations.";
 @endphp
 
 <section id="services" class="py-0 md:py-0 bg-white relative overflow-hidden">
@@ -60,16 +58,6 @@
                     </div>
                 </div>
             @endforeach
-        </div>
-
-        <!-- Our People Section -->
-        <div class="mt-8 md:mt-16 mb-8 bg-gradient-to-br from-gray-50 to-white rounded-3xl p-8 md:p-16 border-2 border-gray-100 shadow-2xl relative overflow-hidden">
-            <div class="absolute top-0 right-0 w-64 h-64 bg-yellow-200 rounded-full blur-3xl opacity-30"></div>
-            <div class="text-center max-w-3xl mx-auto relative z-10">
-                <h3 class="text-3xl md:text-4xl font-black text-[#172455] mb-4 md:mb-6">{{ $peopleTitle }}</h3>
-                <div class="h-2 w-24 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-full mx-auto mb-6"></div>
-                <p class="text-lg md:text-2xl text-gray-700 leading-relaxed font-medium">{{ $peopleDescription }}</p>
-            </div>
         </div>
     </div>
     

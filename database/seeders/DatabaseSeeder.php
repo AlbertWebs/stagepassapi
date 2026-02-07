@@ -7,7 +7,14 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Database\Seeders\HomepageContentSeeder;
 use Database\Seeders\SiteSettingsSeeder;
-use Database\Seeders\PageContentSeeder;
+use Database\Seeders\AboutPageSeeder;
+use Database\Seeders\ServicesPageSeeder;
+use Database\Seeders\OurWorkPageSeeder;
+use Database\Seeders\IndustriesPageSeeder;
+use Database\Seeders\NavbarSettingsSeeder;
+use Database\Seeders\NavbarLinksSeeder;
+use Database\Seeders\BottomNavLinksSeeder;
+use Database\Seeders\FooterSocialLinksSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -28,8 +35,15 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
+        $this->call(NavbarSettingsSeeder::class);
+        $this->call(NavbarLinksSeeder::class);
+        $this->call(BottomNavLinksSeeder::class);
+        $this->call(FooterSocialLinksSeeder::class);
         $this->call(HomepageContentSeeder::class);
         $this->call(SiteSettingsSeeder::class);
-        $this->call(PageContentSeeder::class);
+        $this->call(AboutPageSeeder::class);
+        $this->call(ServicesPageSeeder::class);
+        $this->call(OurWorkPageSeeder::class);
+        $this->call(IndustriesPageSeeder::class);
     }
 }
