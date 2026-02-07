@@ -104,20 +104,24 @@ class="py-20 bg-gradient-to-b from-gray-100 via-gray-50 to-white">
 
                         <!-- Hover Overlay with Details -->
                         <div :class="selectedIndustry && selectedIndustry.title === '{{ $industryTitle }}' ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'"
-                             class="absolute inset-0 bg-gradient-to-br from-[#172455] to-[#1e3a8a] text-white p-6 rounded-2xl flex flex-col justify-center items-center transition-all duration-500 overflow-y-auto">
-                            @if($iconUrl)
-                                <img src="{{ $iconUrl }}" alt="{{ $industryTitle }}" class="h-12 w-12 object-contain mb-4" />
-                            @else
-                                <svg class="text-yellow-400 mb-4 w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    {!! getIconSvg($iconName) !!}
-                                </svg>
-                            @endif
-                            <h3 class="font-bold text-yellow-400 text-xl mb-3 text-center">{{ $industryTitle }}</h3>
-                            @if($overlayDescription)
-                                <div class="text-sm text-slate-200 leading-relaxed prose prose-invert prose-sm max-w-none w-full">{!! $overlayDescription !!}</div>
-                            @else
-                                <p class="text-sm text-slate-200 text-center leading-relaxed line-clamp-4">{{ $industryDescription }}</p>
-                            @endif
+                             class="absolute inset-0 bg-gradient-to-br from-[#172455] to-[#1e3a8a] text-white p-4 rounded-2xl flex flex-col justify-start items-center transition-all duration-500 overflow-hidden">
+                            <div class="flex-shrink-0">
+                                @if($iconUrl)
+                                    <img src="{{ $iconUrl }}" alt="{{ $industryTitle }}" class="h-10 w-10 object-contain mb-2" />
+                                @else
+                                    <svg class="text-yellow-400 mb-2 w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        {!! getIconSvg($iconName) !!}
+                                    </svg>
+                                @endif
+                            </div>
+                            <h3 class="font-bold text-yellow-400 text-lg mb-2 text-center flex-shrink-0">{{ $industryTitle }}</h3>
+                            <div class="flex-1 overflow-hidden w-full">
+                                @if($overlayDescription)
+                                    <div class="text-xs text-slate-200 leading-tight prose prose-invert prose-sm max-w-none w-full [&_p]:mb-1 [&_ul]:mb-2 [&_li]:mb-0.5">{!! $overlayDescription !!}</div>
+                                @else
+                                    <p class="text-xs text-slate-200 text-center leading-tight line-clamp-6">{{ $industryDescription }}</p>
+                                @endif
+                            </div>
                         </div>
                     </div>
 
