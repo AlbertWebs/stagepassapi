@@ -7,6 +7,7 @@
 @php
     $logoUrl = $homepageData['settings']['site_logo_url'] ?? $homepageData['navigation']['logo_url'] ?? 'https://api.stagepass.co.ke/uploads/StagePass-LOGO-y.png';
 @endphp
+@verbatim
 <script type="application/ld+json">
 {
     "@context": "https://schema.org",
@@ -42,6 +43,7 @@
         "https://linkedin.com/company/stagepass"
     ]
 }
+@endverbatim
 </script>
 @endsection
 
