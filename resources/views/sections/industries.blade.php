@@ -2,7 +2,7 @@
     $section = $data['section'] ?? null;
     $items = $data['items'] ?? [];
     $badgeLabel = $section['badge_label'] ?? 'Industries';
-    $title = $section['title'] ?? 'Our Industries';
+    $title = $section['title'] ?? 'Industries We Serve';
     $subtitle = $section['subtitle'] ?? 'StagePass Audio Visual serves a diverse range of industries with tailored solutions.';
     
     // Icon mapping

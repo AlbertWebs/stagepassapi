@@ -3,17 +3,19 @@
     $section = $data->section ?? null;
     
     $industryData = $data->items ?? collect([
-        (object)['title' => 'Concerts', 'icon_name' => 'Music', 'description' => 'From intimate acoustic sets to large-scale music festivals, we deliver immersive audio-visual experiences.'],
-        (object)['title' => 'Corporate Events', 'icon_name' => 'Building2', 'description' => 'Professional presentations, conferences, and corporate gatherings require precision and reliability.'],
-        (object)['title' => 'Fashion', 'icon_name' => 'Palette', 'description' => 'Fashion shows demand elegance and sophistication.'],
-        (object)['title' => 'Theater & Dance', 'icon_name' => 'Theater', 'description' => 'Theatrical productions and dance performances need nuanced audio-visual support.'],
-        (object)['title' => 'Gala Dinners', 'icon_name' => 'Gem', 'description' => 'Elegant events deserve elegant solutions.'],
-        (object)['title' => 'Trade shows', 'icon_name' => 'Clapperboard', 'description' => 'Make your brand stand out at trade shows and exhibitions.'],
-        (object)['title' => 'Sporting Events', 'icon_name' => 'Trophy', 'description' => 'From local tournaments to major sporting events.'],
-        (object)['title' => 'Nonprofit Events', 'icon_name' => 'Handshake', 'description' => 'Supporting meaningful causes with impactful presentations.'],
+        (object)['title' => 'Corporate & Business Events', 'icon_name' => 'Building2', 'description' => 'Professional audio-visual solutions for corporate gatherings, conferences, and business events.'],
+        (object)['title' => 'Entertainment & Live Shows', 'icon_name' => 'Music', 'description' => 'Immersive audio-visual experiences for concerts, festivals, and live performances.'],
+        (object)['title' => 'Exhibitions & Trade Shows', 'icon_name' => 'Clapperboard', 'description' => 'Engaging displays and interactive solutions for exhibitions and trade shows.'],
+        (object)['title' => 'Education & Training', 'icon_name' => 'Building2', 'description' => 'Comprehensive AV solutions for educational institutions and training centers.'],
+        (object)['title' => 'Religious Institutions', 'icon_name' => 'Building2', 'description' => 'Professional AV systems for worship services, conferences, and religious events.'],
+        (object)['title' => 'Hospitality & Tourism', 'icon_name' => 'Gem', 'description' => 'Elegant AV solutions for hotels, resorts, and destination events.'],
+        (object)['title' => 'Healthcare & Medical', 'icon_name' => 'Building2', 'description' => 'Specialized AV solutions for medical conferences and healthcare facilities.'],
+        (object)['title' => 'Government & Public Sector', 'icon_name' => 'Building2', 'description' => 'Large-scale AV solutions for government functions and public events.'],
+        (object)['title' => 'Retail & Brand Experiences', 'icon_name' => 'Palette', 'description' => 'Dynamic displays and interactive experiences for retail and brand activations.'],
+        (object)['title' => 'Media, Film & Broadcasting', 'icon_name' => 'Clapperboard', 'description' => 'Professional studio and broadcast solutions for media production.'],
     ]);
     
-    $title = $section->title ?? 'Our Industries';
+    $title = $section->title ?? 'Industries We Serve';
     $subtitle = $section->subtitle ?? 'StagePass Audio Visual serves a diverse range of industries with tailored solutions.';
     
     function getIconSvg($iconName) {
@@ -112,7 +114,7 @@ class="py-20 bg-gradient-to-b from-gray-100 via-gray-50 to-white">
                             @endif
                             <h3 class="font-bold text-yellow-400 text-xl mb-3 text-center">{{ $industryTitle }}</h3>
                             @if($overlayDescription)
-                                <div class="text-sm text-slate-200 text-center leading-relaxed prose prose-invert prose-sm max-w-none">{!! $overlayDescription !!}</div>
+                                <div class="text-sm text-slate-200 leading-relaxed prose prose-invert prose-sm max-w-none w-full">{!! $overlayDescription !!}</div>
                             @else
                                 <p class="text-sm text-slate-200 text-center leading-relaxed line-clamp-4">{{ $industryDescription }}</p>
                             @endif
@@ -165,12 +167,12 @@ class="py-20 bg-gradient-to-b from-gray-100 via-gray-50 to-white">
                 </template>
             </div>
             <h3 class="text-2xl font-bold text-[#172455] text-center mb-4" x-text="selectedIndustry && selectedIndustry.title"></h3>
-            <div class="text-gray-600 text-center mt-4 leading-relaxed prose prose-sm max-w-none text-left">
+            <div class="text-gray-600 mt-4 leading-relaxed prose prose-sm max-w-none w-full">
                 <template x-if="selectedIndustry && selectedIndustry.overlayDescription">
                     <div x-html="selectedIndustry.overlayDescription"></div>
                 </template>
                 <template x-if="selectedIndustry && !selectedIndustry.overlayDescription">
-                    <p x-text="selectedIndustry && selectedIndustry.description"></p>
+                    <p class="text-center" x-text="selectedIndustry && selectedIndustry.description"></p>
                 </template>
             </div>
         </div>
