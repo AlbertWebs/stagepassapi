@@ -44,60 +44,51 @@ class AcceptJsonMiddleware
                 return $next($request);
             }
             
-            // For POST, PUT, PATCH, DELETE - handle Content-Type
+            // For POST, PUT, PATCH, DELETE - handle Content-Type and body parsing
             $contentType = $request->header('Content-Type', '');
+            $content = $request->getContent();
             
             // Remove charset if present for comparison
             $contentTypeBase = trim(explode(';', $contentType)[0]);
             
-            // Accept multiple content types
-            $acceptedTypes = [
-                'application/json',
-                'application/x-www-form-urlencoded',
-                'multipart/form-data',
-                'text/plain',
-            ];
-            
-            // If no content type is set or it's empty, default to application/json for POST/PUT/PATCH
-            if (empty($contentTypeBase) && in_array($request->method(), ['POST', 'PUT', 'PATCH', 'DELETE'])) {
-                // Only set if there's actual content
-                if ($request->getContent()) {
-                    $request->headers->set('Content-Type', 'application/json');
-                } else {
-                    // No content, remove Content-Type header to prevent Safari 415 errors
-                    $request->headers->remove('Content-Type');
-                }
-            }
-            // If content type is not in accepted list but we have a body, try to parse as JSON
-            elseif (!empty($contentTypeBase) && !in_array($contentTypeBase, $acceptedTypes)) {
-                $content = $request->getContent();
-                if (!empty($content)) {
-                    // Try to parse as JSON
+            // If we have content but no Content-Type, or Content-Type is wrong, fix it
+            if (!empty($content)) {
+                // Check if content looks like JSON (starts with { or [)
+                $contentTrimmed = trim($content);
+                $looksLikeJson = str_starts_with($contentTrimmed, '{') || str_starts_with($contentTrimmed, '[');
+                
+                if ($looksLikeJson) {
+                    // Content is JSON, ensure Content-Type is set correctly
+                    if (empty($contentTypeBase) || $contentTypeBase !== 'application/json') {
+                        // Try to parse JSON and merge into request
+                        $jsonData = json_decode($content, true);
+                        if (json_last_error() === JSON_ERROR_NONE && is_array($jsonData)) {
+                            // Replace request data with parsed JSON
+                            $request->replace($jsonData);
+                        }
+                        // Set correct Content-Type
+                        $request->headers->set('Content-Type', 'application/json');
+                    }
+                } elseif (empty($contentTypeBase)) {
+                    // Content doesn't look like JSON but no Content-Type set
+                    // Try to parse as JSON anyway (might be valid JSON without whitespace)
                     $jsonData = json_decode($content, true);
-                    if (json_last_error() === JSON_ERROR_NONE) {
-                        $request->merge($jsonData);
+                    if (json_last_error() === JSON_ERROR_NONE && is_array($jsonData)) {
+                        $request->replace($jsonData);
                         $request->headers->set('Content-Type', 'application/json');
                     } else {
-                        // If not JSON, accept it anyway for API routes
-                        $request->headers->set('Content-Type', 'application/json');
+                        // Not JSON, set as form-urlencoded
+                        $request->headers->set('Content-Type', 'application/x-www-form-urlencoded');
                     }
-                } else {
-                    // No content, remove the problematic Content-Type header
-                    $request->headers->remove('Content-Type');
                 }
+            } else {
+                // No content, remove Content-Type header to prevent Safari 415 errors
+                $request->headers->remove('Content-Type');
             }
             
-            // If content is form-urlencoded but body looks like JSON, parse it as JSON
-            if (str_contains($contentType, 'application/x-www-form-urlencoded')) {
-                $content = $request->getContent();
-                if (!empty($content) && (str_starts_with(trim($content), '{') || str_starts_with(trim($content), '['))) {
-                    // Content looks like JSON, parse it
-                    $jsonData = json_decode($content, true);
-                    if (json_last_error() === JSON_ERROR_NONE) {
-                        $request->merge($jsonData);
-                        $request->headers->set('Content-Type', 'application/json');
-                    }
-                }
+            // Ensure Accept header is set for API routes
+            if (!$request->hasHeader('Accept') || empty($request->header('Accept'))) {
+                $request->headers->set('Accept', 'application/json, text/plain, */*');
             }
         }
 
