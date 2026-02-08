@@ -6,7 +6,7 @@
     $description = $section['description'] ?? 'From concept to set-up to on-site support, we are there every step of the way to provide you with the exceptional product and service you deserve.';
 @endphp
 
-<section id="services" class="py-0 md:py-0 bg-white relative overflow-hidden">
+<section id="services" class="py-0 md:py-0 pb-16 md:pb-24 bg-white relative overflow-hidden">
     <div class="absolute top-0 right-0 w-[700px] h-[700px] bg-yellow-100 rounded-full blur-3xl opacity-30 animate-pulse-slow"></div>
     <div class="absolute bottom-0 left-0 w-[700px] h-[700px] bg-[#172455] rounded-full blur-3xl opacity-5 animate-pulse-slower"></div>
     

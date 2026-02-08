@@ -142,33 +142,39 @@
             </div>
         </div>
 
-        <!-- Vision Section -->
-        <div class="mt-16 md:mt-32 text-center animate-fade-in-up">
-            <div class="max-w-5xl mx-auto bg-gradient-to-br from-[#172455] to-[#1e3a8a] rounded-3xl p-8 md:p-16 shadow-2xl relative overflow-hidden">
-                <div class="absolute inset-0 bg-gradient-to-r from-yellow-500/10 to-transparent"></div>
-                <svg class="mx-auto text-yellow-400 mb-6 animate-bounce-slow w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <circle cx="12" cy="12" r="6"></circle>
-                    <circle cx="12" cy="12" r="2"></circle>
-                </svg>
-                <h3 class="text-2xl md:text-3xl font-bold text-yellow-400 mb-4 md:mb-6">{{ $visionTitle }}</h3>
-                <p class="text-2xl md:text-4xl lg:text-5xl font-black text-white leading-tight">{{ $visionText }}</p>
-            </div>
-        </div>
-
-        <!-- Our People Section -->
-        @if($peopleTitle && $peopleDescription)
-        <div class="mt-8 md:mt-16 mb-8 text-center animate-fade-in-up">
-            <div class="max-w-5xl mx-auto bg-gradient-to-br from-gray-50 to-white rounded-3xl p-8 md:p-16 border-2 border-gray-100 shadow-2xl relative overflow-hidden">
-                <div class="absolute top-0 right-0 w-64 h-64 bg-yellow-200 rounded-full blur-3xl opacity-30"></div>
-                <div class="text-center max-w-3xl mx-auto relative z-10">
-                    <h3 class="text-3xl md:text-4xl font-black text-[#172455] mb-4 md:mb-6">{{ $peopleTitle }}</h3>
-                    <div class="h-2 w-24 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-full mx-auto mb-6"></div>
-                    <p class="text-lg md:text-2xl text-gray-700 leading-relaxed font-medium">{{ $peopleDescription }}</p>
+        <!-- Vision and People Sections - Side by Side -->
+        <div class="mt-16 md:mt-32 grid md:grid-cols-2 gap-6 md:gap-8">
+            <!-- Vision Section -->
+            <div class="text-center animate-fade-in-up">
+                <div class="h-full bg-gradient-to-br from-[#172455] to-[#1e3a8a] rounded-3xl p-6 md:p-12 shadow-2xl relative overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-r from-yellow-500/10 to-transparent"></div>
+                    <svg class="mx-auto text-yellow-400 mb-4 md:mb-6 animate-bounce-slow w-12 h-12 md:w-16 md:h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <circle cx="12" cy="12" r="6"></circle>
+                        <circle cx="12" cy="12" r="2"></circle>
+                    </svg>
+                    <h3 class="text-xl md:text-2xl font-bold text-yellow-400 mb-3 md:mb-4">{{ $visionTitle }}</h3>
+                    <p class="text-lg md:text-2xl lg:text-3xl font-black text-white leading-tight">{{ $visionText }}</p>
                 </div>
             </div>
+
+            <!-- Our People Section -->
+            @if($peopleTitle && $peopleDescription)
+            <div class="text-center animate-fade-in-up">
+                <div class="h-full bg-gradient-to-br from-gray-50 to-white rounded-3xl p-6 md:p-12 border-2 border-gray-100 shadow-2xl relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-48 h-48 bg-yellow-200 rounded-full blur-3xl opacity-30"></div>
+                    <div class="text-center max-w-none mx-auto relative z-10">
+                        <svg class="mx-auto text-yellow-400 mb-4 md:mb-6 w-12 h-12 md:w-16 md:h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                            <path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                        </svg>
+                        <h3 class="text-xl md:text-2xl font-black text-[#172455] mb-3 md:mb-4">{{ $peopleTitle }}</h3>
+                        <div class="h-2 w-20 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-full mx-auto mb-4 md:mb-6"></div>
+                        <p class="text-base md:text-lg text-gray-700 leading-relaxed font-medium">{{ $peopleDescription }}</p>
+                    </div>
+                </div>
+            </div>
+            @endif
         </div>
-        @endif
     </div>
 </section>
 
