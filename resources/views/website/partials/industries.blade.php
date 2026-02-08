@@ -139,7 +139,7 @@ class="py-20 bg-gradient-to-b from-gray-100 via-gray-50 to-white">
                             <h3 class="font-bold text-yellow-400 text-lg mb-2 text-center flex-shrink-0">{{ $industryTitle }}</h3>
                             <div class="flex-1 overflow-hidden w-full">
                                 @if($overlayDescription)
-                                    <div class="text-xs text-slate-200 leading-tight prose prose-invert prose-sm max-w-none w-full [&_p]:mb-1 [&_ul]:mb-2 [&_li]:mb-0.5 [&_p[style*='font-weight:700']]:!font-bold [&_p[style*='font-weight:700']]:!text-[#172455] [&_p[style*='font-weight:700']]:underline">{!! $overlayDescription !!}</div>
+                                    <div class="text-xs text-slate-200 leading-tight prose prose-invert prose-sm max-w-none w-full [&_p]:mb-1 [&_ul]:mb-2 [&_li]:mb-0.5 [&_.services-label]:!font-bold [&_.services-label]:!text-[#172455] [&_.services-label]:underline [&_.av-needs-label]:!font-bold [&_.av-needs-label]:!text-[#172455] [&_.av-needs-label]:underline">{!! $overlayDescription !!}</div>
                                 @else
                                     <p class="text-xs text-slate-200 text-center leading-tight line-clamp-6">{{ $industryDescription }}</p>
                                 @endif
@@ -199,7 +199,7 @@ class="py-20 bg-gradient-to-b from-gray-100 via-gray-50 to-white">
             <h3 class="text-2xl font-bold text-[#172455] text-center mb-4" x-text="selectedIndustry && selectedIndustry.title"></h3>
             <div class="text-gray-600 mt-4 leading-relaxed prose prose-sm max-w-none w-full">
                 <template x-if="selectedIndustry && selectedIndustry.overlayDescription">
-                    <div class="prose prose-sm max-w-none w-full [&_p[style*='font-weight:700']]:!font-bold [&_p[style*='font-weight:700']]:!text-[#172455] [&_p[style*='font-weight:700']]:underline" x-html="selectedIndustry.overlayDescription"></div>
+                    <div class="prose prose-sm max-w-none w-full [&_.services-label]:!font-bold [&_.services-label]:!text-[#172455] [&_.services-label]:underline [&_.av-needs-label]:!font-bold [&_.av-needs-label]:!text-[#172455] [&_.av-needs-label]:underline" x-html="selectedIndustry.overlayDescription"></div>
                 </template>
                 <template x-if="selectedIndustry && !selectedIndustry.overlayDescription">
                     <p class="text-center" x-text="selectedIndustry && selectedIndustry.description"></p>
