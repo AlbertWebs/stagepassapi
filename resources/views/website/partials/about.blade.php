@@ -73,7 +73,7 @@
     $imageUrl = $imageUrl ?? asset('uploads/banners/visionsp.jpg');
     $statValue = $statValue ?? '2362+';
     $statLabel = $statLabel ?? 'Successful Events';
-    $visionTitle = $visionTitle ?? 'Our Vision';
+    $visionTitle = $visionTitle ?? 'Our Mission';
     $visionText = $visionText ?? "TO BE AFRICA'S REVOLUTIONARY EVENTS TECHNOLOGY EXPERTS";
     $peopleTitle = $peopleTitle ?? 'Our People';
     $peopleDescription = $peopleDescription ?? "While we've got the most trusted audiovisual, staging and lighting brands available to you, it is our unparalleled team that will exceed your expectations.";
@@ -142,9 +142,9 @@
             </div>
         </div>
 
-        <!-- Vision and People Sections - Side by Side -->
+        <!-- Mission and People Sections - Side by Side -->
         <div class="mt-16 md:mt-32 grid md:grid-cols-2 gap-6 md:gap-8">
-            <!-- Vision Section -->
+            <!-- Mission Section -->
             <div class="text-center animate-fade-in-up">
                 <div class="h-full bg-gradient-to-br from-[#172455] to-[#1e3a8a] rounded-3xl p-6 md:p-12 shadow-2xl relative overflow-hidden">
                     <div class="absolute inset-0 bg-gradient-to-r from-yellow-500/10 to-transparent"></div>
