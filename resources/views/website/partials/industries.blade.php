@@ -117,7 +117,7 @@ class="py-20 bg-gradient-to-b from-gray-100 via-gray-50 to-white">
                             <h3 class="font-bold text-yellow-400 text-lg mb-2 text-center flex-shrink-0">{{ $industryTitle }}</h3>
                             <div class="flex-1 overflow-hidden w-full">
                                 @if($overlayDescription)
-                                    <div class="text-xs text-slate-200 leading-tight prose prose-invert prose-sm max-w-none w-full [&_p]:mb-1 [&_ul]:mb-2 [&_li]:mb-0.5">{!! $overlayDescription !!}</div>
+                                    <div class="text-xs text-slate-200 leading-tight prose prose-invert prose-sm max-w-none w-full [&_p]:mb-1 [&_ul]:mb-2 [&_li]:mb-0.5 [&_p.font-bold]:!font-bold">{!! $overlayDescription !!}</div>
                                 @else
                                     <p class="text-xs text-slate-200 text-center leading-tight line-clamp-6">{{ $industryDescription }}</p>
                                 @endif
@@ -173,7 +173,7 @@ class="py-20 bg-gradient-to-b from-gray-100 via-gray-50 to-white">
             <h3 class="text-2xl font-bold text-[#172455] text-center mb-4" x-text="selectedIndustry && selectedIndustry.title"></h3>
             <div class="text-gray-600 mt-4 leading-relaxed prose prose-sm max-w-none w-full">
                 <template x-if="selectedIndustry && selectedIndustry.overlayDescription">
-                    <div x-html="selectedIndustry.overlayDescription"></div>
+                    <div class="prose prose-sm max-w-none w-full [&_p.font-bold]:!font-bold" x-html="selectedIndustry.overlayDescription"></div>
                 </template>
                 <template x-if="selectedIndustry && !selectedIndustry.overlayDescription">
                     <p class="text-center" x-text="selectedIndustry && selectedIndustry.description"></p>
