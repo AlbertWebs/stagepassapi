@@ -20,7 +20,7 @@
         </div>
 
         <!-- Services Grid -->
-        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12 md:mb-16">
             @foreach($items as $index => $service)
                 @php
                     $gradient = $service['gradient'] ?? ($index % 2 === 0 ? 'from-yellow-400 to-yellow-600' : 'from-[#172455] to-[#1e3a8a]');
