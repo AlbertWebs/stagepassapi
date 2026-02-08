@@ -364,7 +364,7 @@
                                                 style="display: none;"
                                             >{{ html_entity_decode($value, ENT_QUOTES, 'UTF-8') }}</textarea>
                                         </div>
-                                        <p class="mt-1 text-xs text-slate-500">Rich text editor for overlay content. This content will be displayed in the hover overlay on the frontend.</p>
+                                        <p class="mt-1 text-xs text-slate-500">Rich text editor for overlay content. HTML is supported. Format "Services include:" and "AV Needs:" labels as <strong>bold</strong>, <span style="color: #172455;">blue (#172455)</span>, and <u>underlined</u>. The content will be displayed in the hover overlay on the frontend.</p>
                                     @elseif ($isTextarea)
                                         <textarea name="{{ $column }}" rows="3" class="mt-2 w-full rounded-xl bg-slate-950 border border-slate-800 px-4 py-2 text-sm text-slate-100">{{ $value }}</textarea>
                                     @else
@@ -688,7 +688,7 @@
                                                                                     style="display: none;"
                                                                                 >{{ html_entity_decode($value, ENT_QUOTES, 'UTF-8') }}</textarea>
                                                                             </div>
-                                                                            <p class="mt-1 text-xs text-slate-500">Rich text editor for overlay content. This content will be displayed in the hover overlay on the frontend.</p>
+                                                                            <p class="mt-1 text-xs text-slate-500">Rich text editor for overlay content. HTML is supported. Format "Services include:" and "AV Needs:" labels as <strong>bold</strong>, <span style="color: #172455;">blue (#172455)</span>, and <u>underlined</u>. The content will be displayed in the hover overlay on the frontend.</p>
                                                                         @elseif ($isTextarea)
                                                                             <textarea name="{{ $column }}" rows="3" class="mt-2 w-full rounded-xl bg-slate-950 border border-slate-800 px-4 py-2 text-sm text-slate-100">{{ $value }}</textarea>
                                                                         @else
@@ -780,11 +780,12 @@
                             [{ 'header': [1, 2, 3, false] }],
                             ['bold', 'italic', 'underline', 'strike'],
                             [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                            [{ 'color': [] }, { 'background': [] }],
                             ['link'],
                             ['clean']
                         ]
                     },
-                    placeholder: 'Enter overlay description...'
+                    placeholder: 'Enter overlay description... You can use HTML or format text here. For "Services include:" and "AV Needs:" labels, make them bold, blue (#172455), and underlined.'
                 });
                 
                 if (overlayHiddenTextarea.value) {
@@ -812,18 +813,19 @@
                 const hiddenTextareaEl = document.getElementById(hiddenId);
                 
                 if (hiddenTextareaEl && typeof Quill !== 'undefined') {
-                    const editQuill = new Quill('#' + editorId, {
+                    const editQuill = new Quill(editorEl, {
                         theme: 'snow',
                         modules: {
                             toolbar: [
                                 [{ 'header': [1, 2, 3, false] }],
                                 ['bold', 'italic', 'underline', 'strike'],
                                 [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                                [{ 'color': [] }, { 'background': [] }],
                                 ['link'],
                                 ['clean']
                             ]
                         },
-                        placeholder: 'Enter overlay description...'
+                        placeholder: 'Enter overlay description... You can use HTML or format text here. For "Services include:" and "AV Needs:" labels, make them bold, blue (#172455), and underlined.'
                     });
                     
                     if (hiddenTextareaEl.value) {
