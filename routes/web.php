@@ -327,7 +327,7 @@ Route::prefix('admin')->middleware('admin.session')->group(function () {
 
     Route::get('/logout', function () {
         return view('admin.logout');
-    })->name('admin.logout');
+    })->name('admin.logout.view');
 
     Route::post('/instagram/fetch', [AdminInstagramController::class, 'fetch'])
         ->name('admin.instagram.fetch');
