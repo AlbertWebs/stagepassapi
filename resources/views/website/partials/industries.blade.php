@@ -1,6 +1,27 @@
 @php
     $data = $data ?? null;
     $section = $data->section ?? null;
+@endphp
+
+<style>
+    @keyframes gradient-border {
+        0% {
+            background-position: 0% 50%;
+        }
+        50% {
+            background-position: 100% 50%;
+        }
+        100% {
+            background-position: 0% 50%;
+        }
+    }
+    .animate-gradient-border {
+        background-size: 200% 100%;
+        animation: gradient-border 3s ease infinite;
+    }
+</style>
+
+@php
     
     $industryData = $data->items ?? collect([
         (object)['title' => 'Corporate & Business Events', 'icon_name' => 'Building2', 'description' => 'Professional audio-visual solutions for corporate gatherings, conferences, and business events.'],
@@ -81,14 +102,15 @@ class="py-20 bg-gradient-to-b from-gray-100 via-gray-50 to-white">
                      class="transition-all duration-1000 transform"
                      style="transition-delay: {{ $index * 100 }}ms">
                     <!-- Desktop: Hover overlay -->
-                    <div class="relative h-72 rounded-2xl overflow-hidden group transition-all duration-500 transform hover:-translate-y-3 hover:shadow-2xl hover:shadow-yellow-500/20 bg-white/80 backdrop-blur border border-yellow-100 hidden md:block cursor-pointer"
+                    <div class="relative h-72 rounded-2xl p-[3px] bg-gradient-to-r from-[#172455] via-yellow-400 to-[#172455] bg-[length:200%_100%] animate-gradient-border group transition-all duration-500 transform hover:-translate-y-3 hover:shadow-2xl hover:shadow-yellow-500/20 hidden md:block cursor-pointer"
                          @mouseenter="selectedIndustry = @js((is_array($industry) ? $industry : (array)$industry))"
                          @mouseleave="selectedIndustry = null">
+                        <div class="relative h-full w-full rounded-2xl overflow-hidden bg-white/80 backdrop-blur">
                         <div class="absolute inset-0 bg-gradient-to-br from-yellow-50 via-white to-blue-50 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                         <div class="absolute -top-10 -right-10 h-32 w-32 rounded-full bg-yellow-200/40 blur-2xl group-hover:scale-110 transition-transform duration-500"></div>
                         
                         <!-- Front of the card -->
-                        <div class="absolute inset-0 flex flex-col items-center justify-center p-6 rounded-2xl transition-transform duration-500 group-hover:scale-95">
+                        <div class="absolute inset-0 flex flex-col items-center justify-center p-6 transition-transform duration-500 group-hover:scale-95">
                             <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#172455] to-[#1e3a8a] flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform duration-500">
                                 @if($iconUrl)
                                     <img src="{{ $iconUrl }}" alt="{{ $industryTitle }}" class="h-10 w-10 object-contain" />
@@ -104,7 +126,7 @@ class="py-20 bg-gradient-to-b from-gray-100 via-gray-50 to-white">
 
                         <!-- Hover Overlay with Details -->
                         <div :class="selectedIndustry && selectedIndustry.title === '{{ $industryTitle }}' ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'"
-                             class="absolute inset-0 bg-gradient-to-br from-[#172455] to-[#1e3a8a] text-white p-4 rounded-2xl flex flex-col justify-start items-center transition-all duration-500 overflow-hidden">
+                             class="absolute inset-0 bg-gradient-to-br from-[#172455] to-[#1e3a8a] text-white p-4 flex flex-col justify-start items-center transition-all duration-500 overflow-hidden">
                             <div class="flex-shrink-0">
                                 @if($iconUrl)
                                     <img src="{{ $iconUrl }}" alt="{{ $industryTitle }}" class="h-10 w-10 object-contain mb-2" />
@@ -123,16 +145,18 @@ class="py-20 bg-gradient-to-b from-gray-100 via-gray-50 to-white">
                                 @endif
                             </div>
                         </div>
+                        </div>
                     </div>
 
                     <!-- Mobile: Tap to open modal -->
-                    <div class="relative h-72 rounded-2xl overflow-hidden group transition-all duration-500 transform active:scale-95 bg-white/80 backdrop-blur border border-yellow-100 block md:hidden cursor-pointer"
+                    <div class="relative h-72 rounded-2xl p-[3px] bg-gradient-to-r from-[#172455] via-yellow-400 to-[#172455] bg-[length:200%_100%] animate-gradient-border group transition-all duration-500 transform active:scale-95 block md:hidden cursor-pointer"
                          @click="handleCardTap(@js((is_array($industry) ? $industry : (array)$industry)))">
+                        <div class="relative h-full w-full rounded-2xl overflow-hidden bg-white/80 backdrop-blur">
                         <div class="absolute inset-0 bg-gradient-to-br from-yellow-50 via-white to-blue-50 opacity-0 group-active:opacity-100 transition-opacity duration-200"></div>
                         <div class="absolute -top-10 -right-10 h-32 w-32 rounded-full bg-yellow-200/40 blur-2xl"></div>
                         
                         <!-- Front of the card -->
-                        <div class="absolute inset-0 flex flex-col items-center justify-center p-6 rounded-2xl">
+                        <div class="absolute inset-0 flex flex-col items-center justify-center p-6">
                             <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#172455] to-[#1e3a8a] flex items-center justify-center shadow-2xl">
                                 @if($iconUrl)
                                     <img src="{{ $iconUrl }}" alt="{{ $industryTitle }}" class="h-10 w-10 object-contain" />
@@ -145,6 +169,8 @@ class="py-20 bg-gradient-to-b from-gray-100 via-gray-50 to-white">
                             <h3 class="text-2xl font-extrabold text-[#172455] mt-6 text-center">{{ $industryTitle }}</h3>
                             <p class="text-sm text-gray-500 mt-2 text-center">Tap for details</p>
                         </div>
+                        </div>
+                    </div>
                     </div>
                 </div>
             @endforeach
