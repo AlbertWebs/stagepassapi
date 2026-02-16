@@ -17,49 +17,103 @@
         (object)['icon' => 'Calendar', 'value' => '2,362', 'label' => 'Events'],
     ]);
 
-    $backgroundVideo = is_array($section) ? ($section['background_video_url'] ?? '') : ($section->background_video_url ?? '');
+    $backgroundVideo = is_array($section)
+        ? ($section['background_video_url'] ?? '')
+        : ($section->background_video_url ?? '');
+
+    $posterImage = asset('images/video-fallback.jpg'); // fallback image
 ?>
+
+
 <section class="py-16 h-[50vh] md:h-screen relative overflow-hidden text-white">
+
     <!-- Background Video -->
     <?php if($backgroundVideo): ?>
-        <video class="absolute inset-0 w-full h-full object-cover" src="<?php echo e($backgroundVideo); ?>" autoplay loop muted playsinline></video>
+        <video
+            x-data
+            x-init="
+                const v = $el;
+                v.muted = true;
+                const playPromise = v.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(() => {
+                        v.controls = false;
+                    });
+                }
+            "
+            class="absolute inset-0 w-full h-full object-cover"
+            autoplay
+            muted
+            loop
+            playsinline
+            webkit-playsinline
+            preload="metadata"
+            poster="<?php echo e($posterImage); ?>"
+        >
+            <source src="<?php echo e($backgroundVideo); ?>" type="video/mp4">
+        </video>
     <?php endif; ?>
 
-    <!-- Optional dark overlay for contrast -->
-    <div class="absolute inset-0 bg-[#172455]/70"></div>
+    <!-- Overlay -->
+    <div class="absolute inset-0 bg-[#172455]/75 backdrop-blur-[2px]"></div>
+
 
     <!-- Main Content -->
     <div class="container mx-auto px-6 lg:px-12 relative z-10 h-full flex items-center justify-center">
+
         <div class="grid md:grid-cols-3 gap-12 hidden md:grid w-full">
+
             <?php $__currentLoopData = $stats; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $stat): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                 <?php
                     $iconName = $stat->icon ?? $stat['icon'] ?? 'Package';
                 ?>
-                <div class="text-center group animate-fade-in-up" style="animation-delay: <?php echo e($index * 200); ?>ms">
+
+                <div class="text-center group animate-fade-in-up"
+                     style="animation-delay: <?php echo e($index * 200); ?>ms">
+
+                    <!-- Icon -->
                     <div class="inline-flex items-center justify-center w-28 h-28 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full mb-8 group-hover:scale-125 transition-all duration-500 shadow-2xl group-hover:shadow-yellow-500/50 group-hover:rotate-12">
+
                         <?php if($iconName === 'Package'): ?>
-                            <svg class="w-14 h-14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+                            <svg class="w-14 h-14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                            </svg>
+
                         <?php elseif($iconName === 'Users'): ?>
-                            <svg class="w-14 h-14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                            <svg class="w-14 h-14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                            </svg>
+
                         <?php elseif($iconName === 'Calendar'): ?>
-                            <svg class="w-14 h-14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                            <svg class="w-14 h-14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                            </svg>
+
                         <?php else: ?>
-                            <svg class="w-14 h-14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+                            <svg class="w-14 h-14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                            </svg>
                         <?php endif; ?>
                     </div>
 
+                    <!-- Value -->
                     <div class="text-6xl lg:text-7xl font-black text-yellow-400 mb-4 group-hover:scale-110 transition-transform duration-300">
                         <?php echo e($stat->value ?? $stat['value'] ?? ''); ?>
 
                     </div>
 
-                    <div class="text-2xl text-white font-bold">
+                    <!-- Label -->
+                    <div class="text-2xl text-white font-bold tracking-wide">
                         <?php echo e($stat->label ?? $stat['label'] ?? ''); ?>
 
                     </div>
+
                 </div>
             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+
         </div>
+
     </div>
+
 </section>
 <?php /**PATH C:\projects\stagepassapi\resources\views/website/partials/stats.blade.php ENDPATH**/ ?>

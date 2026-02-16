@@ -3,6 +3,7 @@ $data = $data ?? null;
 
 $fullText = "We Create the Most Engaging Events in the World Using Technology";
 $backgroundVideo = asset('uploads/stagepass-audio-visual-safaricom-ceo-awade.mp4');
+$posterImage = asset('images/video-fallback.jpg'); // optional fallback image
 
 if ($data) {
     if (is_array($data)) {
@@ -22,59 +23,60 @@ $xDataJson = json_encode([
     'videoError' => false,
     'videoLoaded' => false,
     'fullText' => $fullText,
-    'fadeInTimeout' => null,
-    'dimTimeout' => null,
-    'fadeOutTimeout' => null,
 ]);
 
 $xInitJs = "
-// Attach video listeners safely
-setTimeout(() => {
-    const video = \$refs.video;
-    if (!video) return;
+const video = \$refs.video;
+if (!video) return;
 
-    const handleVideoLoaded = () => {
-        videoLoading = false;
-        videoLoaded = true;
-        videoError = false;
-        
-        // Once video is loaded, wait 5 seconds then start fading in text
-        fadeInTimeout = setTimeout(() => {
-            textVisible = true;
-            
-            // After fade-in completes (5 seconds), become almost transparent
-            dimTimeout = setTimeout(() => {
-                textDimmed = true;
-                
-                // Stay dimmed for 30 seconds, then fade out
-                fadeOutTimeout = setTimeout(() => {
-                    textFadeOut = true;
-                }, 30000); // 30 seconds
-            }, 5000); // 5 seconds after fade-in starts (when fade-in completes)
-        }, 5000); // 5 seconds after video loads
-    };
-    
-    const startLoading = () => videoLoading = true;
-    const setError = () => {
-        videoLoading = false;
-        videoError = true;
-    };
+const markLoaded = () => {
+    videoLoading = false;
+    videoLoaded = true;
+    videoError = false;
 
-    video.addEventListener('canplay', handleVideoLoaded);
-    video.addEventListener('canplaythrough', handleVideoLoaded);
-    video.addEventListener('loadeddata', handleVideoLoaded);
-    video.addEventListener('playing', handleVideoLoaded);
-    video.addEventListener('waiting', startLoading);
-    video.addEventListener('error', setError);
+    setTimeout(() => {
+        textVisible = true;
 
-    // Check if video is already loaded
-    if (video.readyState >= 3) {
-        handleVideoLoaded();
+        setTimeout(() => {
+            textDimmed = true;
+
+            setTimeout(() => {
+                textFadeOut = true;
+            }, 30000);
+
+        }, 5000);
+
+    }, 5000);
+};
+
+// Reliable load detection
+const checkReady = () => {
+    if (video.readyState >= 2 && video.currentTime > 0) {
+        markLoaded();
     }
-}, 100);
+};
+
+// Events that actually fire consistently
+video.addEventListener('loadedmetadata', checkReady);
+video.addEventListener('timeupdate', checkReady);
+video.addEventListener('playing', markLoaded);
+video.addEventListener('error', () => {
+    videoLoading = false;
+    videoError = true;
+});
+
+// Safari autoplay kickstart
+video.muted = true;
+video.play().catch(() => {});
+
+// Safety fallback — NEVER keep loader forever
+setTimeout(() => {
+    if (videoLoading) {
+        markLoaded();
+    }
+}, 4000);
 ";
 ?>
-
 
 <section x-data='<?php echo $xDataJson; ?>'
          x-init="<?php echo $xInitJs; ?>"
@@ -87,36 +89,29 @@ setTimeout(() => {
         <!-- Video -->
         <video
             x-ref="video"
-            src="<?php echo e($backgroundVideo); ?>"
-            loop
             autoplay
             muted
+            loop
             playsinline
-            preload="auto"
+            webkit-playsinline
+            preload="metadata"
+            poster="<?php echo e($posterImage); ?>"
             class="absolute inset-0 w-full h-full object-cover">
+            <source src="<?php echo e($backgroundVideo); ?>" type="video/mp4">
         </video>
 
         <!-- Preloader -->
-        <div x-show="videoLoading"
-             x-transition:enter="transition ease-out duration-300"
-             x-transition:enter-start="opacity-0"
-             x-transition:enter-end="opacity-100"
-             x-transition:leave="transition ease-in duration-300"
-             x-transition:leave-start="opacity-100"
-             x-transition:leave-end="opacity-0"
+        <div x-cloak x-show="videoLoading"
+             x-transition
              class="absolute inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-20">
-
             <div class="text-center">
-                <div class="inline-block animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-yellow-500 mb-4"></div>
-                
+                <div class="inline-block animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-yellow-500"></div>
             </div>
-
         </div>
 
-        <!-- Overlay with gradient -->
+        <!-- Overlay -->
         <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70"></div>
     </div>
-
 
     <!-- Content -->
     <div class="relative z-10 text-center max-w-4xl mx-auto px-4">
@@ -136,15 +131,16 @@ setTimeout(() => {
                               )
                       )
             "
-            class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight leading-none mb-6 text-white uppercase drop-shadow-2xl [text-shadow:0_4px_20px_rgba(0,0,0,0.8),0_2px_8px_rgba(255,215,0,0.3)]">
+            class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight leading-none mb-6 text-white uppercase drop-shadow-2xl">
         </h1>
     </div>
 
-    <!-- Down Arrow with Tagline -->
+    <!-- Down Arrow -->
     <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10 text-center">
         <p class="text-white text-sm md:text-base font-bold mb-3 tracking-wide">
             Creative Solutions<br> Technical Excellence
         </p>
+
         <a href="#about" class="inline-block animate-bounce">
             <svg class="w-6 h-6 md:w-8 md:h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
