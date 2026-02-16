@@ -9,18 +9,42 @@
         $section = is_array($data) ? ($data['section'] ?? null) : ($data->section ?? null);
     }
     
-    // Get social links
-    $socialLinks = null;
-    if ($data) {
-        $socialLinks = is_array($data) ? ($data['social_links'] ?? null) : ($data->social_links ?? null);
+    // Get social links - prioritize from settings (API), then footer social_links
+    $socialLinks = [];
+    $settings = $homepageData['settings'] ?? [];
+    
+    // First, try to use settings from API
+    if (!empty($settings['facebook_url'])) {
+        $socialLinks[] = ['platform' => 'Facebook', 'url' => $settings['facebook_url']];
     }
-    $socialLinks = $socialLinks ?? [
-        ['platform' => 'Facebook', 'url' => '#'],
-        ['platform' => 'Twitter', 'url' => '#'],
-        ['platform' => 'Instagram', 'url' => '#'],
-        ['platform' => 'Linkedin', 'url' => '#'],
-        ['platform' => 'Youtube', 'url' => '#'],
-    ];
+    if (!empty($settings['twitter_url'])) {
+        $socialLinks[] = ['platform' => 'Twitter', 'url' => $settings['twitter_url']];
+    }
+    if (!empty($settings['instagram_url'])) {
+        $socialLinks[] = ['platform' => 'Instagram', 'url' => $settings['instagram_url']];
+    }
+    if (!empty($settings['linkedin_url'])) {
+        $socialLinks[] = ['platform' => 'Linkedin', 'url' => $settings['linkedin_url']];
+    }
+    if (!empty($settings['youtube_url'])) {
+        $socialLinks[] = ['platform' => 'Youtube', 'url' => $settings['youtube_url']];
+    }
+    
+    // Fall back to footer social_links from database if no settings found
+    if (empty($socialLinks) && $data) {
+        $socialLinks = is_array($data) ? ($data['social_links'] ?? []) : ($data->social_links ?? []);
+    }
+    
+    // Default fallback
+    if (empty($socialLinks)) {
+        $socialLinks = [
+            ['platform' => 'Facebook', 'url' => '#'],
+            ['platform' => 'Twitter', 'url' => '#'],
+            ['platform' => 'Instagram', 'url' => '#'],
+            ['platform' => 'Linkedin', 'url' => '#'],
+            ['platform' => 'Youtube', 'url' => '#'],
+        ];
+    }
     
     // Get quick links
     $quickLinksData = null;
@@ -83,7 +107,7 @@
     }
     $copyright = $copyright ?? '© ' . date('Y') . ' StagePass Audio Visual Limited. All rights reserved. | Creative Solutions | Technical Excellence';
 @endphp
-<footer x-data="{ isVisible: false }" 
+<footer x-data="{ isVisible: true }" 
         x-intersect="isVisible = true"
         class="bg-gradient-to-br from-[#172455] via-[#1e3a8a] to-[#172455] text-white relative overflow-hidden">
     <!-- Rainbow gradient bar -->

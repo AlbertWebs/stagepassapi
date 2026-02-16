@@ -1,29 +1,35 @@
 @php
     $data = $data ?? null;
     $portfolioSource = $portfolioSource ?? 'database';
-    $section = $data->section ?? null;
-    
-    $galleryItems = $data->items ?? collect([
+    $section = null;
+    $galleryItems = null;
+
+    if (is_array($data)) {
+        $section = $data['section'] ?? null;
+        $galleryItems = $data['items'] ?? null;
+    } elseif (is_object($data)) {
+        $section = $data->section ?? null;
+        $galleryItems = $data->items ?? null;
+    }
+
+    $galleryItems = $galleryItems ?? collect([
         (object)['type' => 'image', 'thumbnail' => asset('uploads/portfolio/1.jpg'), 'title' => 'Corporate Event 2024'],
         (object)['type' => 'image', 'thumbnail' => asset('uploads/portfolio/2.jpg'), 'title' => 'Concert Production'],
         (object)['type' => 'image', 'thumbnail' => asset('uploads/portfolio/3.jpg'), 'title' => 'Festival Setup'],
     ]);
-    
-    $badgeLabel = $section->badge_label ?? 'Our Work';
-    $title = $section->title ?? 'Portfolio Gallery';
-    $description = $section->description ?? 'Explore our recent projects and see how we bring events to life with cutting-edge technology and creative excellence.';
+
+    $badgeLabel = is_array($section) ? ($section['badge_label'] ?? 'Our Work') : ($section->badge_label ?? 'Our Work');
+    $title = is_array($section) ? ($section['title'] ?? 'Portfolio Gallery') : ($section->title ?? 'Portfolio Gallery');
+    $description = is_array($section) ? ($section['description'] ?? 'Explore our recent projects and see how we bring events to life with cutting-edge technology and creative excellence.') : ($section->description ?? 'Explore our recent projects and see how we bring events to life with cutting-edge technology and creative excellence.');
 @endphp
-<section x-data="{ isVisible: false, isImageModalOpen: false, isYouTubeModalOpen: false, isVideoModalOpen: false, currentImageUrl: '', currentImageTitle: '', currentYouTubeId: '', currentVideoUrl: '', currentVideoTitle: '' }"
-         x-intersect="isVisible = true"
+<section x-data="{ isImageModalOpen: false, isYouTubeModalOpen: false, isVideoModalOpen: false, currentImageUrl: '', currentImageTitle: '', currentYouTubeId: '', currentVideoUrl: '', currentVideoTitle: '' }"
          id="portfolio" 
          class="py-16 bg-gradient-to-b from-white via-gray-50 to-white relative overflow-hidden">
     <div class="absolute top-20 right-0 w-[600px] h-[600px] bg-yellow-100 rounded-full blur-3xl opacity-30 animate-pulse-slow"></div>
     
-    <div :class="isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'"
-         class="container mx-auto px-6 lg:px-12 relative z-10 transition-all duration-1000 transform">
+    <div class="container mx-auto px-6 lg:px-12 relative z-10">
         <!-- Header - Hidden on mobile, visible on desktop -->
-        <div :class="isVisible ? 'animate-fade-in-up' : 'opacity-0'"
-             class="hidden md:block text-center mb-10">
+        <div class="hidden md:block text-center mb-10">
             <span class="text-sm font-bold text-yellow-600 tracking-wider uppercase bg-yellow-100 px-4 py-2 rounded-full">{{ $badgeLabel }}</span>
             <h2 class="text-5xl lg:text-6xl font-black text-[#172455] mt-6 mb-8">{{ $title }}</h2>
             <div class="h-2 w-32 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-full mx-auto mb-8"></div>

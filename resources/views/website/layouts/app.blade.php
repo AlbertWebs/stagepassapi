@@ -1,5 +1,9 @@
 @php
-    $faviconUrl = \Illuminate\Support\Facades\DB::table('site_settings')->where('key', 'favicon_url')->value('value');
+    try {
+        $faviconUrl = \Illuminate\Support\Facades\DB::table('site_settings')->where('key', 'favicon_url')->value('value');
+    } catch (\Throwable $e) {
+        $faviconUrl = null;
+    }
     if (!empty($faviconUrl)) {
         $faviconUrl = str_starts_with($faviconUrl, 'http') ? $faviconUrl : asset($faviconUrl);
     } else {

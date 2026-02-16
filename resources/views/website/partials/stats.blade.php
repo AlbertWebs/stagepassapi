@@ -1,14 +1,23 @@
 @php
     $data = $data ?? null;
-    $section = $data->section ?? null;
-    
-    $stats = $data->items ?? collect([
+    $section = null;
+    $stats = null;
+
+    if (is_array($data)) {
+        $section = $data['section'] ?? null;
+        $stats = $data['items'] ?? null;
+    } elseif (is_object($data)) {
+        $section = $data->section ?? null;
+        $stats = $data->items ?? null;
+    }
+
+    $stats = $stats ?? collect([
         (object)['icon' => 'Package', 'value' => '43,234', 'label' => 'AV Equipment'],
         (object)['icon' => 'Users', 'value' => '421', 'label' => 'Happy Clients'],
         (object)['icon' => 'Calendar', 'value' => '2,362', 'label' => 'Events'],
     ]);
-    
-    $backgroundVideo = $section->background_video_url ?? '';
+
+    $backgroundVideo = is_array($section) ? ($section['background_video_url'] ?? '') : ($section->background_video_url ?? '');
 @endphp
 <section class="py-16 h-[50vh] md:h-screen relative overflow-hidden text-white">
     <!-- Background Video -->

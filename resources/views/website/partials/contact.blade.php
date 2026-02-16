@@ -1,7 +1,20 @@
 @php
     $data = $data ?? null;
-    $section = $data->section ?? null;
-    $details = $data->details ?? null;
+    $section = null;
+    $details = null;
+
+    if (is_array($data)) {
+        $section = $data['section'] ?? null;
+        $details = $data['details'] ?? null;
+    } elseif (is_object($data)) {
+        $section = $data->section ?? null;
+        $details = $data->details ?? null;
+    }
+
+    $address = is_array($details) ? ($details['address'] ?? 'Jacaranda Close, Ridgeways, Nairobi, Kenya') : ($details->address ?? 'Jacaranda Close, Ridgeways, Nairobi, Kenya');
+    $phonePrimary = is_array($details) ? ($details['phone_primary'] ?? '+254 729 171 351') : ($details->phone_primary ?? '+254 729 171 351');
+    $email = is_array($details) ? ($details['email'] ?? 'info@stagepass.co.ke') : ($details->email ?? 'info@stagepass.co.ke');
+    $businessHours = is_array($details) ? ($details['business_hours'] ?? 'Mon - Fri: 9:00 AM - 6:00 PM<br />Sat: 10:00 AM - 4:00 PM') : ($details->business_hours ?? 'Mon - Fri: 9:00 AM - 6:00 PM<br />Sat: 10:00 AM - 4:00 PM');
 @endphp
 <section x-data="{
     isVisible: false,
@@ -75,17 +88,15 @@
         }
     }
 }"
-x-intersect="isVisible = true"
 id="contact" 
 class="py-32 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden">
     <div class="absolute top-20 left-0 w-[700px] h-[700px] bg-yellow-100 rounded-full blur-3xl opacity-30 animate-pulse-slow"></div>
     <div class="absolute bottom-0 right-0 w-[700px] h-[700px] bg-[#172455] rounded-full blur-3xl opacity-5 animate-pulse-slower"></div>
     
-    <div :class="isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'"
-         class="container mx-auto px-6 lg:px-12 relative z-10 transition-all duration-1000 transform">
+    <div class="container mx-auto px-6 lg:px-12 relative z-10">
         <div class="grid lg:grid-cols-2 gap-20">
             <!-- Left - Contact Info -->
-            <div :class="isVisible ? 'animate-slide-in-left' : 'opacity-0'" class="space-y-10">
+            <div class="space-y-10 animate-slide-in-left">
                 <div>
                     <span class="text-sm font-bold text-yellow-600 tracking-wider uppercase bg-yellow-100 px-4 py-2 rounded-full">Get In Touch</span>
                     <h2 class="text-5xl lg:text-6xl font-black text-[#172455] mt-6 mb-8 leading-tight">Let's Create Something Amazing Together</h2>
@@ -100,7 +111,7 @@ class="py-32 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden">
                         </div>
                         <div>
                             <h3 class="font-black text-[#172455] mb-2 text-lg">Location</h3>
-                            <p class="text-gray-700 font-medium">{{ $details->address ?? 'Jacaranda Close, Ridgeways, Nairobi, Kenya' }}</p>
+                            <p class="text-gray-700 font-medium">{{ $address }}</p>
                         </div>
                     </div>
 
@@ -110,7 +121,7 @@ class="py-32 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden">
                         </div>
                         <div>
                             <h3 class="font-black text-[#172455] mb-2 text-lg">Phone</h3>
-                            <p class="text-gray-700 font-medium">{{ $details->phone_primary ?? '+254 729 171 351' }}</p>
+                            <p class="text-gray-700 font-medium">{{ $phonePrimary }}</p>
                         </div>
                     </div>
 
@@ -120,7 +131,7 @@ class="py-32 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden">
                         </div>
                         <div>
                             <h3 class="font-black text-[#172455] mb-2 text-lg">Email</h3>
-                            <p class="text-gray-700 font-medium">{{ $details->email ?? 'info@stagepass.co.ke' }}</p>
+                            <p class="text-gray-700 font-medium">{{ $email }}</p>
                         </div>
                     </div>
 
@@ -130,14 +141,14 @@ class="py-32 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden">
                         </div>
                         <div>
                             <h3 class="font-black text-[#172455] mb-2 text-lg">Business Hours</h3>
-                            <p class="text-gray-700 font-medium">{{ $details->business_hours ?? 'Mon - Fri: 9:00 AM - 6:00 PM<br />Sat: 10:00 AM - 4:00 PM' }}</p>
+                            <p class="text-gray-700 font-medium">{!! $businessHours !!}</p>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Right - Contact Form -->
-            <div :class="isVisible ? 'animate-slide-in-right' : 'opacity-0'" 
+            <div class="animate-slide-in-right" 
                  class="bg-gradient-to-br from-white to-gray-50 rounded-3xl shadow-2xl p-10 lg:p-14 border-2 border-gray-100">
                 <form @submit.prevent="handleSubmit()" class="space-y-6">
                     <div x-show="error" x-transition class="p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm" x-text="error"></div>

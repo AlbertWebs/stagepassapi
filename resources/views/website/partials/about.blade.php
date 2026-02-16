@@ -82,15 +82,12 @@
     <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-transparent via-[#172455] to-transparent"></div>
 </div>
 
-<section x-data="{ isVisible: false }" 
-         x-intersect="isVisible = true"
-         id="about" 
+<section id="about" 
          class="py-8 md:py-16 bg-gradient-to-b from-gray-50 via-white to-gray-50 relative overflow-hidden">
     <div class="absolute top-20 left-0 w-[600px] h-[600px] bg-[#172455] rounded-full blur-3xl opacity-5 animate-pulse-slow"></div>
     
-    <div :class="isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'"
-         class="container mx-auto px-4 lg:px-12 relative z-10 transition-all duration-1000 transform">
-        <div class="grid lg:grid-cols-2 gap-12 md:gap-20 items-center animate-fade-in-up">
+    <div class="container mx-auto px-4 lg:px-12 relative z-10">
+        <div class="grid lg:grid-cols-2 gap-12 md:gap-20 items-center">
             <!-- Left - Image -->
             <div class="relative">
                 <div class="relative rounded-3xl overflow-hidden shadow-2xl transform hover:scale-105 transition-transform duration-500">

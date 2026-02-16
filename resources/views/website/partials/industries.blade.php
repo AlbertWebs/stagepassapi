@@ -1,6 +1,15 @@
 @php
     $data = $data ?? null;
-    $section = $data->section ?? null;
+    $section = null;
+    $items = null;
+
+    if (is_array($data)) {
+        $section = $data['section'] ?? null;
+        $items = $data['items'] ?? null;
+    } elseif (is_object($data)) {
+        $section = $data->section ?? null;
+        $items = $data->items ?? null;
+    }
 @endphp
 
 <style>
@@ -23,7 +32,7 @@
 
 @php
     
-    $industryData = $data->items ?? collect([
+    $industryData = $items ?? collect([
         (object)['title' => 'Corporate & Business Events', 'icon_name' => 'Building2', 'description' => 'Professional audio-visual solutions for corporate gatherings, conferences, and business events.'],
         (object)['title' => 'Entertainment & Live Shows', 'icon_name' => 'Music', 'description' => 'Immersive audio-visual experiences for concerts, festivals, and live performances.'],
         (object)['title' => 'Exhibitions & Trade Shows', 'icon_name' => 'Clapperboard', 'description' => 'Engaging displays and interactive solutions for exhibitions and trade shows.'],
@@ -36,8 +45,8 @@
         (object)['title' => 'Media, Film & Broadcasting', 'icon_name' => 'Clapperboard', 'description' => 'Professional studio and broadcast solutions for media production.'],
     ]);
     
-    $title = $section->title ?? 'Industries We Serve';
-    $subtitle = $section->subtitle ?? 'StagePass Audio Visual serves a diverse range of industries with tailored solutions.';
+    $title = is_array($section) ? ($section['title'] ?? 'Industries We Serve') : ($section->title ?? 'Industries We Serve');
+    $subtitle = is_array($section) ? ($section['subtitle'] ?? 'StagePass Audio Visual serves a diverse range of industries with tailored solutions.') : ($section->subtitle ?? 'StagePass Audio Visual serves a diverse range of industries with tailored solutions.');
     
     function getIconSvg($iconName) {
         $icons = [
@@ -54,7 +63,6 @@
     }
 @endphp
 <section x-data="{ 
-    isVisible: false, 
     selectedIndustry: null, 
     isModalOpen: false,
     handleCardTap(industry) {
@@ -62,13 +70,10 @@
         this.isModalOpen = true;
     }
 }"
-x-intersect="isVisible = true"
 id="industries" 
 class="py-20 bg-gradient-to-b from-gray-100 via-gray-50 to-white">
-    <div :class="isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'"
-         class="container mx-auto px-6 lg:px-12 transition-all duration-1000 transform">
-        <div :class="isVisible ? 'animate-fade-in-up' : 'opacity-0'"
-             class="text-center mb-14">
+    <div class="container mx-auto px-6 lg:px-12">
+        <div class="text-center mb-14">
             <span class="text-sm font-bold text-yellow-600 tracking-wider uppercase bg-yellow-100 px-4 py-2 rounded-full">Industries</span>
             <h2 class="text-4xl lg:text-6xl font-black text-[#172455] mb-4 mt-6">
                 @if(str_contains($title, 'Industries'))
@@ -97,13 +102,32 @@ class="py-20 bg-gradient-to-b from-gray-100 via-gray-50 to-white">
                         $industryTitle = $industry->title ?? '';
                         $industryDescription = $industry->description ?? '';
                     }
+                    
+                    // Prepare industry data for Alpine.js (decode HTML entities for proper rendering)
+                    $industryForJs = [
+                        'title' => $industryTitle,
+                        'icon_name' => $iconName,
+                        'icon_url' => $iconUrl,
+                        'description' => $industryDescription,
+                        'overlay_description' => $overlayDescription ? html_entity_decode($overlayDescription, ENT_QUOTES | ENT_HTML5, 'UTF-8') : null, // Decode HTML entities for x-html
+                    ];
+                    
+                    // Center incomplete last row (like React app)
+                    $totalItems = count($industryData);
+                    $itemsPerRow = 3; // lg:grid-cols-3
+                    $itemsInLastRow = $totalItems % $itemsPerRow;
+                    $isLastRow = $index >= $totalItems - $itemsInLastRow;
+                    $isIncompleteLastRow = $itemsInLastRow > 0 && $itemsInLastRow < $itemsPerRow;
+                    $gridColumnClass = '';
+                    if ($isLastRow && $isIncompleteLastRow && $itemsInLastRow === 1) {
+                        $gridColumnClass = 'lg:col-start-2';
+                    }
                 @endphp
-                <div :class="isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'"
-                     class="transition-all duration-1000 transform"
+                <div class="relative w-full transition-all duration-1000 transform opacity-100 translate-y-0 {{ $gridColumnClass }}"
                      style="transition-delay: {{ $index * 100 }}ms">
                     <!-- Desktop: Hover overlay -->
-                    <div class="relative h-72 rounded-2xl p-[3px] bg-gradient-to-r from-[#172455] via-yellow-400 to-[#172455] bg-[length:200%_100%] animate-gradient-border group transition-all duration-500 transform hover:-translate-y-3 hover:shadow-2xl hover:shadow-yellow-500/20 hidden md:block cursor-pointer"
-                         @mouseenter="selectedIndustry = @js((is_array($industry) ? $industry : (array)$industry))"
+                    <div class="relative h-72 w-full rounded-2xl p-[3px] bg-gradient-to-r from-[#172455] via-yellow-400 to-[#172455] bg-[length:200%_100%] animate-gradient-border group transition-all duration-500 transform hover:-translate-y-3 hover:shadow-2xl hover:shadow-yellow-500/20 hidden md:block cursor-pointer"
+                         @mouseenter="selectedIndustry = @js($industryForJs)"
                          @mouseleave="selectedIndustry = null">
                         <div class="relative h-full w-full rounded-2xl overflow-hidden bg-white/80 backdrop-blur">
                         <div class="absolute inset-0 bg-gradient-to-br from-yellow-50 via-white to-blue-50 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
@@ -149,8 +173,8 @@ class="py-20 bg-gradient-to-b from-gray-100 via-gray-50 to-white">
                     </div>
 
                     <!-- Mobile: Tap to open modal -->
-                    <div class="relative h-72 rounded-2xl p-[3px] bg-gradient-to-r from-[#172455] via-yellow-400 to-[#172455] bg-[length:200%_100%] animate-gradient-border group transition-all duration-500 transform active:scale-95 block md:hidden cursor-pointer"
-                         @click="handleCardTap(@js((is_array($industry) ? $industry : (array)$industry)))">
+                    <div class="relative h-72 w-full rounded-2xl p-[3px] bg-gradient-to-r from-[#172455] via-yellow-400 to-[#172455] bg-[length:200%_100%] animate-gradient-border group transition-all duration-500 transform active:scale-95 block md:hidden cursor-pointer"
+                         @click="handleCardTap(@js($industryForJs))">
                         <div class="relative h-full w-full rounded-2xl overflow-hidden bg-white/80 backdrop-blur">
                         <div class="absolute inset-0 bg-gradient-to-br from-yellow-50 via-white to-blue-50 opacity-0 group-active:opacity-100 transition-opacity duration-200"></div>
                         <div class="absolute -top-10 -right-10 h-32 w-32 rounded-full bg-yellow-200/40 blur-2xl"></div>
@@ -171,7 +195,6 @@ class="py-20 bg-gradient-to-b from-gray-100 via-gray-50 to-white">
                         </div>
                         </div>
                     </div>
-                    </div>
                 </div>
             @endforeach
         </div>
@@ -187,21 +210,21 @@ class="py-20 bg-gradient-to-b from-gray-100 via-gray-50 to-white">
         <div @click.stop class="max-w-md bg-white rounded-2xl p-6 w-full">
             <button @click="isModalOpen = false" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-2xl">×</button>
             <div class="flex items-center justify-center mb-4">
-                <template x-if="selectedIndustry && selectedIndustry.iconUrl">
-                    <img :src="selectedIndustry.iconUrl" :alt="selectedIndustry.title" class="h-16 w-16 object-contain" />
+                <template x-if="selectedIndustry && selectedIndustry.icon_url">
+                    <img :src="selectedIndustry.icon_url" :alt="selectedIndustry.title" class="h-16 w-16 object-contain" />
                 </template>
-                <template x-if="selectedIndustry && !selectedIndustry.iconUrl">
-                    <svg class="text-yellow-400 w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <template x-if="selectedIndustry && !selectedIndustry.icon_url">
+                    <svg class="text-[#172455] w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
                     </svg>
                 </template>
             </div>
             <h3 class="text-2xl font-bold text-[#172455] text-center mb-4" x-text="selectedIndustry && selectedIndustry.title"></h3>
-            <div class="text-gray-600 mt-4 leading-relaxed prose prose-sm max-w-none w-full">
-                <template x-if="selectedIndustry && selectedIndustry.overlayDescription">
-                    <div class="prose prose-sm max-w-none w-full [&_.services-label]:!font-bold [&_.services-label]:!text-[#172455] [&_.services-label]:underline [&_.av-needs-label]:!font-bold [&_.av-needs-label]:!text-[#172455] [&_.av-needs-label]:underline" x-html="selectedIndustry.overlayDescription"></div>
+            <div class="text-gray-600 mt-4 leading-relaxed">
+                <template x-if="selectedIndustry && selectedIndustry.overlay_description">
+                    <div class="prose prose-sm max-w-none w-full [&_.services-label]:!font-bold [&_.services-label]:!text-[#172455] [&_.services-label]:underline [&_.av-needs-label]:!font-bold [&_.av-needs-label]:!text-[#172455] [&_.av-needs-label]:underline" x-html="selectedIndustry.overlay_description"></div>
                 </template>
-                <template x-if="selectedIndustry && !selectedIndustry.overlayDescription">
+                <template x-if="selectedIndustry && !selectedIndustry.overlay_description">
                     <p class="text-center" x-text="selectedIndustry && selectedIndustry.description"></p>
                 </template>
             </div>
