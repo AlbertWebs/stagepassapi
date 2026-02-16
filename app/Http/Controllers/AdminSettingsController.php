@@ -17,6 +17,7 @@ class AdminSettingsController extends Controller
         $defaults = [
             'portfolio_source' => 'instagram',
             'site_logo_url' => '',
+            'footer_logo_url' => '',
             'favicon_url' => '',
             'site_name' => 'StagePass Audio Visual Limited',
             'site_tagline' => '',
@@ -84,6 +85,26 @@ class AdminSettingsController extends Controller
             );
         }
         
+        // Handle footer logo upload
+        if ($request->hasFile('footer_logo_upload')) {
+            $file = $request->file('footer_logo_upload');
+            $filename = 'footer_logo_' . time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $uploadsPath = public_path('uploads');
+            
+            // Ensure uploads directory exists
+            if (!file_exists($uploadsPath)) {
+                mkdir($uploadsPath, 0755, true);
+            }
+            
+            $file->move($uploadsPath, $filename);
+            $footerLogoUrl = 'uploads/' . $filename;
+            
+            DB::table('site_settings')->updateOrInsert(
+                ['key' => 'footer_logo_url'],
+                ['value' => $footerLogoUrl, 'updated_at' => now()]
+            );
+        }
+        
         // Handle favicon upload
         if ($request->hasFile('favicon_upload')) {
             $file = $request->file('favicon_upload');
@@ -107,6 +128,7 @@ class AdminSettingsController extends Controller
         // Update all other settings
         $settingsToUpdate = [
             'site_logo_url',
+            'footer_logo_url',
             'favicon_url',
             'site_name',
             'site_tagline',
@@ -135,6 +157,11 @@ class AdminSettingsController extends Controller
         foreach ($settingsToUpdate as $key) {
             // Skip logo_url if it was uploaded (already handled above)
             if ($key === 'site_logo_url' && $request->hasFile('site_logo_upload')) {
+                continue;
+            }
+            
+            // Skip footer_logo_url if it was uploaded (already handled above)
+            if ($key === 'footer_logo_url' && $request->hasFile('footer_logo_upload')) {
                 continue;
             }
             

@@ -84,20 +84,31 @@
         ['label' => 'Equipment Rentals'],
     ];
     
-    // Get logo URL - prioritize from footer section, then settings, then check public/logo folder, then default
+    // Get logo URL - prioritize footer_logo_url from settings, then footer section, then site_logo_url, then check public/logo folder, then default
     $logoUrl = null;
-    if ($section) {
+    // First priority: footer_logo_url from settings
+    if (isset($homepageData['settings']['footer_logo_url']) && !empty($homepageData['settings']['footer_logo_url'])) {
+        $logoUrl = $homepageData['settings']['footer_logo_url'];
+    }
+    // Second priority: footer section logo_url
+    if (!$logoUrl && $section) {
         $logoUrl = is_array($section) ? ($section['logo_url'] ?? null) : ($section->logo_url ?? null);
     }
+    // Third priority: site_logo_url from settings
     if (!$logoUrl && isset($homepageData['settings']['site_logo_url'])) {
         $logoUrl = $homepageData['settings']['site_logo_url'];
     }
-    // Check if footer-logo.png exists in public/logo folder
+    // Fourth priority: Check if footer-logo.png exists in public/logo folder
     if (!$logoUrl && file_exists(public_path('logo/footer-logo.png'))) {
         $logoUrl = asset('logo/footer-logo.png');
     }
     // Fallback to default
     $logoUrl = $logoUrl ?? asset('logo/footer-logo.png');
+    
+    // Normalize URL - handle relative paths
+    if ($logoUrl && !str_starts_with($logoUrl, ['http://', 'https://'])) {
+        $logoUrl = asset($logoUrl);
+    }
     
     // Get description and copyright
     $description = null;

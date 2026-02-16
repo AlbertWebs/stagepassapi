@@ -61,6 +61,23 @@
                         </div>
                     </div>
                     <div>
+                        <label class="text-sm text-slate-400">Footer Logo</label>
+                        <div class="mt-2 space-y-3 rounded-xl border border-slate-800 bg-slate-950/60 p-4">
+                            <div>
+                                <label class="text-xs uppercase tracking-wide text-slate-500">Upload Footer Logo</label>
+                                <input type="file" name="footer_logo_upload" accept="image/*" class="mt-2 block w-full text-sm text-slate-200">
+                                <p class="mt-1 text-xs text-slate-500">PNG, JPG, or SVG recommended. Recommended size: 200x60px for footer logo. This logo will be displayed in the footer.</p>
+                            </div>
+                            @if(!empty($settings['footer_logo_url']))
+                            <div class="mt-3">
+                                <p class="text-xs text-slate-500 mb-2">Current Footer Logo:</p>
+                                <img src="{{ str_starts_with($settings['footer_logo_url'], 'http') ? $settings['footer_logo_url'] : asset($settings['footer_logo_url']) }}" alt="Footer logo preview" class="max-w-full h-auto rounded-lg border border-slate-800 bg-slate-900 object-contain max-h-24">
+                            </div>
+                            @endif
+                            <input type="hidden" name="footer_logo_url" value="{{ $settings['footer_logo_url'] ?? '' }}">
+                        </div>
+                    </div>
+                    <div>
                         <label class="text-sm text-slate-400">Favicon</label>
                         <div class="mt-2 space-y-3 rounded-xl border border-slate-800 bg-slate-950/60 p-4">
                             <div>
