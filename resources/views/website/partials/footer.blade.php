@@ -106,7 +106,7 @@
     $logoUrl = $logoUrl ?? asset('logo/footer-logo.png');
     
     // Normalize URL - handle relative paths
-    if ($logoUrl && !str_starts_with($logoUrl, ['http://', 'https://'])) {
+    if ($logoUrl && !str_starts_with($logoUrl, 'http://') && !str_starts_with($logoUrl, 'https://')) {
         $logoUrl = asset($logoUrl);
     }
     
