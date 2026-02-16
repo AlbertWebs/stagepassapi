@@ -16,13 +16,12 @@ if ($data) {
 
 $xDataJson = json_encode([
     'textVisible' => false,
-    'textDimmed' => false,
     'textFadeOut' => false,
     'videoLoading' => true,
     'videoError' => false,
+    'videoLoaded' => false,
     'fullText' => $fullText,
     'fadeInTimeout' => null,
-    'dimTimeout' => null,
     'fadeOutTimeout' => null,
 ]);
 
@@ -32,37 +31,40 @@ setTimeout(() => {
     const video = \$refs.video;
     if (!video) return;
 
-    const stopLoading = () => videoLoading = false;
+    const handleVideoLoaded = () => {
+        videoLoading = false;
+        videoLoaded = true;
+        videoError = false;
+        
+        // Once video is loaded, wait 10 seconds then show text
+        fadeInTimeout = setTimeout(() => {
+            textVisible = true;
+            
+            // Text stays visible for 20 seconds, then fades out
+            fadeOutTimeout = setTimeout(() => {
+                textFadeOut = true;
+            }, 20000); // 20 seconds
+        }, 10000); // 10 seconds after video loads
+    };
+    
     const startLoading = () => videoLoading = true;
     const setError = () => {
         videoLoading = false;
         videoError = true;
     };
 
-    video.addEventListener('canplay', stopLoading);
-    video.addEventListener('canplaythrough', stopLoading);
-    video.addEventListener('loadeddata', stopLoading);
-    video.addEventListener('playing', stopLoading);
+    video.addEventListener('canplay', handleVideoLoaded);
+    video.addEventListener('canplaythrough', handleVideoLoaded);
+    video.addEventListener('loadeddata', handleVideoLoaded);
+    video.addEventListener('playing', handleVideoLoaded);
     video.addEventListener('waiting', startLoading);
     video.addEventListener('error', setError);
 
-    if (video.readyState >= 3) videoLoading = false;
+    // Check if video is already loaded
+    if (video.readyState >= 3) {
+        handleVideoLoaded();
+    }
 }, 100);
-
-// Text animation timeline
-fadeInTimeout = setTimeout(() => {
-    textVisible = true;
-
-    dimTimeout = setTimeout(() => {
-        textDimmed = true;
-
-        fadeOutTimeout = setTimeout(() => {
-            textFadeOut = true;
-        }, 20000);
-
-    }, 2000);
-
-}, 500);
 ";
 @endphp
 
@@ -117,17 +119,25 @@ fadeInTimeout = setTimeout(() => {
                     ? 'opacity: 0; transition: opacity 2s ease-in-out;'
                     : (
                         textVisible
-                            ? (
-                                textDimmed
-                                    ? 'opacity: 0.25; transition: opacity 1s ease-in-out;'
-                                    : 'opacity: 1; transition: opacity 2s ease-in-out;'
-                              )
+                            ? 'opacity: 1; transition: opacity 5s ease-in-out;'
                             : 'opacity: 0;'
                       )
             "
             class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight leading-none mb-6 text-white uppercase">
             {{ $fullText }}
         </h1>
+    </div>
+
+    <!-- Down Arrow with Tagline -->
+    <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10 text-center">
+        <p class="text-white text-sm md:text-base font-bold mb-3 tracking-wide">
+            Creative Solutions<br> Technical Excellence
+        </p>
+        <a href="#about" class="inline-block animate-bounce">
+            <svg class="w-6 h-6 md:w-8 md:h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+            </svg>
+        </a>
     </div>
 
 </section>
