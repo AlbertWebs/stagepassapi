@@ -319,11 +319,13 @@ document.addEventListener('alpine:init', () => {
          @click.away="isVideoModalOpen = false"
          @keydown.escape.window="isVideoModalOpen = false"
          x-transition
-         class="fixed inset-0 bg-black/80 flex items-center justify-center z-[99999] p-4"
+         class="fixed inset-0 bg-black/90 flex items-center justify-center z-[99999] p-4"
          style="display: none;">
-        <div @click.stop class="max-w-5xl w-full">
-            <button @click="isVideoModalOpen = false" class="absolute top-4 right-4 text-white text-3xl z-50 hover:text-yellow-400 transition-colors">×</button>
-            <video :src="currentVideoUrl" controls class="w-full rounded-lg"></video>
+        <div @click.stop class="w-[1024px] max-w-full max-h-[90vh] flex flex-col">
+            <button @click="isVideoModalOpen = false" class="absolute top-4 right-4 text-white text-3xl z-50 hover:text-yellow-400 transition-colors bg-black/50 rounded-full w-10 h-10 flex items-center justify-center">×</button>
+            <div class="w-full aspect-video bg-black rounded-lg overflow-hidden">
+                <video :src="currentVideoUrl" controls class="w-full h-full object-contain"></video>
+            </div>
             <p class="text-white text-center mt-4 text-xl font-bold" x-text="currentVideoTitle"></p>
         </div>
     </div>
