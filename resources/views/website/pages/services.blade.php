@@ -27,8 +27,8 @@
     }
 }
 </script>
-@endsection
 @endverbatim
+@endsection
 
 @section('content')
 <div class="min-h-screen bg-white">
