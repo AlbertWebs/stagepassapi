@@ -100,10 +100,16 @@ class HomeController extends Controller
                 ? $this->normalizeUrl($settings['favicon_url'])
                 : null;
 
+            // Get footer logo URL from settings
+            $footerLogoUrl = !empty($settings['footer_logo_url']) 
+                ? $this->normalizeUrl($settings['footer_logo_url'])
+                : null;
+
             return [
                 'settings' => [
                     'portfolio_source' => $portfolioSource,
                     'site_logo_url' => $siteLogoUrl,
+                    'footer_logo_url' => $footerLogoUrl,
                     'favicon_url' => $faviconUrl,
                     'site_name' => $settings['site_name'] ?? null,
                     'site_tagline' => $settings['site_tagline'] ?? null,

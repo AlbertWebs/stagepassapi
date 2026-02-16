@@ -92,9 +92,14 @@ class PageController extends Controller
                 ? $this->normalizeUrl($settings['site_logo_url'])
                 : $this->normalizeUrl($navbar?->logo_url);
 
+            $footerLogoUrl = !empty($settings['footer_logo_url']) 
+                ? $this->normalizeUrl($settings['footer_logo_url'])
+                : null;
+
             return [
                 'settings' => [
                     'site_logo_url' => $siteLogoUrl,
+                    'footer_logo_url' => $footerLogoUrl,
                     'site_name' => $settings['site_name'] ?? null,
                     'website_url' => $settings['website_url'] ?? null,
                 ],
