@@ -59,6 +59,7 @@
 <script>
 document.addEventListener('alpine:init', () => {
     Alpine.data('portfolioSection', () => ({
+        headerVisible: false,
         isImageModalOpen: false,
         isYouTubeModalOpen: false,
         isVideoModalOpen: false,
@@ -169,11 +170,14 @@ document.addEventListener('alpine:init', () => {
     
     <div class="container mx-auto px-6 lg:px-12 relative z-10">
         <!-- Header - Hidden on mobile, visible on desktop -->
-        <div class="hidden md:block text-center mb-10">
-            <span class="text-sm font-bold text-yellow-600 tracking-wider uppercase bg-yellow-100 px-4 py-2 rounded-full">{{ $badgeLabel }}</span>
-            <h2 class="text-5xl lg:text-6xl font-black text-[#172455] mt-6 mb-8">{{ $title }}</h2>
-            <div class="h-2 w-32 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-full mx-auto mb-8"></div>
-            <p class="text-xl text-gray-700 max-w-2xl mx-auto font-medium">{{ $description }}</p>
+        <div class="hidden md:block text-center mb-10"
+             x-intersect.threshold.0.1="headerVisible = true"
+             :class="headerVisible ? 'animate-fade-in-up' : ''"
+             style="opacity: 1;">
+            <span class="inline-block text-sm font-bold text-yellow-600 tracking-wider uppercase bg-gradient-to-r from-yellow-100 via-yellow-50 to-yellow-100 px-4 py-2 rounded-full shadow-lg shadow-yellow-200/50 border border-yellow-200/50">{{ $badgeLabel }}</span>
+            <h2 class="text-5xl lg:text-6xl font-black text-[#172455] mt-6 mb-8 drop-shadow-sm">{{ $title }}</h2>
+            <div class="h-2 w-32 bg-gradient-to-r from-yellow-500 via-yellow-400 to-yellow-600 rounded-full mx-auto mb-8 shadow-lg shadow-yellow-500/30"></div>
+            <p class="text-xl text-gray-700 max-w-2xl mx-auto font-medium drop-shadow-sm">{{ $description }}</p>
         </div>
 
         <!-- Gallery Grid -->
@@ -200,7 +204,7 @@ document.addEventListener('alpine:init', () => {
             
             <!-- Database Gallery Items (only when Instagram is NOT selected) -->
             <template x-for="(item, index) in (portfolioSource !== 'instagram' ? databaseItems : [])" :key="item.id || index">
-                <div class="group relative overflow-hidden rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-500 cursor-pointer aspect-[4/3]"
+                <div class="group relative overflow-hidden rounded-2xl shadow-xl shadow-gray-300/50 hover:shadow-2xl hover:shadow-[#172455]/30 ring-2 ring-gray-100/50 hover:ring-yellow-200/50 transition-all duration-500 cursor-pointer aspect-[4/3] hover:-translate-y-2"
                      :style="`animation-delay: ${index * 100}ms`"
                      @click="
                         if (item.type === 'video') {
@@ -220,12 +224,13 @@ document.addEventListener('alpine:init', () => {
                          loading="lazy" width="400" height="300" />
                     
                     <!-- Gradient overlay - Hidden on mobile, visible on desktop -->
-                    <div class="hidden md:block absolute inset-0 bg-gradient-to-t from-[#172455]/90 via-[#172455]/50 to-transparent opacity-60 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    <div class="hidden md:block absolute inset-0 bg-gradient-to-t from-[#172455]/95 via-[#172455]/60 to-transparent opacity-60 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    <div class="hidden md:block absolute inset-0 bg-gradient-to-br from-yellow-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                     
                     <!-- Play button for videos -->
                     <template x-if="item.type === 'video'">
                         <div class="absolute inset-0 flex items-center justify-center">
-                            <div class="w-20 h-20 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full flex items-center justify-center transform scale-0 group-hover:scale-100 transition-transform duration-500 shadow-2xl">
+                            <div class="w-20 h-20 bg-gradient-to-br from-yellow-400 via-yellow-500 to-yellow-600 rounded-full flex items-center justify-center transform scale-0 group-hover:scale-100 transition-transform duration-500 shadow-2xl shadow-yellow-500/50 ring-4 ring-white/50">
                                 <svg class="w-10 h-10 text-white ml-1" fill="white" viewBox="0 0 24 24">
                                     <path d="M8 5v14l11-7z"></path>
                                 </svg>
@@ -243,7 +248,7 @@ document.addEventListener('alpine:init', () => {
             
             <!-- Instagram Gallery Items (only when Instagram IS selected) -->
             <template x-for="(item, index) in (portfolioSource === 'instagram' ? instagramGallery : [])" :key="item.id || index">
-                <div class="group relative overflow-hidden rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-500 cursor-pointer aspect-[4/3]"
+                <div class="group relative overflow-hidden rounded-2xl shadow-xl shadow-gray-300/50 hover:shadow-2xl hover:shadow-[#172455]/30 ring-2 ring-gray-100/50 hover:ring-yellow-200/50 transition-all duration-500 cursor-pointer aspect-[4/3] hover:-translate-y-2"
                      :style="`animation-delay: ${index * 100}ms`"
                      @click="
                         if (item.type === 'video') {
@@ -262,12 +267,13 @@ document.addEventListener('alpine:init', () => {
                          loading="lazy" width="400" height="300" />
                     
                     <!-- Gradient overlay - Hidden on mobile, visible on desktop -->
-                    <div class="hidden md:block absolute inset-0 bg-gradient-to-t from-[#172455]/90 via-[#172455]/50 to-transparent opacity-60 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    <div class="hidden md:block absolute inset-0 bg-gradient-to-t from-[#172455]/95 via-[#172455]/60 to-transparent opacity-60 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    <div class="hidden md:block absolute inset-0 bg-gradient-to-br from-yellow-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                     
                     <!-- Play button for videos -->
                     <template x-if="item.type === 'video'">
                         <div class="absolute inset-0 flex items-center justify-center">
-                            <div class="w-20 h-20 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full flex items-center justify-center transform scale-0 group-hover:scale-100 transition-transform duration-500 shadow-2xl">
+                            <div class="w-20 h-20 bg-gradient-to-br from-yellow-400 via-yellow-500 to-yellow-600 rounded-full flex items-center justify-center transform scale-0 group-hover:scale-100 transition-transform duration-500 shadow-2xl shadow-yellow-500/50 ring-4 ring-white/50">
                                 <svg class="w-10 h-10 text-white ml-1" fill="white" viewBox="0 0 24 24">
                                     <path d="M8 5v14l11-7z"></path>
                                 </svg>

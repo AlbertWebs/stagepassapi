@@ -18,6 +18,8 @@
 @endphp
 <section x-data="{
     isVisible: false,
+    leftVisible: false,
+    rightVisible: false,
     formData: { name: '', email: '', phone: '', message: '', honeypot: '' },
     mathChallenge: { a: 0, b: 0, operator: '+' },
     mathAnswer: '',
@@ -96,17 +98,20 @@ class="py-32 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden">
     <div class="container mx-auto px-6 lg:px-12 relative z-10">
         <div class="grid lg:grid-cols-2 gap-20">
             <!-- Left - Contact Info -->
-            <div class="space-y-10 animate-slide-in-left">
+            <div class="space-y-10"
+                 x-intersect.threshold.0.1="leftVisible = true"
+                 :class="leftVisible ? 'animate-fade-in-left' : ''"
+                 style="opacity: 1;">
                 <div>
-                    <span class="text-sm font-bold text-yellow-600 tracking-wider uppercase bg-yellow-100 px-4 py-2 rounded-full">Get In Touch</span>
-                    <h2 class="text-5xl lg:text-6xl font-black text-[#172455] mt-6 mb-8 leading-tight">Let's Create Something Amazing Together</h2>
-                    <div class="h-2 w-24 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-full mb-8"></div>
-                    <p class="text-xl text-gray-700 font-medium">Ready to elevate your next event? <span class="text-[#172455] font-bold">Contact us today</span> for a quote or consultation.</p>
+                    <span class="inline-block text-sm font-bold text-yellow-600 tracking-wider uppercase bg-gradient-to-r from-yellow-100 via-yellow-50 to-yellow-100 px-4 py-2 rounded-full shadow-lg shadow-yellow-200/50 border border-yellow-200/50">Get In Touch</span>
+                    <h2 class="text-5xl lg:text-6xl font-black text-[#172455] mt-6 mb-8 leading-tight drop-shadow-sm">Let's Create Something Amazing Together</h2>
+                    <div class="h-2 w-24 bg-gradient-to-r from-yellow-500 via-yellow-400 to-yellow-600 rounded-full mb-8 shadow-lg shadow-yellow-500/30"></div>
+                    <p class="text-xl text-gray-700 font-medium drop-shadow-sm">Ready to elevate your next event? <span class="text-[#172455] font-bold">Contact us today</span> for a quote or consultation.</p>
                 </div>
 
                 <div class="space-y-6">
                     <div class="flex items-start space-x-5 group">
-                        <div class="w-16 h-16 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                        <div class="w-16 h-16 bg-gradient-to-br from-yellow-400 via-yellow-500 to-yellow-600 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-all duration-300 shadow-lg shadow-yellow-500/30 ring-2 ring-white/50 group-hover:shadow-xl group-hover:shadow-yellow-500/40">
                             <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                         </div>
                         <div>
@@ -116,7 +121,7 @@ class="py-32 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden">
                     </div>
 
                     <div class="flex items-start space-x-5 group">
-                        <div class="w-16 h-16 bg-gradient-to-br from-[#172455] to-[#1e3a8a] rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                        <div class="w-16 h-16 bg-gradient-to-br from-[#172455] via-[#1e3a8a] to-[#172455] rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-all duration-300 shadow-lg shadow-[#172455]/30 ring-2 ring-white/50 group-hover:shadow-xl group-hover:shadow-[#172455]/40">
                             <svg class="w-7 h-7 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
                         </div>
                         <div>
@@ -126,7 +131,7 @@ class="py-32 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden">
                     </div>
 
                     <div class="flex items-start space-x-5 group">
-                        <div class="w-16 h-16 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                        <div class="w-16 h-16 bg-gradient-to-br from-yellow-400 via-yellow-500 to-yellow-600 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-all duration-300 shadow-lg shadow-yellow-500/30 ring-2 ring-white/50 group-hover:shadow-xl group-hover:shadow-yellow-500/40">
                             <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
                         </div>
                         <div>
@@ -136,7 +141,7 @@ class="py-32 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden">
                     </div>
 
                     <div class="flex items-start space-x-5 group">
-                        <div class="w-16 h-16 bg-gradient-to-br from-[#172455] to-[#1e3a8a] rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                        <div class="w-16 h-16 bg-gradient-to-br from-[#172455] via-[#1e3a8a] to-[#172455] rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-all duration-300 shadow-lg shadow-[#172455]/30 ring-2 ring-white/50 group-hover:shadow-xl group-hover:shadow-[#172455]/40">
                             <svg class="w-7 h-7 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                         </div>
                         <div>
@@ -148,8 +153,10 @@ class="py-32 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden">
             </div>
 
             <!-- Right - Contact Form -->
-            <div class="animate-slide-in-right" 
-                 class="bg-gradient-to-br from-white to-gray-50 rounded-3xl shadow-2xl p-10 lg:p-14 border-2 border-gray-100">
+            <div class="bg-gradient-to-br from-white via-gray-50 to-white rounded-3xl shadow-2xl shadow-gray-300/50 p-10 lg:p-14 border-2 border-gray-200/50 ring-2 ring-gray-100/50 hover:shadow-gray-400/60 hover:border-gray-300/50 transition-all duration-300"
+                 x-intersect.threshold.0.1="rightVisible = true"
+                 :class="rightVisible ? 'animate-fade-in-right' : ''"
+                 style="opacity: 1;">
                 <form @submit.prevent="handleSubmit()" class="space-y-6">
                     <div x-show="error" x-transition class="p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm" x-text="error"></div>
                     

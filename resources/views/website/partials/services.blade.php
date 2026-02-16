@@ -28,6 +28,7 @@
     $description = is_array($section) ? ($section['description'] ?? 'From concept to set-up to on-site support, we are there every step of the way to provide you with the exceptional product and service you deserve.') : ($section->description ?? 'From concept to set-up to on-site support, we are there every step of the way to provide you with the exceptional product and service you deserve.');
 @endphp
 <section id="services" 
+         x-data="{ headerVisible: false, servicesVisible: [] }"
          class="py-0 md:py-0 pb-16 md:pb-24 bg-white relative overflow-hidden">
     <!-- Background decoration -->
     <div class="absolute top-0 right-0 w-[700px] h-[700px] bg-yellow-100 rounded-full blur-3xl opacity-30 animate-pulse-slow"></div>
@@ -35,11 +36,14 @@
     
     <div class="container mx-auto px-4 lg:px-12 relative z-10">
         <!-- Header -->
-        <div class="text-center max-w-4xl mx-auto mb-6 md:mb-10 pt-8 md:pt-12">
-            <span class="text-sm font-bold text-yellow-600 tracking-wider uppercase bg-yellow-100 px-4 py-2 rounded-full">{{ $badgeLabel }}</span>
-            <h2 class="text-3xl md:text-5xl lg:text-6xl font-black text-[#172455] mt-6 mb-4 leading-tight">{{ $title }}</h2>
-            <div class="h-2 w-24 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-full mx-auto mb-4"></div>
-            <p class="text-lg md:text-xl text-gray-700 font-medium">{{ $description }}</p>
+        <div class="text-center max-w-4xl mx-auto mb-6 md:mb-10 pt-8 md:pt-12"
+             x-intersect.threshold.0.1="headerVisible = true"
+             :class="headerVisible ? 'animate-fade-in-up' : ''"
+             style="opacity: 1;">
+            <span class="inline-block text-sm font-bold text-yellow-600 tracking-wider uppercase bg-gradient-to-r from-yellow-100 via-yellow-50 to-yellow-100 px-4 py-2 rounded-full shadow-lg shadow-yellow-200/50 border border-yellow-200/50">{{ $badgeLabel }}</span>
+            <h2 class="text-3xl md:text-5xl lg:text-6xl font-black text-[#172455] mt-6 mb-4 leading-tight drop-shadow-sm">{{ $title }}</h2>
+            <div class="h-2 w-24 bg-gradient-to-r from-yellow-500 via-yellow-400 to-yellow-600 rounded-full mx-auto mb-4 shadow-lg shadow-yellow-500/30"></div>
+            <p class="text-lg md:text-xl text-gray-700 font-medium drop-shadow-sm">{{ $description }}</p>
         </div>
 
         <!-- Services Grid -->
@@ -49,13 +53,16 @@
                     $iconName = $service->icon ?? $service['icon'] ?? 'Box';
                     $gradient = $service->gradient ?? $service['gradient'] ?? 'from-yellow-400 to-yellow-600';
                 @endphp
-                <div class="group bg-white border-2 border-gray-200 rounded-3xl p-8 hover:shadow-2xl hover:border-transparent transition-all duration-500 hover:-translate-y-3 cursor-pointer relative overflow-hidden"
-                     style="animation-delay: {{ $index * 100 }}ms">
+                <div class="group bg-white border-2 border-gray-200/60 rounded-3xl p-8 shadow-lg shadow-gray-200/30 hover:shadow-2xl hover:shadow-yellow-500/20 hover:border-transparent ring-2 ring-gray-100/50 hover:ring-yellow-200/50 transition-all duration-500 hover:-translate-y-3 cursor-pointer relative overflow-hidden"
+                     x-intersect.threshold.0.1="servicesVisible[{{ $index }}] = true"
+                     :class="servicesVisible[{{ $index }}] ? 'animate-fade-in-up' : ''"
+                     style="opacity: 1;">
                     <!-- Hover gradient background -->
                     <div class="absolute inset-0 bg-gradient-to-br {{ $gradient }} opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl"></div>
+                    <div class="absolute inset-0 bg-gradient-to-br from-white/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl"></div>
                     
                     <div class="relative z-10">
-                        <div class="w-20 h-20 bg-gradient-to-br {{ $gradient }} rounded-2xl flex items-center justify-center text-white mb-6 group-hover:scale-125 group-hover:rotate-6 transition-all duration-500 shadow-xl">
+                        <div class="w-20 h-20 bg-gradient-to-br {{ $gradient }} rounded-2xl flex items-center justify-center text-white mb-6 group-hover:scale-125 group-hover:rotate-6 transition-all duration-500 shadow-xl shadow-black/20 group-hover:shadow-2xl group-hover:shadow-black/30 ring-2 ring-white/30">
                             @if($iconName === 'Box')
                                 <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
                             @elseif($iconName === 'Monitor')

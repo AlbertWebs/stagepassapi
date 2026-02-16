@@ -113,8 +113,8 @@ setTimeout(() => {
 
         </div>
 
-        <!-- Overlay -->
-        <div class="absolute inset-0 bg-black opacity-50"></div>
+        <!-- Overlay with gradient -->
+        <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70"></div>
     </div>
 
 
@@ -136,19 +136,21 @@ setTimeout(() => {
                               )
                       )
             "
-            class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight leading-none mb-6 text-white uppercase">
+            class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight leading-none mb-6 text-white uppercase drop-shadow-2xl [text-shadow:0_4px_20px_rgba(0,0,0,0.8),0_2px_8px_rgba(255,215,0,0.3)]">
         </h1>
     </div>
 
     <!-- Down Arrow with Tagline -->
     <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10 text-center">
-        <p class="text-white text-sm md:text-base font-bold mb-3 tracking-wide">
+        <p class="text-white text-sm md:text-base font-bold mb-3 tracking-wide drop-shadow-lg [text-shadow:0_2px_10px_rgba(0,0,0,0.5)]">
             Creative Solutions<br> Technical Excellence
         </p>
-        <a href="#about" class="inline-block animate-bounce">
-            <svg class="w-6 h-6 md:w-8 md:h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
-            </svg>
+        <a href="#about" class="inline-block animate-bounce hover:scale-110 transition-transform duration-300">
+            <div class="w-12 h-12 md:w-14 md:h-14 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center shadow-2xl hover:bg-white/20 transition-all duration-300">
+                <svg class="w-6 h-6 md:w-8 md:h-8 text-white drop-shadow-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                </svg>
+            </div>
         </a>
     </div>
 

@@ -65,6 +65,7 @@
 <section x-data="{ 
     selectedIndustry: null, 
     isModalOpen: false,
+    headerVisible: false,
     handleCardTap(industry) {
         this.selectedIndustry = industry;
         this.isModalOpen = true;
@@ -73,8 +74,11 @@
 id="industries" 
 class="py-20 bg-gradient-to-b from-gray-100 via-gray-50 to-white">
     <div class="container mx-auto px-6 lg:px-12">
-        <div class="text-center mb-14">
-            <span class="text-sm font-bold text-yellow-600 tracking-wider uppercase bg-yellow-100 px-4 py-2 rounded-full">Industries</span>
+        <div class="text-center mb-14"
+             x-intersect.threshold.0.1="headerVisible = true"
+             :class="headerVisible ? 'animate-fade-in-up' : ''"
+             style="opacity: 1;">
+            <span class="inline-block text-sm font-bold text-yellow-600 tracking-wider uppercase bg-gradient-to-r from-yellow-100 via-yellow-50 to-yellow-100 px-4 py-2 rounded-full shadow-lg shadow-yellow-200/50 border border-yellow-200/50">Industries</span>
             <h2 class="text-4xl lg:text-6xl font-black text-[#172455] mb-4 mt-6">
                 @if(str_starts_with($title, 'Industries'))
                     <span class="text-yellow-500">Industries</span>{{ substr($title, strlen('Industries')) }}
@@ -135,10 +139,10 @@ class="py-20 bg-gradient-to-b from-gray-100 via-gray-50 to-white">
                 <div class="relative w-full transition-all duration-1000 transform opacity-100 translate-y-0 {{ $gridColumnClass }}"
                      style="transition-delay: {{ $index * 100 }}ms">
                     <!-- Desktop: Hover overlay -->
-                    <div class="relative h-72 w-full rounded-2xl p-[3px] bg-gradient-to-r from-[#172455] via-yellow-400 to-[#172455] bg-[length:200%_100%] animate-gradient-border group transition-all duration-500 transform hover:-translate-y-3 hover:shadow-2xl hover:shadow-yellow-500/20 hidden md:block cursor-pointer"
+                    <div class="relative h-72 w-full rounded-2xl p-[3px] bg-gradient-to-r from-[#172455] via-yellow-400 to-[#172455] bg-[length:200%_100%] animate-gradient-border group transition-all duration-500 transform hover:-translate-y-3 hover:shadow-2xl hover:shadow-yellow-500/30 ring-2 ring-white/50 hidden md:block cursor-pointer"
                          @mouseenter="selectedIndustry = @js($industryForJs)"
                          @mouseleave="selectedIndustry = null">
-                        <div class="relative h-full w-full rounded-2xl overflow-hidden bg-white/80 backdrop-blur">
+                        <div class="relative h-full w-full rounded-2xl overflow-hidden bg-white/90 backdrop-blur-md shadow-inner">
                         <div class="absolute inset-0 bg-gradient-to-br from-yellow-50 via-white to-blue-50 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                         <div class="absolute -top-10 -right-10 h-32 w-32 rounded-full bg-yellow-200/40 blur-2xl group-hover:scale-110 transition-transform duration-500"></div>
                         

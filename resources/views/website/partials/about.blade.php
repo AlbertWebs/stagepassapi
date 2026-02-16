@@ -83,41 +83,49 @@
 </div>
 
 <section id="about" 
+         x-data="{ imageVisible: false, contentVisible: false, missionVisible: false, peopleVisible: false }"
          class="py-8 md:py-16 bg-gradient-to-b from-gray-50 via-white to-gray-50 relative overflow-hidden">
     <div class="absolute top-20 left-0 w-[600px] h-[600px] bg-[#172455] rounded-full blur-3xl opacity-5 animate-pulse-slow"></div>
     
     <div class="container mx-auto px-4 lg:px-12 relative z-10">
         <div class="grid lg:grid-cols-2 gap-12 md:gap-20 items-center">
             <!-- Left - Image -->
-            <div class="relative">
-                <div class="relative rounded-3xl overflow-hidden shadow-2xl transform hover:scale-105 transition-transform duration-500">
+            <div class="relative" 
+                 x-intersect.threshold.0.1="imageVisible = true"
+                 :class="imageVisible ? 'animate-fade-in-left' : ''"
+                 style="opacity: 1;">
+                <div class="relative rounded-3xl overflow-hidden shadow-2xl shadow-[#172455]/20 ring-4 ring-white/50 transform hover:scale-[1.02] hover:shadow-2xl hover:shadow-[#172455]/30 transition-all duration-500">
                     <img src="{{ $imageUrl }}" alt="StagePass Audio Visual - Professional event production and AV services in Kenya" 
                          class="w-full h-[300px] md:h-[550px] object-cover" loading="lazy" width="800" height="600" />
-                    <div class="absolute inset-0 bg-gradient-to-t from-[#172455]/70 to-transparent"></div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#172455]/80 via-[#172455]/40 to-transparent"></div>
+                    <div class="absolute inset-0 bg-gradient-to-br from-yellow-500/5 to-transparent"></div>
                 </div>
                 
                 <!-- Floating stat card -->
-                <div class="absolute -bottom-4 -right-4 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-2xl shadow-2xl p-4 max-w-xs animate-float">
+                <div class="absolute -bottom-4 -right-4 bg-gradient-to-br from-yellow-400 via-yellow-500 to-yellow-600 rounded-2xl shadow-2xl shadow-yellow-500/30 ring-4 ring-white/50 p-4 max-w-xs animate-float hover:shadow-yellow-500/40 hover:scale-105 transition-all duration-300">
                     <div class="text-center">
-                        <div class="text-3xl md:text-5xl font-black text-white">{{ $statValue }}</div>
-                        <div class="text-white font-bold mt-2">{{ $statLabel }}</div>
+                        <div class="text-3xl md:text-5xl font-black text-white drop-shadow-lg">{{ $statValue }}</div>
+                        <div class="text-white font-bold mt-2 drop-shadow-md">{{ $statLabel }}</div>
                     </div>
                 </div>
                 
                 <!-- Floating award icon -->
-                <div class="absolute -top-6 -left-6 bg-gradient-to-br from-[#172455] to-[#1e3a8a] rounded-2xl shadow-2xl p-6 animate-float animation-delay-1000">
-                    <svg class="w-10 h-10 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="absolute -top-6 -left-6 bg-gradient-to-br from-[#172455] via-[#1e3a8a] to-[#172455] rounded-2xl shadow-2xl shadow-[#172455]/40 ring-4 ring-white/50 p-6 animate-float animation-delay-1000 hover:shadow-[#172455]/50 hover:scale-110 transition-all duration-300">
+                    <svg class="w-10 h-10 text-yellow-400 drop-shadow-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
                     </svg>
                 </div>
             </div>
 
             <!-- Right - Content -->
-            <div class="space-y-8 animate-fade-in-right">
+            <div class="space-y-8"
+                 x-intersect.threshold.0.1="contentVisible = true"
+                 :class="contentVisible ? 'animate-fade-in-right' : ''"
+                 style="opacity: 1;">
                 <div>
-                    <span class="text-sm font-bold text-yellow-600 tracking-wider uppercase bg-yellow-100 px-4 py-2 rounded-full">{{ $badgeLabel }}</span>
-                    <h2 class="text-4xl lg:text-5xl font-black text-[#172455] mt-6 leading-tight">{{ $title }}</h2>
-                    <div class="h-2 w-24 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-full mt-4"></div>
+                    <span class="inline-block text-sm font-bold text-yellow-600 tracking-wider uppercase bg-gradient-to-r from-yellow-100 via-yellow-50 to-yellow-100 px-4 py-2 rounded-full shadow-lg shadow-yellow-200/50 border border-yellow-200/50">{{ $badgeLabel }}</span>
+                    <h2 class="text-4xl lg:text-5xl font-black text-[#172455] mt-6 leading-tight drop-shadow-sm">{{ $title }}</h2>
+                    <div class="h-2 w-24 bg-gradient-to-r from-yellow-500 via-yellow-400 to-yellow-600 rounded-full mt-4 shadow-lg shadow-yellow-500/30"></div>
                 </div>
 
                 <div class="text-xl text-gray-700 leading-relaxed font-medium">{!! $descriptionPrimary !!}</div>
@@ -142,9 +150,13 @@
         <!-- Mission and People Sections - Side by Side -->
         <div class="mt-16 md:mt-32 grid md:grid-cols-2 gap-6 md:gap-8">
             <!-- Mission Section -->
-            <div class="text-center animate-fade-in-up">
-                <div class="h-full bg-gradient-to-br from-[#172455] to-[#1e3a8a] rounded-3xl p-6 md:p-12 shadow-2xl relative overflow-hidden">
-                    <div class="absolute inset-0 bg-gradient-to-r from-yellow-500/10 to-transparent"></div>
+            <div class="text-center"
+                 x-intersect.threshold.0.1="missionVisible = true"
+                 :class="missionVisible ? 'animate-fade-in-up' : ''"
+                 style="opacity: 1;">
+                <div class="h-full bg-gradient-to-br from-[#172455] via-[#1e3a8a] to-[#172455] rounded-3xl p-6 md:p-12 shadow-2xl shadow-[#172455]/30 ring-4 ring-white/50 relative overflow-hidden hover:shadow-[#172455]/40 transition-all duration-300">
+                    <div class="absolute inset-0 bg-gradient-to-r from-yellow-500/10 via-yellow-400/5 to-transparent"></div>
+                    <div class="absolute inset-0 bg-gradient-to-br from-transparent via-white/5 to-white/10"></div>
                     <svg class="mx-auto text-yellow-400 mb-4 md:mb-6 animate-bounce-slow w-12 h-12 md:w-16 md:h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                         <circle cx="12" cy="12" r="10"></circle>
                         <circle cx="12" cy="12" r="6"></circle>
@@ -157,9 +169,13 @@
 
             <!-- Our People Section -->
             @if($peopleTitle && $peopleDescription)
-            <div class="text-center animate-fade-in-up">
-                <div class="h-full bg-gradient-to-br from-gray-50 to-white rounded-3xl p-6 md:p-12 border-2 border-gray-100 shadow-2xl relative overflow-hidden">
-                    <div class="absolute top-0 right-0 w-48 h-48 bg-yellow-200 rounded-full blur-3xl opacity-30"></div>
+            <div class="text-center"
+                 x-intersect.threshold.0.1="peopleVisible = true"
+                 :class="peopleVisible ? 'animate-fade-in-up' : ''"
+                 style="opacity: 1;">
+                <div class="h-full bg-gradient-to-br from-gray-50 via-white to-gray-50 rounded-3xl p-6 md:p-12 border-2 border-gray-200/50 shadow-2xl shadow-gray-200/50 ring-2 ring-gray-100/50 relative overflow-hidden hover:shadow-gray-300/60 hover:border-gray-300/50 transition-all duration-300">
+                    <div class="absolute top-0 right-0 w-48 h-48 bg-gradient-to-br from-yellow-200/40 to-yellow-300/20 rounded-full blur-3xl"></div>
+                    <div class="absolute bottom-0 left-0 w-32 h-32 bg-blue-100/20 rounded-full blur-2xl"></div>
                     <div class="text-center max-w-none mx-auto relative z-10">
                         <svg class="mx-auto text-yellow-400 mb-4 md:mb-6 w-12 h-12 md:w-16 md:h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                             <path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>

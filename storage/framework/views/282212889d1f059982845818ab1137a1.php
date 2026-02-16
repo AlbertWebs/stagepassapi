@@ -115,6 +115,64 @@ $defaultLogo =
     .animate-bounce-slow {
         animation: bounce-slow 2s ease-in-out infinite;
     }
+    
+    /* Scroll animations */
+    @keyframes fade-in-up {
+        from {
+            opacity: 0;
+            transform: translateY(40px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    @keyframes fade-in-left {
+        from {
+            opacity: 0;
+            transform: translateX(-40px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+    
+    @keyframes fade-in-right {
+        from {
+            opacity: 0;
+            transform: translateX(40px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+    
+    .animate-fade-in-up {
+        animation: fade-in-up 0.8s ease-out forwards;
+    }
+    
+    .animate-fade-in-left {
+        animation: fade-in-left 0.8s ease-out forwards;
+    }
+    
+    .animate-fade-in-right {
+        animation: fade-in-right 0.8s ease-out forwards;
+    }
+    
+    /* Initial hidden state for scroll animations */
+    .scroll-animate {
+        opacity: 0;
+        transform: translateY(40px);
+        transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+    }
+    
+    .scroll-animate.animate {
+        opacity: 1;
+        transform: translateY(0);
+    }
 </style>
 
 <?php echo $__env->yieldPushContent('styles'); ?>
