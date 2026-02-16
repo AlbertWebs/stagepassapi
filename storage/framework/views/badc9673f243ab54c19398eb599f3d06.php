@@ -1,4 +1,4 @@
-@php
+<?php
     $data = $data ?? null;
     $section = null;
     $items = null;
@@ -10,7 +10,7 @@
         $section = $data->section ?? null;
         $items = $data->items ?? null;
     }
-@endphp
+?>
 
 <style>
     @keyframes gradient-border {
@@ -30,7 +30,7 @@
     }
 </style>
 
-@php
+<?php
     
     $industryData = $items ?? collect([
         (object)['title' => 'Corporate & Business Events', 'icon_name' => 'Building2', 'description' => 'Professional audio-visual solutions for corporate gatherings, conferences, and business events.'],
@@ -61,7 +61,7 @@
         ];
         return $icons[$iconName] ?? $icons['Building2'];
     }
-@endphp
+?>
 <section x-data="{ 
     selectedIndustry: null, 
     isModalOpen: false,
@@ -76,27 +76,31 @@ class="py-20 bg-gradient-to-b from-gray-100 via-gray-50 to-white">
         <div class="text-center mb-14">
             <span class="text-sm font-bold text-yellow-600 tracking-wider uppercase bg-yellow-100 px-4 py-2 rounded-full">Industries</span>
             <h2 class="text-4xl lg:text-6xl font-black text-[#172455] mb-4 mt-6">
-                @if(str_starts_with($title, 'Industries'))
-                    <span class="text-yellow-500">Industries</span>{{ substr($title, strlen('Industries')) }}
-                @elseif(str_contains($title, 'Industries'))
-                    @php
+                <?php if(str_starts_with($title, 'Industries')): ?>
+                    <span class="text-yellow-500">Industries</span><?php echo e(substr($title, strlen('Industries'))); ?>
+
+                <?php elseif(str_contains($title, 'Industries')): ?>
+                    <?php
                         $parts = explode('Industries', $title, 2);
-                    @endphp
-                    @if(count($parts) === 2)
-                        {{ trim($parts[0]) }}<span class="text-yellow-500">Industries</span>{{ $parts[1] }}
-                    @else
-                        {{ $title }}
-                    @endif
-                @else
-                    {{ $title }}
-                @endif
+                    ?>
+                    <?php if(count($parts) === 2): ?>
+                        <?php echo e(trim($parts[0])); ?><span class="text-yellow-500">Industries</span><?php echo e($parts[1]); ?>
+
+                    <?php else: ?>
+                        <?php echo e($title); ?>
+
+                    <?php endif; ?>
+                <?php else: ?>
+                    <?php echo e($title); ?>
+
+                <?php endif; ?>
             </h2>
-            <p class="text-lg md:text-xl text-gray-700 max-w-3xl mx-auto">{{ $subtitle }}</p>
+            <p class="text-lg md:text-xl text-gray-700 max-w-3xl mx-auto"><?php echo e($subtitle); ?></p>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-            @foreach($industryData as $index => $industry)
-                @php
+            <?php $__currentLoopData = $industryData; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $industry): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <?php
                     // Handle both array and object data
                     if (is_array($industry)) {
                         $iconName = $industry['icon_name'] ?? 'Building2';
@@ -131,12 +135,12 @@ class="py-20 bg-gradient-to-b from-gray-100 via-gray-50 to-white">
                     if ($isLastRow && $isIncompleteLastRow && $itemsInLastRow === 1) {
                         $gridColumnClass = 'lg:col-start-2';
                     }
-                @endphp
-                <div class="relative w-full transition-all duration-1000 transform opacity-100 translate-y-0 {{ $gridColumnClass }}"
-                     style="transition-delay: {{ $index * 100 }}ms">
+                ?>
+                <div class="relative w-full transition-all duration-1000 transform opacity-100 translate-y-0 <?php echo e($gridColumnClass); ?>"
+                     style="transition-delay: <?php echo e($index * 100); ?>ms">
                     <!-- Desktop: Hover overlay -->
                     <div class="relative h-72 w-full rounded-2xl p-[3px] bg-gradient-to-r from-[#172455] via-yellow-400 to-[#172455] bg-[length:200%_100%] animate-gradient-border group transition-all duration-500 transform hover:-translate-y-3 hover:shadow-2xl hover:shadow-yellow-500/20 hidden md:block cursor-pointer"
-                         @mouseenter="selectedIndustry = @js($industryForJs)"
+                         @mouseenter="selectedIndustry = <?php echo \Illuminate\Support\Js::from($industryForJs)->toHtml() ?>"
                          @mouseleave="selectedIndustry = null">
                         <div class="relative h-full w-full rounded-2xl overflow-hidden bg-white/80 backdrop-blur">
                         <div class="absolute inset-0 bg-gradient-to-br from-yellow-50 via-white to-blue-50 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
@@ -145,37 +149,39 @@ class="py-20 bg-gradient-to-b from-gray-100 via-gray-50 to-white">
                         <!-- Front of the card -->
                         <div class="absolute inset-0 flex flex-col items-center justify-center p-6 transition-transform duration-500 group-hover:scale-95">
                             <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#172455] to-[#1e3a8a] flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform duration-500">
-                                @if($iconUrl)
-                                    <img src="{{ $iconUrl }}" alt="{{ $industryTitle }}" class="h-10 w-10 object-contain" />
-                                @else
+                                <?php if($iconUrl): ?>
+                                    <img src="<?php echo e($iconUrl); ?>" alt="<?php echo e($industryTitle); ?>" class="h-10 w-10 object-contain" />
+                                <?php else: ?>
                                     <svg class="text-yellow-300 w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        {!! getIconSvg($iconName) !!}
+                                        <?php echo getIconSvg($iconName); ?>
+
                                     </svg>
-                                @endif
+                                <?php endif; ?>
                             </div>
-                            <h3 class="text-2xl font-extrabold text-[#172455] mt-6 text-center">{{ $industryTitle }}</h3>
+                            <h3 class="text-2xl font-extrabold text-[#172455] mt-6 text-center"><?php echo e($industryTitle); ?></h3>
                             <p class="text-sm text-gray-500 mt-2 text-center">Tailored event solutions</p>
                         </div>
 
                         <!-- Hover Overlay with Details -->
-                        <div :class="selectedIndustry && selectedIndustry.title === '{{ $industryTitle }}' ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'"
+                        <div :class="selectedIndustry && selectedIndustry.title === '<?php echo e($industryTitle); ?>' ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'"
                              class="absolute inset-0 bg-gradient-to-br from-[#172455] to-[#1e3a8a] text-white p-4 flex flex-col justify-start items-center transition-all duration-500 overflow-hidden">
                             <div class="flex-shrink-0">
-                                @if($iconUrl)
-                                    <img src="{{ $iconUrl }}" alt="{{ $industryTitle }}" class="h-10 w-10 object-contain mb-2" />
-                                @else
+                                <?php if($iconUrl): ?>
+                                    <img src="<?php echo e($iconUrl); ?>" alt="<?php echo e($industryTitle); ?>" class="h-10 w-10 object-contain mb-2" />
+                                <?php else: ?>
                                     <svg class="text-yellow-400 mb-2 w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        {!! getIconSvg($iconName) !!}
+                                        <?php echo getIconSvg($iconName); ?>
+
                                     </svg>
-                                @endif
+                                <?php endif; ?>
                             </div>
-                            <h3 class="font-bold text-yellow-400 text-lg mb-2 text-center flex-shrink-0">{{ $industryTitle }}</h3>
+                            <h3 class="font-bold text-yellow-400 text-lg mb-2 text-center flex-shrink-0"><?php echo e($industryTitle); ?></h3>
                             <div class="flex-1 overflow-hidden w-full">
-                                @if($overlayDescription)
-                                    <div class="text-xs text-slate-200 leading-tight prose prose-invert prose-sm max-w-none w-full [&_p]:mb-1 [&_ul]:mb-2 [&_li]:mb-0.5 [&_.services-label]:!font-bold [&_.services-label]:!text-[#172455] [&_.services-label]:underline [&_.av-needs-label]:!font-bold [&_.av-needs-label]:!text-[#172455] [&_.av-needs-label]:underline">{!! $overlayDescription !!}</div>
-                                @else
-                                    <p class="text-xs text-slate-200 text-center leading-tight line-clamp-6">{{ $industryDescription }}</p>
-                                @endif
+                                <?php if($overlayDescription): ?>
+                                    <div class="text-xs text-slate-200 leading-tight prose prose-invert prose-sm max-w-none w-full [&_p]:mb-1 [&_ul]:mb-2 [&_li]:mb-0.5 [&_.services-label]:!font-bold [&_.services-label]:!text-[#172455] [&_.services-label]:underline [&_.av-needs-label]:!font-bold [&_.av-needs-label]:!text-[#172455] [&_.av-needs-label]:underline"><?php echo $overlayDescription; ?></div>
+                                <?php else: ?>
+                                    <p class="text-xs text-slate-200 text-center leading-tight line-clamp-6"><?php echo e($industryDescription); ?></p>
+                                <?php endif; ?>
                             </div>
                         </div>
                         </div>
@@ -183,7 +189,7 @@ class="py-20 bg-gradient-to-b from-gray-100 via-gray-50 to-white">
 
                     <!-- Mobile: Tap to open modal -->
                     <div class="relative h-72 w-full rounded-2xl p-[3px] bg-gradient-to-r from-[#172455] via-yellow-400 to-[#172455] bg-[length:200%_100%] animate-gradient-border group transition-all duration-500 transform active:scale-95 block md:hidden cursor-pointer"
-                         @click="handleCardTap(@js($industryForJs))">
+                         @click="handleCardTap(<?php echo \Illuminate\Support\Js::from($industryForJs)->toHtml() ?>)">
                         <div class="relative h-full w-full rounded-2xl overflow-hidden bg-white/80 backdrop-blur">
                         <div class="absolute inset-0 bg-gradient-to-br from-yellow-50 via-white to-blue-50 opacity-0 group-active:opacity-100 transition-opacity duration-200"></div>
                         <div class="absolute -top-10 -right-10 h-32 w-32 rounded-full bg-yellow-200/40 blur-2xl"></div>
@@ -191,21 +197,22 @@ class="py-20 bg-gradient-to-b from-gray-100 via-gray-50 to-white">
                         <!-- Front of the card -->
                         <div class="absolute inset-0 flex flex-col items-center justify-center p-6">
                             <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#172455] to-[#1e3a8a] flex items-center justify-center shadow-2xl">
-                                @if($iconUrl)
-                                    <img src="{{ $iconUrl }}" alt="{{ $industryTitle }}" class="h-10 w-10 object-contain" />
-                                @else
+                                <?php if($iconUrl): ?>
+                                    <img src="<?php echo e($iconUrl); ?>" alt="<?php echo e($industryTitle); ?>" class="h-10 w-10 object-contain" />
+                                <?php else: ?>
                                     <svg class="text-yellow-300 w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        {!! getIconSvg($iconName) !!}
+                                        <?php echo getIconSvg($iconName); ?>
+
                                     </svg>
-                                @endif
+                                <?php endif; ?>
                             </div>
-                            <h3 class="text-2xl font-extrabold text-[#172455] mt-6 text-center">{{ $industryTitle }}</h3>
+                            <h3 class="text-2xl font-extrabold text-[#172455] mt-6 text-center"><?php echo e($industryTitle); ?></h3>
                             <p class="text-sm text-gray-500 mt-2 text-center">Tap for details</p>
                         </div>
                         </div>
                     </div>
                 </div>
-            @endforeach
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </div>
     </div>
 
@@ -240,3 +247,4 @@ class="py-20 bg-gradient-to-b from-gray-100 via-gray-50 to-white">
         </div>
     </div>
 </section>
+<?php /**PATH C:\projects\stagepassapi\resources\views/website/partials/industries.blade.php ENDPATH**/ ?>

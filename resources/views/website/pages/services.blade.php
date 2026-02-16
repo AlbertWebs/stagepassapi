@@ -11,6 +11,7 @@
 @section('og_image', $pageData['page']['og_image'] ?? asset('uploads/StagePass-LOGO-y.png'))
 
 @section('structured_data')
+@verbatim
 <script type="application/ld+json">
 {
     "@context": "https://schema.org",
@@ -27,6 +28,7 @@
 }
 </script>
 @endsection
+@endverbatim
 
 @section('content')
 <div class="min-h-screen bg-white">

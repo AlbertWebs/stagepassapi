@@ -1,4 +1,4 @@
-@php
+<?php
     $data = $data ?? null;
     $homepageData = $homepageData ?? [];
     $isPage = $isPage ?? false;
@@ -52,8 +52,8 @@
     
     $currentPath = $isPage ? request()->path() : '#home';
     if ($currentPath === '/') $currentPath = '/';
-@endphp
-@php
+?>
+<?php
     $sections = [];
     if (is_array($navLinks)) {
         $sections = array_map(function($link) {
@@ -64,19 +64,19 @@
     $sectionsJson = json_encode($sections);
     $isPageJs = $isPage ? 'true' : 'false';
     $currentPathJson = json_encode($currentPath);
-@endphp
+?>
 
 <script>
 document.addEventListener('alpine:init', () => {
     Alpine.data('navbar', () => ({
-        isScrolled: {{ $isPageJs }},
+        isScrolled: <?php echo e($isPageJs); ?>,
         isMobileMenuOpen: false,
-        activeLink: {!! $currentPathJson !!},
+        activeLink: <?php echo $currentPathJson; ?>,
         init() {
-            if (!{{ $isPageJs }}) {
+            if (!<?php echo e($isPageJs); ?>) {
                 const handleScroll = () => {
                     this.isScrolled = window.scrollY > 50;
-                    const sections = {!! $sectionsJson !!};
+                    const sections = <?php echo $sectionsJson; ?>;
                     const currentActive = sections.find(href => {
                         const section = document.getElementById(href);
                         if (!section) return false;
@@ -88,7 +88,7 @@ document.addEventListener('alpine:init', () => {
                 handleScroll();
                 window.addEventListener('scroll', handleScroll);
             } else {
-                this.activeLink = {!! $currentPathJson !!};
+                this.activeLink = <?php echo $currentPathJson; ?>;
                 this.isScrolled = true;
             }
         }
@@ -97,7 +97,7 @@ document.addEventListener('alpine:init', () => {
 </script>
 
 <div x-data="navbar">
-    <nav :class="(isScrolled || {{ $isPageJs }}) ? 'bg-[#0f1b3d] shadow-xl border-b-2 border-[#172455]/10' : 'bg-[#0f1b3d] backdrop-blur-md'"
+    <nav :class="(isScrolled || <?php echo e($isPageJs); ?>) ? 'bg-[#0f1b3d] shadow-xl border-b-2 border-[#172455]/10' : 'bg-[#0f1b3d] backdrop-blur-md'"
          class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
         <!-- Top accent bar -->
         <div class="h-1 md:h-2 bg-gradient-to-r from-[#172455] via-yellow-500 to-[#172455] animate-gradient-x"></div>
@@ -106,45 +106,48 @@ document.addEventListener('alpine:init', () => {
             <div class="flex items-center justify-between h-16 md:h-20">
                 <!-- Logo -->
                 <div class="flex items-center h-full group">
-                    @if($isPage)
-                        <a href="{{ route('home') }}" class="h-full flex items-center">
-                            <img src="{{ $logoUrl }}" alt="StagePass Logo" class="h-full w-auto object-contain transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3" />
+                    <?php if($isPage): ?>
+                        <a href="<?php echo e(route('home')); ?>" class="h-full flex items-center">
+                            <img src="<?php echo e($logoUrl); ?>" alt="StagePass Logo" class="h-full w-auto object-contain transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3" />
                         </a>
-                    @else
-                        <img src="{{ $logoUrl }}" alt="StagePass Logo" class="h-full w-auto object-contain transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3" />
-                    @endif
+                    <?php else: ?>
+                        <img src="<?php echo e($logoUrl); ?>" alt="StagePass Logo" class="h-full w-auto object-contain transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3" />
+                    <?php endif; ?>
                 </div>
 
                 <!-- Desktop Navigation -->
                 <div class="hidden lg:flex items-center space-x-8">
-                    @foreach($navLinks as $index => $link)
-                        @php
+                    <?php $__currentLoopData = $navLinks; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $link): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <?php
                             $linkHref = $link['href'] ?? '';
                             $isActive = $isPage 
                                 ? ($currentPath === $linkHref)
                                 : false;
-                        @endphp
-                        @if(($link['isLink'] ?? false))
-                            <a href="{{ $linkHref }}" 
-                               :class="activeLink === '{{ $linkHref }}' ? 'text-yellow-500' : ''"
+                        ?>
+                        <?php if(($link['isLink'] ?? false)): ?>
+                            <a href="<?php echo e($linkHref); ?>" 
+                               :class="activeLink === '<?php echo e($linkHref); ?>' ? 'text-yellow-500' : ''"
                                class="text-white hover:text-yellow-600 font-bold transition-colors duration-200 relative group text-base shadow-sm hover:shadow-lg hover:scale-105 transform-gpu px-3 py-2 rounded-md">
-                                {{ $link['label'] }}
+                                <?php echo e($link['label']); ?>
+
                                 <span class="absolute bottom-0 left-0 w-full h-0.5 bg-white group-hover:bg-gradient-to-r group-hover:from-yellow-500 group-hover:to-yellow-600 transition-all duration-300"></span>
                                 <span class="absolute top-0 left-0 w-0 h-0.5 bg-gradient-to-r from-yellow-500 to-yellow-600 group-hover:w-full transition-all duration-300"></span>
                             </a>
-                        @else
-                            <a href="{{ $linkHref }}" 
-                               :class="activeLink === '{{ $linkHref }}' ? 'text-yellow-500' : ''"
+                        <?php else: ?>
+                            <a href="<?php echo e($linkHref); ?>" 
+                               :class="activeLink === '<?php echo e($linkHref); ?>' ? 'text-yellow-500' : ''"
                                class="text-white hover:text-yellow-600 font-bold transition-colors duration-200 relative group text-base shadow-sm hover:shadow-lg hover:scale-105 transform-gpu px-3 py-2 rounded-md">
-                                {{ $link['label'] }}
+                                <?php echo e($link['label']); ?>
+
                                 <span class="absolute bottom-0 left-0 w-full h-0.5 bg-white group-hover:bg-gradient-to-r group-hover:from-yellow-500 group-hover:to-yellow-600 transition-all duration-300"></span>
                                 <span class="absolute top-0 left-0 w-0 h-0.5 bg-gradient-to-r from-yellow-500 to-yellow-600 group-hover:w-full transition-all duration-300"></span>
                             </a>
-                        @endif
-                    @endforeach
+                        <?php endif; ?>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     <button @click="document.dispatchEvent(new CustomEvent('open-quote-modal'))" 
                             class="bg-gradient-to-r from-[#172455] to-[#1e3a8a] hover:from-[#0f1b3d] hover:to-[#172455] text-white px-4 py-2 rounded-full shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-110 font-bold border-2 border-yellow-500 animate-border-pulse text-sm">
-                        {{ $ctaLabel }}
+                        <?php echo e($ctaLabel); ?>
+
                     </button>
                 </div>
 
@@ -170,35 +173,39 @@ document.addEventListener('alpine:init', () => {
                  x-transition:leave-end="opacity-0 transform -translate-y-1"
                  class="lg:hidden py-4 border-t border-[#172455]/10 animate-fade-in bg-gradient-to-b from-[#0f1b3d] to-[#172455]">
                 <div class="flex flex-col space-y-4">
-                    @foreach($navLinks as $index => $link)
-                        @php
+                    <?php $__currentLoopData = $navLinks; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $link): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <?php
                             $linkHref = $link['href'] ?? '';
                             $isActive = $isPage 
                                 ? ($currentPath === $linkHref)
                                 : false;
-                        @endphp
-                        @if(($link['isLink'] ?? false))
-                            <a href="{{ $link['href'] }}" 
+                        ?>
+                        <?php if(($link['isLink'] ?? false)): ?>
+                            <a href="<?php echo e($link['href']); ?>" 
                                @click="isMobileMenuOpen = false"
-                               :class="activeLink === '{{ $link['href'] }}' ? 'text-yellow-500' : ''"
+                               :class="activeLink === '<?php echo e($link['href']); ?>' ? 'text-yellow-500' : ''"
                                class="text-white hover:text-yellow-600 font-bold py-2 transition-colors duration-200">
-                                {{ $link['label'] }}
+                                <?php echo e($link['label']); ?>
+
                             </a>
-                        @else
-                            <a href="{{ $link['href'] }}" 
-                               @click="isMobileMenuOpen = false; activeLink = '{{ $link['href'] }}'"
-                               :class="activeLink === '{{ $link['href'] }}' ? 'text-yellow-500' : ''"
+                        <?php else: ?>
+                            <a href="<?php echo e($link['href']); ?>" 
+                               @click="isMobileMenuOpen = false; activeLink = '<?php echo e($link['href']); ?>'"
+                               :class="activeLink === '<?php echo e($link['href']); ?>' ? 'text-yellow-500' : ''"
                                class="text-white hover:text-yellow-600 font-bold py-2 transition-colors duration-200">
-                                {{ $link['label'] }}
+                                <?php echo e($link['label']); ?>
+
                             </a>
-                        @endif
-                    @endforeach
+                        <?php endif; ?>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     <button @click="document.dispatchEvent(new CustomEvent('open-quote-modal')); isMobileMenuOpen = false" 
                             class="bg-gradient-to-r from-[#172455] to-[#1e3a8a] hover:from-[#0f1b3d] hover:to-[#172455] text-white w-full rounded-full py-3 font-bold text-sm">
-                        {{ $ctaLabel }}
+                        <?php echo e($ctaLabel); ?>
+
                     </button>
                 </div>
             </div>
         </div>
     </nav>
 </div>
+<?php /**PATH C:\projects\stagepassapi\resources\views/website/partials/navbar.blade.php ENDPATH**/ ?>

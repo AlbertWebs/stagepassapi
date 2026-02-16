@@ -1,4 +1,4 @@
-@php
+<?php
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -29,7 +29,7 @@ $defaultLogo =
     $homepageData['settings']['site_logo_url'] ??
     $homepageData['navigation']['logo_url'] ??
     asset('uploads/StagePass-LOGO-y.png');
-@endphp
+?>
 
 
 <!doctype html>
@@ -37,12 +37,12 @@ $defaultLogo =
 <head>
 <meta charset="utf-8" />
 
-<link rel="icon" type="{{ $faviconType }}" href="{{ $faviconUrl }}">
-<link rel="apple-touch-icon" href="{{ $faviconUrl }}">
+<link rel="icon" type="<?php echo e($faviconType); ?>" href="<?php echo e($faviconUrl); ?>">
+<link rel="apple-touch-icon" href="<?php echo e($faviconUrl); ?>">
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#172455">
-<link rel="manifest" href="{{ route('manifest') }}">
+<link rel="manifest" href="<?php echo e(route('manifest')); ?>">
 
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -50,17 +50,17 @@ $defaultLogo =
 <meta name="apple-mobile-web-app-title" content="StagePass">
 
 <!-- SEO -->
-<title>@yield('title', 'The Best Audio Visual Company in Kenya — StagePass Audio Visual Limited')</title>
+<title><?php echo $__env->yieldContent('title', 'The Best Audio Visual Company in Kenya — StagePass Audio Visual Limited'); ?></title>
 
 <meta name="description"
-      content="@yield('description', 'StagePass Audio Visual Limited is Kenya\'s leading events and audio-visual company — offering professional sound systems, event production, video conferencing, stage lighting, LED screens and technical event support in Nairobi and across Kenya.')">
+      content="<?php echo $__env->yieldContent('description', 'StagePass Audio Visual Limited is Kenya\'s leading events and audio-visual company — offering professional sound systems, event production, video conferencing, stage lighting, LED screens and technical event support in Nairobi and across Kenya.'); ?>">
 
 <meta name="keywords"
-      content="@yield('keywords', 'audio visual company Kenya, AV company Nairobi, event production Kenya, sound systems Kenya, stage lighting Kenya, video conferencing Kenya, event technology Kenya, professional event services Kenya')">
+      content="<?php echo $__env->yieldContent('keywords', 'audio visual company Kenya, AV company Nairobi, event production Kenya, sound systems Kenya, stage lighting Kenya, video conferencing Kenya, event technology Kenya, professional event services Kenya'); ?>">
 
 <meta name="author" content="StagePass Audio Visual Limited">
-<meta name="robots" content="@yield('robots', 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1')">
-<link rel="canonical" href="{{ url()->current() }}">
+<meta name="robots" content="<?php echo $__env->yieldContent('robots', 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'); ?>">
+<link rel="canonical" href="<?php echo e(url()->current()); ?>">
 
 <!-- Geo -->
 <meta name="language" content="English">
@@ -73,29 +73,29 @@ $defaultLogo =
 <link rel="alternate" hreflang="x-default" href="https://stagepass.co.ke">
 
 <!-- Open Graph -->
-<meta property="og:type" content="@yield('og_type', 'website')">
+<meta property="og:type" content="<?php echo $__env->yieldContent('og_type', 'website'); ?>">
 <meta property="og:site_name" content="StagePass Audio Visual Limited">
 <meta property="og:locale" content="en_KE">
-<meta property="og:url" content="{{ url()->current() }}">
-<meta property="og:title" content="@yield('og_title', 'The Best Audio Visual Company in Kenya — StagePass Audio Visual Limited')">
+<meta property="og:url" content="<?php echo e(url()->current()); ?>">
+<meta property="og:title" content="<?php echo $__env->yieldContent('og_title', 'The Best Audio Visual Company in Kenya — StagePass Audio Visual Limited'); ?>">
 <meta property="og:description"
-      content="@yield('og_description', 'Kenya\'s trusted Audio Visual & Event Production company — professional sound engineering, staging, LED screens, event technology and conferencing solutions.')">
-<meta property="og:image" content="@yield('og_image', $defaultLogo)">
+      content="<?php echo $__env->yieldContent('og_description', 'Kenya\'s trusted Audio Visual & Event Production company — professional sound engineering, staging, LED screens, event technology and conferencing solutions.'); ?>">
+<meta property="og:image" content="<?php echo $__env->yieldContent('og_image', $defaultLogo); ?>">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 
 <!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:url" content="{{ url()->current() }}">
-<meta name="twitter:title" content="@yield('twitter_title', 'The Best Audio Visual Company in Kenya — StagePass Audio Visual Limited')">
+<meta name="twitter:url" content="<?php echo e(url()->current()); ?>">
+<meta name="twitter:title" content="<?php echo $__env->yieldContent('twitter_title', 'The Best Audio Visual Company in Kenya — StagePass Audio Visual Limited'); ?>">
 <meta name="twitter:description"
-      content="@yield('twitter_description', 'Events & Audio Visual production company in Kenya — sound systems, staging, lighting, LED screens, conferencing & event technology.')">
-<meta name="twitter:image" content="@yield('twitter_image', $defaultLogo)">
+      content="<?php echo $__env->yieldContent('twitter_description', 'Events & Audio Visual production company in Kenya — sound systems, staging, lighting, LED screens, conferencing & event technology.'); ?>">
+<meta name="twitter:image" content="<?php echo $__env->yieldContent('twitter_image', $defaultLogo); ?>">
 <meta name="twitter:site" content="@stagepass">
 <meta name="twitter:creator" content="@stagepass">
 
-{{-- Structured data slot --}}
-@yield('structured_data')
+
+<?php echo $__env->yieldContent('structured_data'); ?>
 
 <!-- Tailwind -->
 <script src="https://cdn.tailwindcss.com"></script>
@@ -117,23 +117,23 @@ $defaultLogo =
     }
 </style>
 
-@stack('styles')
+<?php echo $__env->yieldPushContent('styles'); ?>
 </head>
 <body class="bg-white">
-    @include('website.partials.navbar', ['homepageData' => $homepageData, 'isPage' => $isPage])
+    <?php echo $__env->make('website.partials.navbar', ['homepageData' => $homepageData, 'isPage' => $isPage], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
     
     <main>
-        @yield('content')
+        <?php echo $__env->yieldContent('content'); ?>
     </main>
     
-    @include('website.partials.footer', ['data' => $homepageData['footer'] ?? null, 'homepageData' => $homepageData])
-    @include('website.partials.quote-modal')
-    @include('website.partials.bottom-navbar', ['homepageData' => $homepageData, 'isPage' => $isPage])
+    <?php echo $__env->make('website.partials.footer', ['data' => $homepageData['footer'] ?? null, 'homepageData' => $homepageData], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+    <?php echo $__env->make('website.partials.quote-modal', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+    <?php echo $__env->make('website.partials.bottom-navbar', ['homepageData' => $homepageData, 'isPage' => $isPage], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
     
     <!-- Scripts -->
     <script>
         // API Base URL
-        const API_BASE_URL = '{{ url('/') }}';
+        const API_BASE_URL = '<?php echo e(url('/')); ?>';
         
         // Navbar scroll effect
         document.addEventListener('DOMContentLoaded', function() {
@@ -154,8 +154,9 @@ $defaultLogo =
         });
     </script>
     
-    @stack('scripts')
+    <?php echo $__env->yieldPushContent('scripts'); ?>
 </body>
 </html>
 
 
+<?php /**PATH C:\projects\stagepassapi\resources\views/website/layouts/app.blade.php ENDPATH**/ ?>
