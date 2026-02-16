@@ -107,12 +107,7 @@
         
         return [...videos.map(mapItem), ...images.map(mapItem)];
     },
-    get displayItems() {
-        if (this.portfolioSource === 'instagram') {
-            return this.instagramGallery;
-        }
-        return {!! $databaseItemsJson !!};
-    },
+    databaseItems: {!! $databaseItemsJson !!},
     init() {
         if (this.portfolioSource === 'instagram') {
             this.loadInstagram();
@@ -154,8 +149,51 @@
                 </div>
             </template>
             
-            <!-- Gallery Items -->
-            <template x-for="(item, index) in displayItems" :key="item.id || index">
+            <!-- Database Gallery Items (only when Instagram is NOT selected) -->
+            <template x-for="(item, index) in (portfolioSource !== 'instagram' ? databaseItems : [])" :key="item.id || index">
+                <div class="group relative overflow-hidden rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-500 cursor-pointer aspect-[4/3]"
+                     :style="`animation-delay: ${index * 100}ms`"
+                     @click="
+                        if (item.type === 'video') {
+                            if (item.youtube_id) {
+                                currentYouTubeId = item.youtube_id;
+                                isYouTubeModalOpen = true;
+                            }
+                        } else {
+                            currentImageUrl = item.media_url || item.thumbnail;
+                            currentImageTitle = item.title;
+                            isImageModalOpen = true;
+                        }
+                     ">
+                    <img :src="item.thumbnail" 
+                         :alt="item.title + ' - StagePass Audio Visual Portfolio'" 
+                         class="w-full h-full object-cover group-hover:scale-125 transition-transform duration-700" 
+                         loading="lazy" width="400" height="300" />
+                    
+                    <!-- Gradient overlay - Hidden on mobile, visible on desktop -->
+                    <div class="hidden md:block absolute inset-0 bg-gradient-to-t from-[#172455]/90 via-[#172455]/50 to-transparent opacity-60 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    
+                    <!-- Play button for videos -->
+                    <template x-if="item.type === 'video'">
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <div class="w-20 h-20 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full flex items-center justify-center transform scale-0 group-hover:scale-100 transition-transform duration-500 shadow-2xl">
+                                <svg class="w-10 h-10 text-white ml-1" fill="white" viewBox="0 0 24 24">
+                                    <path d="M8 5v14l11-7z"></path>
+                                </svg>
+                            </div>
+                        </div>
+                    </template>
+                    
+                    <!-- Title - Hidden on mobile, visible on desktop -->
+                    <div class="hidden md:block absolute bottom-0 left-0 right-0 p-6 transform translate-y-full group-hover:translate-y-0 transition-transform duration-500">
+                        <h3 class="text-white font-bold text-lg line-clamp-2" x-text="item.title"></h3>
+                        <div class="h-1 w-12 bg-yellow-400 mt-2"></div>
+                    </div>
+                </div>
+            </template>
+            
+            <!-- Instagram Gallery Items (only when Instagram IS selected) -->
+            <template x-for="(item, index) in (portfolioSource === 'instagram' ? instagramGallery : [])" :key="item.id || index">
                 <div class="group relative overflow-hidden rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-500 cursor-pointer aspect-[4/3]"
                      :style="`animation-delay: ${index * 100}ms`"
                      @click="
@@ -163,11 +201,8 @@
                             currentVideoUrl = item.media_url;
                             currentVideoTitle = item.title;
                             isVideoModalOpen = true;
-                        } else if (item.youtube_id) {
-                            currentYouTubeId = item.youtube_id;
-                            isYouTubeModalOpen = true;
                         } else {
-                            currentImageUrl = item.media_url || item.thumbnail;
+                            currentImageUrl = item.media_url;
                             currentImageTitle = item.title;
                             isImageModalOpen = true;
                         }
