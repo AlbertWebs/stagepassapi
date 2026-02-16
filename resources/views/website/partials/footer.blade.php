@@ -84,7 +84,7 @@
         ['label' => 'Equipment Rentals'],
     ];
     
-    // Get logo URL - prioritize from footer section, then settings, then default
+    // Get logo URL - prioritize from footer section, then settings, then check public/logo folder, then default
     $logoUrl = null;
     if ($section) {
         $logoUrl = is_array($section) ? ($section['logo_url'] ?? null) : ($section->logo_url ?? null);
@@ -92,7 +92,12 @@
     if (!$logoUrl && isset($homepageData['settings']['site_logo_url'])) {
         $logoUrl = $homepageData['settings']['site_logo_url'];
     }
-    $logoUrl = $logoUrl ?? asset('uploads/StagePass-LOGO-y.png');
+    // Check if footer-logo.png exists in public/logo folder
+    if (!$logoUrl && file_exists(public_path('logo/footer-logo.png'))) {
+        $logoUrl = asset('logo/footer-logo.png');
+    }
+    // Fallback to default
+    $logoUrl = $logoUrl ?? asset('logo/footer-logo.png');
     
     // Get description and copyright
     $description = null;
