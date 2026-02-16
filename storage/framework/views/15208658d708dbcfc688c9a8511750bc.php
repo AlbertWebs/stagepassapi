@@ -1,6 +1,6 @@
-@extends('website.layouts.app')
 
-@php
+
+<?php
 $homepageData = $homepageData ?? [];
 $pageData = $pageData ?? null;
 $loadError = $loadError ?? null;
@@ -27,17 +27,17 @@ $pageOgImage =
     ($page && isset($page['og_image']) && $page['og_image'])
     ? $page['og_image']
     : asset('uploads/StagePass-LOGO-y.png');
-@endphp
+?>
 
 
-@section('title', $pageTitle . ' - StagePass Audio Visual Limited | Professional AV Services in Kenya')
-@section('description', $pageDescription)
-@section('keywords', $pageKeywords)
-@section('og_image', $pageOgImage)
+<?php $__env->startSection('title', $pageTitle . ' - StagePass Audio Visual Limited | Professional AV Services in Kenya'); ?>
+<?php $__env->startSection('description', $pageDescription); ?>
+<?php $__env->startSection('keywords', $pageKeywords); ?>
+<?php $__env->startSection('og_image', $pageOgImage); ?>
 
 
-@section('structured_data')
-@verbatim
+<?php $__env->startSection('structured_data'); ?>
+
 <script type="application/ld+json">
 {
     "@context": "https://schema.org",
@@ -52,69 +52,75 @@ $pageOgImage =
     }
 }
 </script>
-@endverbatim
-@endsection
+
+<?php $__env->stopSection(); ?>
 
 
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="min-h-screen bg-white">
 
-    @if($loadError)
+    <?php if($loadError): ?>
         <div class="bg-red-50 text-red-700 text-center py-4 font-semibold mt-20">
-            {{ $loadError }}
+            <?php echo e($loadError); ?>
+
         </div>
-    @endif
+    <?php endif; ?>
 
     <!-- Breadcrumb -->
     <div class="pt-28 pb-4">
         <div class="mx-auto max-w-4xl px-6">
-            @include('website.partials.breadcrumb', [
+            <?php echo $__env->make('website.partials.breadcrumb', [
                 'items' => [
                     ['label' => 'About', 'path' => '/about']
                 ]
-            ])
+            ], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
         </div>
     </div>
 
     <!-- Homepage About Section -->
-    @include('website.partials.about', [
+    <?php echo $__env->make('website.partials.about', [
         'data' => $homepageData['about'] ?? null
-    ])
+    ], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
     <!-- Page-specific content -->
-    @if($page)
+    <?php if($page): ?>
         <main class="mx-auto max-w-4xl px-6 py-16">
 
-            @if(!empty($page['hero_title']))
+            <?php if(!empty($page['hero_title'])): ?>
                 <h1 class="text-4xl md:text-5xl font-black text-[#172455] mb-4">
-                    {{ $page['hero_title'] }}
+                    <?php echo e($page['hero_title']); ?>
+
                 </h1>
-            @endif
+            <?php endif; ?>
 
-            @if(!empty($page['hero_subtitle']))
+            <?php if(!empty($page['hero_subtitle'])): ?>
                 <p class="text-lg text-gray-600 mb-8">
-                    {{ $page['hero_subtitle'] }}
-                </p>
-            @endif
+                    <?php echo e($page['hero_subtitle']); ?>
 
-            @if(!empty($page['image_url']))
+                </p>
+            <?php endif; ?>
+
+            <?php if(!empty($page['image_url'])): ?>
                 <div class="mb-8">
                     <img
-                        src="{{ $page['image_url'] }}"
-                        alt="{{ $page['hero_title'] ?? 'About' }}"
+                        src="<?php echo e($page['image_url']); ?>"
+                        alt="<?php echo e($page['hero_title'] ?? 'About'); ?>"
                         class="w-full rounded-lg shadow-lg">
                 </div>
-            @endif
+            <?php endif; ?>
 
-            @if(!empty($page['content']))
+            <?php if(!empty($page['content'])): ?>
                 <div class="prose prose-lg max-w-none text-gray-700 leading-7">
-                    {!! $page['content'] !!}
+                    <?php echo $page['content']; ?>
+
                 </div>
-            @endif
+            <?php endif; ?>
 
         </main>
-    @endif
+    <?php endif; ?>
 
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('website.layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\projects\stagepassapi\resources\views/website/pages/about.blade.php ENDPATH**/ ?>
