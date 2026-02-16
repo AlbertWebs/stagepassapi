@@ -121,25 +121,22 @@ setTimeout(() => {
     <!-- Content -->
     <div class="relative z-10 text-center max-w-4xl mx-auto px-4">
         <h1
+            x-show="videoLoaded"
+            x-text="videoLoaded ? fullText : ''"
             :style="
-                !videoLoaded
-                    ? 'display: none;'
+                textFadeOut
+                    ? 'opacity: 0; transition: opacity 5s ease-in-out;'
                     : (
-                        textFadeOut
-                            ? 'opacity: 0; transition: opacity 5s ease-in-out;'
+                        textDimmed
+                            ? 'opacity: 0.15; transition: opacity 1s ease-in-out;'
                             : (
-                                textDimmed
-                                    ? 'opacity: 0.15; transition: opacity 1s ease-in-out;'
-                                    : (
-                                        textVisible
-                                            ? 'opacity: 1; transition: opacity 5s ease-in-out;'
-                                            : 'opacity: 0; display: none;'
-                                      )
+                                textVisible
+                                    ? 'opacity: 1; transition: opacity 5s ease-in-out;'
+                                    : 'opacity: 0;'
                               )
                       )
             "
             class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight leading-none mb-6 text-white uppercase">
-            {{ $fullText }}
         </h1>
     </div>
 

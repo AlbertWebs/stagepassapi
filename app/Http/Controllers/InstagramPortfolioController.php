@@ -95,8 +95,21 @@ class InstagramPortfolioController extends Controller
                 'posted_at',
             ]);
 
+        // Convert to array to ensure proper JSON serialization
+        $mediaArray = $media->map(function ($item) {
+            return [
+                'instagram_id' => $item->instagram_id,
+                'media_type' => $item->media_type,
+                'media_url' => $item->media_url,
+                'thumbnail_url' => $item->thumbnail_url,
+                'permalink' => $item->permalink,
+                'caption' => $item->caption,
+                'posted_at' => $item->posted_at ? $item->posted_at->toIso8601String() : null,
+            ];
+        })->toArray();
+
         return response()
-            ->json(['data' => $media])
+            ->json(['data' => $mediaArray])
             ->header('Access-Control-Allow-Origin', '*');
     }
 }

@@ -55,65 +55,114 @@
         }
     })->toArray());
 @endphp
-<section x-data="{
-    isImageModalOpen: false,
-    isYouTubeModalOpen: false,
-    isVideoModalOpen: false,
-    currentImageUrl: '',
-    currentImageTitle: '',
-    currentYouTubeId: '',
-    currentVideoUrl: '',
-    currentVideoTitle: '',
-    instagramItems: [],
-    isLoadingInstagram: false,
-    instagramError: '',
-    portfolioSource: '{{ $portfolioSource }}',
-    apiBaseUrl: '{{ $apiBaseUrl }}',
-    async loadInstagram() {
-        if (this.portfolioSource !== 'instagram') {
-            return;
-        }
+
+<script>
+document.addEventListener('alpine:init', () => {
+    Alpine.data('portfolioSection', () => ({
+        isImageModalOpen: false,
+        isYouTubeModalOpen: false,
+        isVideoModalOpen: false,
+        currentImageUrl: '',
+        currentImageTitle: '',
+        currentYouTubeId: '',
+        currentVideoUrl: '',
+        currentVideoTitle: '',
+        instagramItems: [],
+        isLoadingInstagram: false,
+        instagramError: '',
+        portfolioSource: {!! json_encode($portfolioSource) !!},
+        apiBaseUrl: {!! json_encode($apiBaseUrl) !!},
+        databaseItems: {!! $databaseItemsJson !!},
         
-        this.isLoadingInstagram = true;
-        this.instagramError = '';
-        
-        try {
-            const response = await fetch(`${this.apiBaseUrl}/api/portfolio/instagram?limit=50`);
-            if (!response.ok) {
-                throw new Error('Failed to load Instagram feed.');
+        async loadInstagram() {
+            if (this.portfolioSource !== 'instagram') {
+                console.log('Portfolio source is not instagram:', this.portfolioSource);
+                return;
             }
-            const payload = await response.json();
-            this.instagramItems = Array.isArray(payload?.data) ? payload.data : [];
-        } catch (error) {
-            this.instagramError = 'Unable to load Instagram feed right now.';
-        } finally {
-            this.isLoadingInstagram = false;
-        }
-    },
-    get instagramGallery() {
-        const videos = this.instagramItems.filter(item => item.media_type === 'VIDEO').slice(0, 12);
-        const images = this.instagramItems.filter(item => item.media_type !== 'VIDEO').slice(0, 12);
+            
+            console.log('Loading Instagram feed from:', `${this.apiBaseUrl}/api/portfolio/instagram?limit=50`);
+            this.isLoadingInstagram = true;
+            this.instagramError = '';
+            
+            try {
+                const response = await fetch(`${this.apiBaseUrl}/api/portfolio/instagram?limit=50`);
+                console.log('Instagram API response status:', response.status);
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('Instagram API error response:', errorText);
+                    throw new Error(`Failed to load Instagram feed. Status: ${response.status}`);
+                }
+                
+                const payload = await response.json();
+                console.log('Instagram API payload:', payload);
+                
+                // Handle both array and object responses
+                if (Array.isArray(payload)) {
+                    this.instagramItems = payload;
+                } else if (Array.isArray(payload?.data)) {
+                    this.instagramItems = payload.data;
+                } else {
+                    this.instagramItems = [];
+                    console.warn('Unexpected Instagram API response format:', payload);
+                }
+                
+                console.log('Instagram items loaded:', this.instagramItems.length);
+                
+                if (this.instagramItems.length === 0) {
+                    console.warn('No Instagram items found in response');
+                }
+            } catch (error) {
+                console.error('Error loading Instagram feed:', error);
+                this.instagramError = 'Unable to load Instagram feed right now. Please try again later.';
+            } finally {
+                this.isLoadingInstagram = false;
+            }
+        },
         
-        const mapItem = (item) => ({
-            id: item.instagram_id,
-            type: item.media_type === 'VIDEO' ? 'video' : 'image',
-            thumbnail: item.media_type === 'VIDEO' 
-                ? (item.thumbnail_url || item.media_url)
-                : item.media_url,
-            media_url: item.media_url,
-            title: item.caption || 'Instagram Post',
-            permalink: item.permalink,
-        });
+        get instagramGallery() {
+            // Handle case-insensitive media_type checking
+            const videos = this.instagramItems.filter(item => {
+                const mediaType = (item.media_type || '').toUpperCase();
+                return mediaType === 'VIDEO';
+            }).slice(0, 12);
+            
+            const images = this.instagramItems.filter(item => {
+                const mediaType = (item.media_type || '').toUpperCase();
+                return mediaType !== 'VIDEO';
+            }).slice(0, 12);
+            
+            const mapItem = (item) => {
+                const mediaType = (item.media_type || '').toUpperCase();
+                const isVideo = mediaType === 'VIDEO';
+                return {
+                    id: item.instagram_id || item.id,
+                    type: isVideo ? 'video' : 'image',
+                    thumbnail: isVideo 
+                        ? (item.thumbnail_url || item.media_url)
+                        : item.media_url,
+                    media_url: item.media_url,
+                    title: item.caption || 'Instagram Post',
+                    permalink: item.permalink,
+                };
+            };
+            
+            return [...videos.map(mapItem), ...images.map(mapItem)];
+        },
         
-        return [...videos.map(mapItem), ...images.map(mapItem)];
-    },
-    databaseItems: {!! $databaseItemsJson !!},
-    init() {
-        if (this.portfolioSource === 'instagram') {
-            this.loadInstagram();
+        init() {
+            console.log('Portfolio section initialized. Source:', this.portfolioSource);
+            if (this.portfolioSource === 'instagram') {
+                this.loadInstagram();
+            } else {
+                console.log('Using database items. Count:', this.databaseItems?.length || 0);
+            }
         }
-    }
-}"
+    }));
+});
+</script>
+
+<section x-data="portfolioSection"
          id="portfolio" 
          class="py-16 bg-gradient-to-b from-white via-gray-50 to-white relative overflow-hidden">
     <div class="absolute top-20 right-0 w-[600px] h-[600px] bg-yellow-100 rounded-full blur-3xl opacity-30 animate-pulse-slow"></div>
