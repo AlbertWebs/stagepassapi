@@ -35,7 +35,7 @@ class ServicesSeeder extends Seeder
                 'services_section_id' => 1,
                 'title' => 'Staging Services',
                 'description' => 'Safe and creative staging solutions for any event requirement.',
-                'icon' => 'Radio',
+                'icon' => 'Stage',
                 'gradient' => 'from-yellow-400 to-yellow-600',
                 'sort_order' => 3,
             ],

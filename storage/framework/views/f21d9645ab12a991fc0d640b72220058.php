@@ -14,7 +14,7 @@
     $services = $services ?? collect([
         (object)['icon' => 'Box', 'title' => 'Full Production & Event Packages', 'description' => 'Complete event production services from start to finish, handling all technical needs.', 'gradient' => 'from-yellow-400 to-yellow-600'],
         (object)['icon' => 'Monitor', 'title' => 'Visual', 'description' => 'Stunning visual displays with cutting-edge screen technology and sharp imagery.', 'gradient' => 'from-[#172455] to-[#1e3a8a]'],
-        (object)['icon' => 'Radio', 'title' => 'Staging Services', 'description' => 'Safe and creative staging solutions for any event requirement.', 'gradient' => 'from-yellow-400 to-yellow-600'],
+        (object)['icon' => 'Stage', 'title' => 'Staging Services', 'description' => 'Safe and creative staging solutions for any event requirement.', 'gradient' => 'from-yellow-400 to-yellow-600'],
         (object)['icon' => 'Lightbulb', 'title' => 'Lighting', 'description' => 'Intelligent lighting design that creates emotion through color, texture and movement.', 'gradient' => 'from-[#172455] to-[#1e3a8a]'],
         (object)['icon' => 'Grid3x3', 'title' => 'Rigging & Truss Services', 'description' => 'Professional rigging and truss services with legal and technical compliance.', 'gradient' => 'from-yellow-400 to-yellow-600'],
         (object)['icon' => 'Palette', 'title' => 'Graphics', 'description' => 'Eye-catching visual content including signs, posters, and printed materials.', 'gradient' => 'from-[#172455] to-[#1e3a8a]'],
@@ -67,8 +67,54 @@
                                 <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
                             <?php elseif($iconName === 'Monitor'): ?>
                                 <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
-                            <?php elseif($iconName === 'Radio'): ?>
-                                <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path></svg>
+                            <?php elseif($iconName === 'Stage'): ?>
+                                <svg class="w-10 h-10" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                    <!-- Curved roof/canopy -->
+                                    <path d="M1 7v-.5Q12 0 23 6.5V7H1z"/>
+                                    <!-- Horizontal lighting truss -->
+                                    <path d="M5 8h14v1H5z"/>
+                                    <!-- Four spotlights -->
+                                    <rect x="6.5" y="9" width="2" height="2" rx=".3"/>
+                                    <rect x="11" y="9" width="2" height="2" rx=".3"/>
+                                    <rect x="15.5" y="9" width="2" height="2" rx=".3"/>
+                                    <rect x="20" y="9" width="2" height="2" rx=".3"/>
+                                    <!-- Left vertical truss with X lattice -->
+                                    <path d="M1 7h4v14H1z"/>
+                                    <path d="M1 9.5L5 12.5M5 9.5L1 12.5M1 12.5L5 15.5M5 12.5L1 15.5M1 15.5L5 18.5M5 15.5L1 18.5" stroke="currentColor" stroke-width=".8" fill="none" stroke-linecap="round"/>
+                                    <!-- Right vertical truss with X lattice -->
+                                    <path d="M23 7h-4v14h4z"/>
+                                    <path d="M23 9.5L19 12.5M19 9.5L23 12.5M23 12.5L19 15.5M19 12.5L23 15.5M23 15.5L19 18.5M19 15.5L23 18.5" stroke="currentColor" stroke-width=".8" fill="none" stroke-linecap="round"/>
+                                    <!-- Stage platform (three tiers) -->
+                                    <path d="M1 21h4v3H1z M19 21h4v3h-4z M5 20h14v4H5z"/>
+                                    <!-- Left speaker stack (6 units) -->
+                                    <path d="M0 8.5h2v2H0zm0 2.5h2v2H0zm0 2.5h2v2H0zm0 2.5h2v2H0zm0 2.5h2v2H0zm0 2.5h2v2H0z"/>
+                                    <circle cx=".6" cy="9.6" r=".35"/>
+                                    <circle cx="1.4" cy="9.6" r=".35"/>
+                                    <circle cx=".6" cy="12.1" r=".35"/>
+                                    <circle cx="1.4" cy="12.1" r=".35"/>
+                                    <circle cx=".6" cy="14.6" r=".35"/>
+                                    <circle cx="1.4" cy="14.6" r=".35"/>
+                                    <circle cx=".6" cy="17.1" r=".35"/>
+                                    <circle cx="1.4" cy="17.1" r=".35"/>
+                                    <circle cx=".6" cy="19.6" r=".35"/>
+                                    <circle cx="1.4" cy="19.6" r=".35"/>
+                                    <circle cx=".6" cy="22.1" r=".35"/>
+                                    <circle cx="1.4" cy="22.1" r=".35"/>
+                                    <!-- Right speaker stack -->
+                                    <path d="M22 8.5h2v2h-2zm0 2.5h2v2h-2zm0 2.5h2v2h-2zm0 2.5h2v2h-2zm0 2.5h2v2h-2zm0 2.5h2v2h-2z"/>
+                                    <circle cx="23.4" cy="9.6" r=".35"/>
+                                    <circle cx="22.6" cy="9.6" r=".35"/>
+                                    <circle cx="23.4" cy="12.1" r=".35"/>
+                                    <circle cx="22.6" cy="12.1" r=".35"/>
+                                    <circle cx="23.4" cy="14.6" r=".35"/>
+                                    <circle cx="22.6" cy="14.6" r=".35"/>
+                                    <circle cx="23.4" cy="17.1" r=".35"/>
+                                    <circle cx="22.6" cy="17.1" r=".35"/>
+                                    <circle cx="23.4" cy="19.6" r=".35"/>
+                                    <circle cx="22.6" cy="19.6" r=".35"/>
+                                    <circle cx="23.4" cy="22.1" r=".35"/>
+                                    <circle cx="22.6" cy="22.1" r=".35"/>
+                                </svg>
                             <?php elseif($iconName === 'Lightbulb'): ?>
                                 <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg>
                             <?php elseif($iconName === 'Grid3x3'): ?>
