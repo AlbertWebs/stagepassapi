@@ -12,24 +12,6 @@
     }
 ?>
 
-<style>
-    @keyframes gradient-border {
-        0% {
-            background-position: 0% 50%;
-        }
-        50% {
-            background-position: 100% 50%;
-        }
-        100% {
-            background-position: 0% 50%;
-        }
-    }
-    .animate-gradient-border {
-        background-size: 200% 100%;
-        animation: gradient-border 3s ease infinite;
-    }
-</style>
-
 <?php
     
     $industryData = $items ?? collect([
@@ -72,7 +54,8 @@
     }
 }"
 id="industries" 
-class="py-20 bg-gradient-to-b from-gray-100 via-gray-50 to-white">
+class="py-20 relative bg-cover bg-center bg-no-repeat"
+style="background-image: url('/uploads/SP-Web-Industries-subtle-background.png');">
     <div class="container mx-auto px-6 lg:px-12">
         <div class="text-center mb-14"
              x-intersect.threshold.0.1="headerVisible = true"
@@ -81,15 +64,13 @@ class="py-20 bg-gradient-to-b from-gray-100 via-gray-50 to-white">
             <span class="inline-block text-sm font-bold text-yellow-600 tracking-wider uppercase bg-gradient-to-r from-yellow-100 via-yellow-50 to-yellow-100 px-4 py-2 rounded-full shadow-lg shadow-yellow-200/50 border border-yellow-200/50">Industries</span>
             <h2 class="text-4xl lg:text-6xl font-black text-[#172455] mb-4 mt-6">
                 <?php if(str_starts_with($title, 'Industries')): ?>
-                    <span class="text-yellow-500">Industries</span><?php echo e(substr($title, strlen('Industries'))); ?>
-
+                    <span class="text-yellow-500">Industries</span><span class="text-white"><?php echo e(substr($title, strlen('Industries'))); ?></span>
                 <?php elseif(str_contains($title, 'Industries')): ?>
                     <?php
                         $parts = explode('Industries', $title, 2);
                     ?>
                     <?php if(count($parts) === 2): ?>
-                        <?php echo e(trim($parts[0])); ?><span class="text-yellow-500">Industries</span><?php echo e($parts[1]); ?>
-
+                        <span class="text-white"><?php echo e(trim($parts[0])); ?></span><span class="text-yellow-500">Industries</span><span class="text-white"><?php echo e($parts[1]); ?></span>
                     <?php else: ?>
                         <?php echo e($title); ?>
 
@@ -99,7 +80,7 @@ class="py-20 bg-gradient-to-b from-gray-100 via-gray-50 to-white">
 
                 <?php endif; ?>
             </h2>
-            <p class="text-lg md:text-xl text-gray-700 max-w-3xl mx-auto"><?php echo e($subtitle); ?></p>
+            <p class="text-lg md:text-xl text-white max-w-3xl mx-auto"><?php echo e($subtitle); ?></p>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
@@ -143,7 +124,7 @@ class="py-20 bg-gradient-to-b from-gray-100 via-gray-50 to-white">
                 <div class="relative w-full transition-all duration-1000 transform opacity-100 translate-y-0 <?php echo e($gridColumnClass); ?>"
                      style="transition-delay: <?php echo e($index * 100); ?>ms">
                     <!-- Desktop: Hover overlay -->
-                    <div class="relative h-72 w-full rounded-2xl p-[3px] bg-gradient-to-r from-[#172455] via-yellow-400 to-[#172455] bg-[length:200%_100%] animate-gradient-border group transition-all duration-500 transform hover:-translate-y-3 hover:shadow-2xl hover:shadow-yellow-500/30 ring-2 ring-white/50 hidden md:block cursor-pointer"
+                    <div class="relative h-72 w-full rounded-2xl p-[3px] bg-gradient-to-br from-yellow-400 via-orange-500 to-yellow-600 hover:from-yellow-300 hover:via-orange-400 hover:to-yellow-500 group transition-all duration-500 transform hover:-translate-y-3 hover:shadow-2xl hover:shadow-yellow-500/30 ring-2 ring-white/50 hidden md:block cursor-pointer"
                          @mouseenter="selectedIndustry = <?php echo \Illuminate\Support\Js::from($industryForJs)->toHtml() ?>"
                          @mouseleave="selectedIndustry = null">
                         <div class="relative h-full w-full rounded-2xl overflow-hidden bg-white/90 backdrop-blur-md shadow-inner">
@@ -192,7 +173,7 @@ class="py-20 bg-gradient-to-b from-gray-100 via-gray-50 to-white">
                     </div>
 
                     <!-- Mobile: Tap to open modal -->
-                    <div class="relative h-72 w-full rounded-2xl p-[3px] bg-gradient-to-r from-[#172455] via-yellow-400 to-[#172455] bg-[length:200%_100%] animate-gradient-border group transition-all duration-500 transform active:scale-95 block md:hidden cursor-pointer"
+                    <div class="relative h-72 w-full rounded-2xl p-[3px] bg-gradient-to-br from-yellow-400 via-orange-500 to-yellow-600 group transition-all duration-500 transform active:scale-95 block md:hidden cursor-pointer"
                          @click="handleCardTap(<?php echo \Illuminate\Support\Js::from($industryForJs)->toHtml() ?>)">
                         <div class="relative h-full w-full rounded-2xl overflow-hidden bg-white/80 backdrop-blur">
                         <div class="absolute inset-0 bg-gradient-to-br from-yellow-50 via-white to-blue-50 opacity-0 group-active:opacity-100 transition-opacity duration-200"></div>
