@@ -27,8 +27,8 @@ $xDataJson = json_encode([
 ]);
 
 $xInitJs = "
-\$nextTick(() => {
-    const video = \$refs.video;
+setTimeout(() => {
+    const video = document.getElementById('hero-video') || \$refs.video;
     if (!video) return;
 
     const markLoaded = () => {
@@ -81,21 +81,22 @@ $xInitJs = "
     });
 
     tryPlay();
-    setTimeout(tryPlay, 300);
-    setTimeout(tryPlay, 800);
+    setTimeout(tryPlay, 400);
+    setTimeout(tryPlay, 1200);
 
-    setTimeout(() => {
-        if (video.paused && video.readyState >= 2) {
-            showPlayPrompt = true;
-        }
-    }, 2000);
+    var isSafari = (navigator.userAgent.includes('Safari') && !navigator.userAgent.includes('Chrome')) || (navigator.vendor && navigator.vendor.includes('Apple'));
+    if (isSafari) {
+        showPlayPrompt = true;
+    } else {
+        setTimeout(() => {
+            if (video.paused) showPlayPrompt = true;
+        }, 1500);
+    }
 
     setTimeout(() => {
         if (videoLoading) markLoaded();
-    }, 5000);
-
-    window.heroVideoPlay = tryPlay;
-});
+    }, 6000);
+}, 150);
 ";
 @endphp
 
@@ -109,6 +110,7 @@ $xInitJs = "
 
         <!-- Video -->
         <video
+            id="hero-video"
             x-ref="video"
             autoplay
             muted
@@ -134,7 +136,14 @@ $xInitJs = "
         <div x-cloak
              x-show="showPlayPrompt"
              x-transition
-             @click="window.heroVideoPlay && window.heroVideoPlay(); showPlayPrompt = false"
+             @click="
+                 const v = document.getElementById('hero-video');
+                 if (v) {
+                   v.muted = true;
+                   v.play().then(function() { showPlayPrompt = false; }).catch(function() {});
+                 }
+                 showPlayPrompt = false;
+             "
              class="absolute inset-0 z-20 flex items-center justify-center bg-black/50 cursor-pointer group">
             <div class="text-center px-6 py-4 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 group-hover:bg-white/20 transition-colors">
                 <svg class="w-16 h-16 md:w-20 md:h-20 text-white mx-auto mb-2 opacity-90" fill="currentColor" viewBox="0 0 24 24">
