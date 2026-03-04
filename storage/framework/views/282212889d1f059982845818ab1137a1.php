@@ -97,10 +97,11 @@ $defaultLogo =
 
 <?php echo $__env->yieldContent('structured_data'); ?>
 
-<!-- Tailwind -->
+<!-- Tailwind (for production: use PostCSS or Tailwind CLI - https://tailwindcss.com/docs/installation) -->
 <script src="https://cdn.tailwindcss.com"></script>
 
-<!-- Alpine -->
+<!-- Alpine: Intersect plugin first, then core (required for x-intersect) -->
+<script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/intersect@3.x.x/dist/cdn.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
 <style>

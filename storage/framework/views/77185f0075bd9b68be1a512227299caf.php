@@ -21,7 +21,7 @@
         ? ($section['background_video_url'] ?? '')
         : ($section->background_video_url ?? '');
 
-    $posterImage = asset('images/video-fallback.jpg'); // fallback image
+    $posterImage = file_exists(public_path('images/video-fallback.jpg')) ? asset('images/video-fallback.jpg') : null;
 ?>
 
 
@@ -48,7 +48,7 @@
             playsinline
             webkit-playsinline
             preload="metadata"
-            poster="<?php echo e($posterImage); ?>"
+            <?php if($posterImage): ?> poster="<?php echo e($posterImage); ?>" <?php endif; ?>
         >
             <source src="<?php echo e($backgroundVideo); ?>" type="video/mp4">
         </video>

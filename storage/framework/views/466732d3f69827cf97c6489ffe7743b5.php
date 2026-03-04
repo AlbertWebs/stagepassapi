@@ -3,7 +3,7 @@ $data = $data ?? null;
 
 $fullText = "We Create the Most Engaging Events in the World Using Technology";
 $backgroundVideo = asset('uploads/stagepass-audio-visual-safaricom-ceo-awade.mp4');
-$posterImage = asset('images/video-fallback.jpg');
+$posterImage = file_exists(public_path('images/video-fallback.jpg')) ? asset('images/video-fallback.jpg') : null;
 
 if ($data) {
     if (is_array($data)) {
@@ -100,7 +100,7 @@ $xInitJs = "
             loop
             playsinline
             preload="auto"
-            poster="<?php echo e($posterImage); ?>"
+            <?php if($posterImage): ?> poster="<?php echo e($posterImage); ?>" <?php endif; ?>
             class="absolute inset-0 w-full h-full object-cover">
 
             <source src="<?php echo e($backgroundVideo); ?>" type="video/mp4">

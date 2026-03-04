@@ -67,7 +67,7 @@ id="industries"
 class="py-20 relative overflow-hidden bg-white">
     <!-- Top-left: concentric lines (regular circles) + favicon at center -->
     <div class="absolute top-0 left-0 w-[280px] md:w-[380px] h-[220px] md:h-[300px] pointer-events-none z-0" aria-hidden="true">
-        <svg class="w-full h-full" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="xMin yMin slice">
+        <svg class="w-full h-full" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="xMinYMin slice">
             <circle cx="30" cy="30" r="26" stroke="#172455" stroke-width="4" stroke-opacity="0.12"/>
             <circle cx="30" cy="30" r="44" stroke="#172455" stroke-width="3.5" stroke-opacity="0.1"/>
             <circle cx="30" cy="30" r="62" stroke="#eab308" stroke-width="3.2" stroke-opacity="0.09"/>
