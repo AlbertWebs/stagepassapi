@@ -3,7 +3,7 @@ $data = $data ?? null;
 
 $fullText = "We Create the Most Engaging Events in the World Using Technology";
 $backgroundVideo = asset('uploads/stagepass-audio-visual-safaricom-ceo-awade.mp4');
-$posterImage = asset('images/video-fallback.jpg'); // optional fallback image
+$posterImage = asset('images/video-fallback.jpg');
 
 if ($data) {
     if (is_array($data)) {
@@ -52,42 +52,36 @@ $xInitJs = "
         }, 5000);
     };
 
-    const checkReady = () => {
-        if (video.readyState >= 2 && video.currentTime > 0) {
-            markLoaded();
-        }
-    };
-
+    video.defaultMuted = true;
     video.muted = true;
     video.setAttribute('playsinline', '');
     video.setAttribute('webkit-playsinline', '');
-    if (typeof video.playsInline !== 'undefined') video.playsInline = true;
 
-    video.addEventListener('loadedmetadata', checkReady);
-    video.addEventListener('timeupdate', checkReady);
     video.addEventListener('playing', markLoaded);
+
     video.addEventListener('error', () => {
         videoLoading = false;
         videoError = true;
     });
 
-    var isSafari = (navigator.vendor && navigator.vendor.indexOf('Apple') > -1) || (navigator.userAgent.indexOf('Safari') > -1 && navigator.userAgent.indexOf('Chrome') === -1);
-    if (isSafari) {
+    // Proper autoplay detection (Safari safe)
+    video.play().then(() => {
+        needsTapToPlay = false;
+    }).catch(() => {
         needsTapToPlay = true;
-    } else {
-        setTimeout(() => {
-            if (video.paused && video.readyState >= 1) {
-                needsTapToPlay = true;
-            }
-        }, 1800);
-    }
+        videoLoading = false;
+    });
 
+    // Fallback in case 'playing' doesn't fire
     setTimeout(() => {
-        if (videoLoading) markLoaded();
+        if (videoLoading) {
+            markLoaded();
+        }
     }, 6000);
 });
 ";
 ?>
+
 
 <section x-data='<?php echo $xDataJson; ?>'
          x-init="<?php echo $xInitJs; ?>"
@@ -105,39 +99,39 @@ $xInitJs = "
             muted
             loop
             playsinline
-            webkit-playsinline
             preload="auto"
             poster="<?php echo e($posterImage); ?>"
             class="absolute inset-0 w-full h-full object-cover">
+
             <source src="<?php echo e($backgroundVideo); ?>" type="video/mp4">
         </video>
 
         <!-- Preloader -->
-        <div x-cloak x-show="videoLoading && !needsTapToPlay"
+        <div x-cloak
+             x-show="videoLoading && !needsTapToPlay"
              x-transition
              class="absolute inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-20">
-            <div class="text-center">
-                <div class="inline-block animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-yellow-500"></div>
-            </div>
+
+            <div class="inline-block animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-yellow-500"></div>
         </div>
 
-        <!-- Safari: invisible tap-to-play (no button). Tap anywhere starts video. -->
+        <!-- Tap to play overlay (only if autoplay fails) -->
         <div x-cloak
              x-show="needsTapToPlay"
              x-transition
              @click="
-                 const v = document.getElementById('hero-video');
-                 if (v && v.paused) {
-                   v.muted = true;
-                   v.play();
-                   needsTapToPlay = false;
-                 }
+                const v = document.getElementById('hero-video');
+                if (v) {
+                    v.muted = true;
+                    v.play();
+                    needsTapToPlay = false;
+                }
              "
              class="absolute inset-0 z-20 cursor-pointer"
              style="background: transparent;">
         </div>
 
-        <!-- Overlay -->
+        <!-- Gradient Overlay -->
         <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70"></div>
     </div>
 
@@ -171,10 +165,10 @@ $xInitJs = "
 
         <a href="#about" class="inline-block animate-bounce">
             <svg class="w-6 h-6 md:w-8 md:h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
             </svg>
         </a>
     </div>
 
-</section>
-<?php /**PATH C:\projects\stagepassapi\resources\views/website/partials/hero.blade.php ENDPATH**/ ?>
+</section><?php /**PATH C:\projects\stagepassapi\resources\views/website/partials/hero.blade.php ENDPATH**/ ?>
