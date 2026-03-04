@@ -22,7 +22,6 @@ $xDataJson = json_encode([
     'videoLoading' => true,
     'videoError' => false,
     'videoLoaded' => false,
-    'showPlayPrompt' => true,
     'fullText' => $fullText,
 ]);
 
@@ -35,7 +34,6 @@ setTimeout(() => {
         videoLoading = false;
         videoLoaded = true;
         videoError = false;
-        showPlayPrompt = false;
 
         setTimeout(() => {
             textVisible = true;
@@ -65,7 +63,7 @@ setTimeout(() => {
 
     const tryPlay = () => {
         if (video.paused) {
-            video.play().then(() => { showPlayPrompt = false; }).catch(() => {});
+            video.play().catch(() => {});
         }
     };
 
@@ -83,10 +81,6 @@ setTimeout(() => {
     tryPlay();
     setTimeout(tryPlay, 400);
     setTimeout(tryPlay, 1200);
-
-    setTimeout(() => {
-        if (!video.paused) showPlayPrompt = false;
-    }, 2500);
 
     setTimeout(() => {
         if (videoLoading) markLoaded();
@@ -119,32 +113,11 @@ setTimeout(() => {
         </video>
 
         <!-- Preloader -->
-        <div x-cloak x-show="videoLoading && !showPlayPrompt"
+        <div x-cloak x-show="videoLoading"
              x-transition
              class="absolute inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-20">
             <div class="text-center">
                 <div class="inline-block animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-yellow-500"></div>
-            </div>
-        </div>
-
-        <!-- Safari / Mac: click-to-play when autoplay is blocked -->
-        <div x-cloak
-             x-show="showPlayPrompt"
-             x-transition
-             @click="
-                 const v = document.getElementById('hero-video');
-                 if (v) {
-                   v.muted = true;
-                   v.play().then(function() { showPlayPrompt = false; }).catch(function() {});
-                 }
-                 showPlayPrompt = false;
-             "
-             class="absolute inset-0 z-20 flex items-center justify-center bg-black/50 cursor-pointer group">
-            <div class="text-center px-6 py-4 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 group-hover:bg-white/20 transition-colors">
-                <svg class="w-16 h-16 md:w-20 md:h-20 text-white mx-auto mb-2 opacity-90" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M8 5v14l11-7z"/>
-                </svg>
-                <p class="text-white font-semibold text-sm md:text-base">Click to play video</p>
             </div>
         </div>
 
