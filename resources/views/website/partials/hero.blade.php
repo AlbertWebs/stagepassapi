@@ -26,55 +26,65 @@ $xDataJson = json_encode([
 ]);
 
 $xInitJs = "
-const video = \$refs.video;
-if (!video) return;
+\$nextTick(() => {
+    const video = \$refs.video;
+    if (!video) return;
 
-const markLoaded = () => {
-    videoLoading = false;
-    videoLoaded = true;
-    videoError = false;
-
-    setTimeout(() => {
-        textVisible = true;
+    const markLoaded = () => {
+        videoLoading = false;
+        videoLoaded = true;
+        videoError = false;
 
         setTimeout(() => {
-            textDimmed = true;
+            textVisible = true;
 
             setTimeout(() => {
-                textFadeOut = true;
-            }, 30000);
+                textDimmed = true;
+
+                setTimeout(() => {
+                    textFadeOut = true;
+                }, 30000);
+
+            }, 5000);
 
         }, 5000);
+    };
 
-    }, 5000);
-};
+    // Reliable load detection
+    const checkReady = () => {
+        if (video.readyState >= 2 && video.currentTime > 0) {
+            markLoaded();
+        }
+    };
 
-// Reliable load detection
-const checkReady = () => {
-    if (video.readyState >= 2 && video.currentTime > 0) {
-        markLoaded();
-    }
-};
+    // Safari: must set before play()
+    video.muted = true;
+    video.setAttribute('playsinline', '');
+    video.setAttribute('webkit-playsinline', '');
+    if (typeof video.playsInline !== 'undefined') video.playsInline = true;
 
-// Events that actually fire consistently
-video.addEventListener('loadedmetadata', checkReady);
-video.addEventListener('timeupdate', checkReady);
-video.addEventListener('playing', markLoaded);
-video.addEventListener('error', () => {
-    videoLoading = false;
-    videoError = true;
+    const tryPlay = () => {
+        video.play().catch(() => {});
+    };
+
+    video.addEventListener('loadedmetadata', checkReady);
+    video.addEventListener('timeupdate', checkReady);
+    video.addEventListener('playing', markLoaded);
+    video.addEventListener('loadeddata', tryPlay);
+    video.addEventListener('canplay', tryPlay);
+    video.addEventListener('error', () => {
+        videoLoading = false;
+        videoError = true;
+    });
+
+    tryPlay();
+
+    setTimeout(() => {
+        if (videoLoading) {
+            markLoaded();
+        }
+    }, 4000);
 });
-
-// Safari autoplay kickstart
-video.muted = true;
-video.play().catch(() => {});
-
-// Safety fallback — NEVER keep loader forever
-setTimeout(() => {
-    if (videoLoading) {
-        markLoaded();
-    }
-}, 4000);
 ";
 @endphp
 
@@ -94,7 +104,7 @@ setTimeout(() => {
             loop
             playsinline
             webkit-playsinline
-            preload="metadata"
+            preload="auto"
             poster="{{ $posterImage }}"
             class="absolute inset-0 w-full h-full object-cover">
             <source src="{{ $backgroundVideo }}" type="video/mp4">
