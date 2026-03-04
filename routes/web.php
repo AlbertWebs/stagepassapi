@@ -166,14 +166,20 @@ Route::options('/manifest.json', function () {
         ->header('Access-Control-Max-Age', '86400');
 });
 
-// Handle frontend static file requests
-// Option 1: Return 204 No Content to prevent 404 errors (frontend should use paths from API settings)
+// Handle frontend static file requests (unhashed and hashed build filenames)
+// Return 204 No Content to prevent 404 errors when clients request main.css/main.js or main.[hash].css/js
 Route::get('/static/css/main.css', function () {
     return response('', 204)
         ->header('Content-Type', 'text/css')
         ->header('Access-Control-Allow-Origin', '*')
         ->header('Cache-Control', 'no-cache, no-store, must-revalidate');
 });
+Route::get('/static/css/main.{hash}.css', function () {
+    return response('', 204)
+        ->header('Content-Type', 'text/css')
+        ->header('Access-Control-Allow-Origin', '*')
+        ->header('Cache-Control', 'no-cache, no-store, must-revalidate');
+})->where('hash', '[a-zA-Z0-9]+');
 
 Route::get('/static/js/main.js', function () {
     return response('', 204)
@@ -181,6 +187,12 @@ Route::get('/static/js/main.js', function () {
         ->header('Access-Control-Allow-Origin', '*')
         ->header('Cache-Control', 'no-cache, no-store, must-revalidate');
 });
+Route::get('/static/js/main.{hash}.js', function () {
+    return response('', 204)
+        ->header('Content-Type', 'application/javascript')
+        ->header('Access-Control-Allow-Origin', '*')
+        ->header('Cache-Control', 'no-cache, no-store, must-revalidate');
+})->where('hash', '[a-zA-Z0-9]+');
 
 // Option 2: Redirect to frontend domain if configured
 // Uncomment and configure if you want to redirect these requests
