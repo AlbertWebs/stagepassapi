@@ -2,13 +2,20 @@
     $data = $data ?? null;
     $section = null;
     $items = null;
+    $showAll = $showAll ?? false;
 
     if (is_array($data)) {
         $section = $data['section'] ?? null;
         $items = $data['items'] ?? null;
+        if (isset($data['showAll'])) {
+            $showAll = (bool) $data['showAll'];
+        }
     } elseif (is_object($data)) {
         $section = $data->section ?? null;
         $items = $data->items ?? null;
+        if (isset($data->showAll)) {
+            $showAll = (bool) $data->showAll;
+        }
     }
 @endphp
 
@@ -29,6 +36,9 @@
     
     $title = is_array($section) ? ($section['title'] ?? 'Industries We Serve') : ($section->title ?? 'Industries We Serve');
     $subtitle = is_array($section) ? ($section['subtitle'] ?? 'StagePass Audio Visual serves a diverse range of industries with tailored solutions.') : ($section->subtitle ?? 'StagePass Audio Visual serves a diverse range of industries with tailored solutions.');
+    
+    $industryDataDisplay = $showAll ? collect($industryData) : collect($industryData)->take(9);
+    $hasMoreIndustries = !$showAll && count($industryData) > 9;
     
     function getIconSvg($iconName) {
         $icons = [
@@ -55,6 +65,18 @@
 }"
 id="industries" 
 class="py-20 relative overflow-hidden bg-white">
+    <!-- Top-left: concentric lines (regular circles) + favicon at center -->
+    <div class="absolute top-0 left-0 w-[280px] md:w-[380px] h-[220px] md:h-[300px] pointer-events-none z-0" aria-hidden="true">
+        <svg class="w-full h-full" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="xMin yMin slice">
+            <circle cx="30" cy="30" r="26" stroke="#172455" stroke-width="4" stroke-opacity="0.12"/>
+            <circle cx="30" cy="30" r="44" stroke="#172455" stroke-width="3.5" stroke-opacity="0.1"/>
+            <circle cx="30" cy="30" r="62" stroke="#eab308" stroke-width="3.2" stroke-opacity="0.09"/>
+            <circle cx="30" cy="30" r="80" stroke="#172455" stroke-width="3" stroke-opacity="0.08"/>
+            <circle cx="30" cy="30" r="98" stroke="#172455" stroke-width="2.8" stroke-opacity="0.07"/>
+            <image href="https://stagepass.co.ke/uploads/favicon_1770661772_698a278c066f6.png" x="14" y="14" width="32" height="32" preserveAspectRatio="xMidYMid meet" opacity="0.5"/>
+        </svg>
+    </div>
+
     <!-- Decorative curved shapes: thin, elegant + animated -->
     <div class="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
         <svg class="absolute w-full h-full min-w-[180%] min-h-[130%] -left-[40%] -top-[8%]" viewBox="0 0 900 700" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
@@ -125,8 +147,8 @@ class="py-20 relative overflow-hidden bg-white">
             <p class="text-xl text-gray-700 max-w-2xl mx-auto font-medium drop-shadow-sm">{{ $subtitle }}</p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-            @foreach($industryData as $index => $industry)
+        <div class="wow grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10" data-wow="fade-up" data-wow-delay="150">
+            @foreach($industryDataDisplay as $index => $industry)
                 @php
                     // Handle both array and object data
                     if (is_array($industry)) {
@@ -153,7 +175,7 @@ class="py-20 relative overflow-hidden bg-white">
                     ];
                     
                     // Center incomplete last row (like React app)
-                    $totalItems = count($industryData);
+                    $totalItems = count($industryDataDisplay);
                     $itemsPerRow = 3; // lg:grid-cols-3
                     $itemsInLastRow = $totalItems % $itemsPerRow;
                     $isLastRow = $index >= $totalItems - $itemsInLastRow;
@@ -165,17 +187,15 @@ class="py-20 relative overflow-hidden bg-white">
                 @endphp
                 <div class="relative w-full transition-all duration-1000 transform opacity-100 translate-y-0 {{ $gridColumnClass }}"
                      style="transition-delay: {{ $index * 100 }}ms">
-                    <!-- Desktop: Hover overlay -->
-                    <div class="relative h-72 w-full rounded-2xl p-[3px] bg-gradient-to-br from-yellow-400 via-orange-500 to-yellow-600 hover:from-yellow-300 hover:via-orange-400 hover:to-yellow-500 group transition-all duration-500 transform hover:-translate-y-3 hover:shadow-2xl hover:shadow-yellow-500/30 ring-2 ring-white/50 hidden md:block cursor-pointer"
+                    <!-- Desktop: white card like clients -->
+                    <div class="relative h-72 w-full rounded-2xl p-[3px] bg-gradient-to-br from-yellow-400 via-orange-500 to-yellow-600 hover:from-yellow-300 hover:via-orange-400 hover:to-yellow-500 group transition-all duration-500 transform hover:-translate-y-2 hover:shadow-2xl hover:shadow-yellow-500/30 ring-2 ring-white/50 hidden md:block cursor-pointer"
                          @mouseenter="selectedIndustry = @js($industryForJs)"
                          @mouseleave="selectedIndustry = null">
-                        <div class="relative h-full w-full rounded-2xl overflow-hidden bg-white/90 backdrop-blur-md shadow-inner">
-                        <div class="absolute inset-0 bg-gradient-to-br from-yellow-50 via-white to-blue-50 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                        <div class="absolute -top-10 -right-10 h-32 w-32 rounded-full bg-yellow-200/40 blur-2xl group-hover:scale-110 transition-transform duration-500"></div>
+                        <div class="relative h-full w-full rounded-2xl overflow-hidden bg-white shadow-lg shadow-gray-200/30 hover:shadow-xl transition-all duration-500">
                         
                         <!-- Front of the card -->
                         <div class="absolute inset-0 flex flex-col items-center justify-center p-6 transition-transform duration-500 group-hover:scale-95">
-                            <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#172455] to-[#1e3a8a] flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform duration-500">
+                            <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#172455] to-[#1e3a8a] flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform duration-500">
                                 @if($iconUrl)
                                     <img src="{{ $iconUrl }}" alt="{{ $industryTitle }}" class="h-10 w-10 object-contain" />
                                 @else
@@ -212,12 +232,10 @@ class="py-20 relative overflow-hidden bg-white">
                         </div>
                     </div>
 
-                    <!-- Mobile: Tap to open modal -->
+                    <!-- Mobile: white card like clients -->
                     <div class="relative h-72 w-full rounded-2xl p-[3px] bg-gradient-to-br from-yellow-400 via-orange-500 to-yellow-600 group transition-all duration-500 transform active:scale-95 block md:hidden cursor-pointer"
                          @click="handleCardTap(@js($industryForJs))">
-                        <div class="relative h-full w-full rounded-2xl overflow-hidden bg-white/80 backdrop-blur">
-                        <div class="absolute inset-0 bg-gradient-to-br from-yellow-50 via-white to-blue-50 opacity-0 group-active:opacity-100 transition-opacity duration-200"></div>
-                        <div class="absolute -top-10 -right-10 h-32 w-32 rounded-full bg-yellow-200/40 blur-2xl"></div>
+                        <div class="relative h-full w-full rounded-2xl overflow-hidden bg-white shadow-lg shadow-gray-200/30">
                         
                         <!-- Front of the card -->
                         <div class="absolute inset-0 flex flex-col items-center justify-center p-6">
@@ -238,6 +256,17 @@ class="py-20 relative overflow-hidden bg-white">
                 </div>
             @endforeach
         </div>
+
+        @if(!$showAll)
+        <div class="mt-12 md:mt-16 text-center">
+            <a href="{{ route('industries') }}" class="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-[#172455] text-white font-semibold text-sm tracking-wide hover:bg-[#0f1b3d] focus:ring-2 focus:ring-[#172455] focus:ring-offset-2 transition-all duration-200 shadow-lg shadow-[#172455]/20 hover:shadow-xl hover:shadow-[#172455]/30">
+                <span>Explore more industries</span>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                </svg>
+            </a>
+        </div>
+        @endif
     </div>
 
     <!-- Mobile Modal -->

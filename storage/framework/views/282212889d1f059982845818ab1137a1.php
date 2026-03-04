@@ -174,6 +174,30 @@ $defaultLogo =
         transform: translateY(0);
     }
 
+    /* WOW-style scroll animations: use class="wow" data-wow="fade-up" (or fade-in, fade-left, fade-right, zoom-in) */
+    .wow {
+        opacity: 0;
+    }
+    .wow.wow-visible { opacity: 1; }
+    .wow[data-wow="fade-up"] { transform: translateY(36px); }
+    .wow.wow-visible[data-wow="fade-up"] { animation: fade-in-up 0.7s ease-out forwards; }
+    .wow[data-wow="fade-in"] { transform: none; }
+    .wow.wow-visible[data-wow="fade-in"] { animation: wow-fade-in 0.7s ease-out forwards; }
+    .wow[data-wow="fade-left"] { transform: translateX(-36px); }
+    .wow.wow-visible[data-wow="fade-left"] { animation: fade-in-left 0.7s ease-out forwards; }
+    .wow[data-wow="fade-right"] { transform: translateX(36px); }
+    .wow.wow-visible[data-wow="fade-right"] { animation: fade-in-right 0.7s ease-out forwards; }
+    .wow[data-wow="zoom-in"] { transform: scale(0.92); }
+    .wow.wow-visible[data-wow="zoom-in"] { animation: wow-zoom-in 0.6s ease-out forwards; }
+    @keyframes wow-fade-in {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    @keyframes wow-zoom-in {
+        from { opacity: 0; transform: scale(0.92); }
+        to { opacity: 1; transform: scale(1); }
+    }
+
     /* Industries section: dramatic floating shapes */
     @keyframes industries-shape-float-1 {
         0%, 100% { transform: translate(0, 0) scale(1); opacity: 1; }
@@ -235,6 +259,28 @@ $defaultLogo =
     <script>
         // API Base URL
         const API_BASE_URL = '<?php echo e(url('/')); ?>';
+        
+        // WOW-style scroll animations (Intersection Observer)
+        document.addEventListener('DOMContentLoaded', function() {
+            const wowEls = document.querySelectorAll('.wow');
+            if (!wowEls.length) return;
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(function(entry) {
+                    if (!entry.isIntersecting) return;
+                    var el = entry.target;
+                    var delay = parseInt(el.getAttribute('data-wow-delay') || '0', 10);
+                    if (delay) {
+                        setTimeout(function() {
+                            el.classList.add('wow-visible');
+                        }, delay);
+                    } else {
+                        el.classList.add('wow-visible');
+                    }
+                    observer.unobserve(el);
+                });
+            }, { rootMargin: '0px 0px -40px 0px', threshold: 0.1 });
+            wowEls.forEach(function(el) { observer.observe(el); });
+        });
         
         // Navbar scroll effect
         document.addEventListener('DOMContentLoaded', function() {

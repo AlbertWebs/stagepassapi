@@ -23,8 +23,8 @@
         </div>
     </div>
     
-    <!-- Homepage Industries Section -->
-    @include('website.partials.industries', ['data' => $homepageData['industries'] ?? null])
+    <!-- Industries Section: show all on this page -->
+    @include('website.partials.industries', ['data' => $homepageData['industries'] ?? null, 'showAll' => true])
     
     <!-- Page-specific content -->
     @if($pageData && isset($pageData['page']))

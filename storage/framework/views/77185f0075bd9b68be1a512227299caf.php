@@ -68,7 +68,7 @@
                     $iconName = $stat->icon ?? $stat['icon'] ?? 'Package';
                 ?>
 
-                <div class="text-center group animate-fade-in-up"
+                <div class="wow text-center group" data-wow="zoom-in" data-wow-delay="<?php echo e($index * 120); ?>"
                      style="animation-delay: <?php echo e($index * 200); ?>ms">
 
                     <!-- Icon -->

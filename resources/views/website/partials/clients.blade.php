@@ -44,7 +44,7 @@
         </div>
 
         <!-- Clients Grid -->
-        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8">
+        <div class="wow grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8" data-wow="fade-up" data-wow-delay="100">
             @php
                 $totalItems = count($clientLogos);
                 $itemsPerRow = 5; // lg:grid-cols-5

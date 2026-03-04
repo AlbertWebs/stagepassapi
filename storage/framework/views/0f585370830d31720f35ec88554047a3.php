@@ -182,7 +182,7 @@ document.addEventListener('alpine:init', () => {
         </div>
 
         <!-- Gallery Grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="wow grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" data-wow="fade-up" data-wow-delay="100">
             <!-- Loading State -->
             <template x-if="portfolioSource === 'instagram' && isLoadingInstagram">
                 <div class="col-span-full text-center text-gray-600 font-medium py-12">
