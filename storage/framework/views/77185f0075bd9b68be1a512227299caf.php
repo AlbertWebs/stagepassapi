@@ -114,6 +114,6 @@
         </div>
 
     </div>
-
+    <div class="absolute bottom-0 left-0 right-0 h-3 bg-gradient-to-r from-blue-500 via-purple-500 via-pink-500 via-red-500 via-orange-500 via-yellow-500 to-green-500 animate-gradient-x"></div>
 </section>
 <?php /**PATH C:\projects\stagepassapi\resources\views/website/partials/stats.blade.php ENDPATH**/ ?>

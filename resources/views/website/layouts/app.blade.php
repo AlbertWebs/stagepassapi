@@ -173,6 +173,49 @@ $defaultLogo =
         opacity: 1;
         transform: translateY(0);
     }
+
+    /* Industries section: dramatic floating shapes */
+    @keyframes industries-shape-float-1 {
+        0%, 100% { transform: translate(0, 0) scale(1); opacity: 1; }
+        25% { transform: translate(20px, -25px) scale(1.03); opacity: 0.95; }
+        50% { transform: translate(-15px, 20px) scale(0.98); opacity: 1; }
+        75% { transform: translate(10px, 15px) scale(1.02); opacity: 0.92; }
+    }
+    @keyframes industries-shape-float-2 {
+        0%, 100% { transform: translate(0, 0) scale(1); opacity: 1; }
+        33% { transform: translate(-25px, 15px) scale(1.04); opacity: 0.9; }
+        66% { transform: translate(18px, -20px) scale(0.97); opacity: 1; }
+    }
+    @keyframes industries-shape-float-3 {
+        0%, 100% { transform: translate(0, 0) scale(1); opacity: 1; }
+        40% { transform: translate(15px, 25px) scale(1.02); opacity: 0.93; }
+        80% { transform: translate(-20px, -15px) scale(0.99); opacity: 1; }
+    }
+    @keyframes industries-shape-float-4 {
+        0%, 100% { transform: translate(0, 0) scale(1); opacity: 1; }
+        50% { transform: translate(-12px, -22px) scale(1.05); opacity: 0.88; }
+    }
+    @keyframes industries-shape-float-5 {
+        0%, 100% { transform: translate(0, 0) scale(1); opacity: 1; }
+        50% { transform: translate(8px, -12px) scale(1.02); opacity: 0.92; }
+    }
+    @keyframes industries-shape-float-6 {
+        0%, 100% { transform: translate(0, 0) scale(1); opacity: 1; }
+        50% { transform: translate(-8px, 10px) scale(0.98); opacity: 0.94; }
+    }
+    @keyframes industries-shape-float-7 {
+        0%, 100% { transform: translate(0, 0) scale(1) rotate(0deg); opacity: 1; }
+        25% { transform: translate(12px, -18px) scale(1.04) rotate(2deg); opacity: 0.95; }
+        50% { transform: translate(-15px, 12px) scale(0.97) rotate(-1deg); opacity: 1; }
+        75% { transform: translate(-8px, -15px) scale(1.03) rotate(1deg); opacity: 0.92; }
+    }
+    .industries-shape-1 { animation: industries-shape-float-1 18s ease-in-out infinite; }
+    .industries-shape-2 { animation: industries-shape-float-2 22s ease-in-out infinite; animation-delay: -4s; }
+    .industries-shape-3 { animation: industries-shape-float-3 20s ease-in-out infinite; animation-delay: -8s; }
+    .industries-shape-4 { animation: industries-shape-float-4 16s ease-in-out infinite; animation-delay: -2s; }
+    .industries-shape-5 { animation: industries-shape-float-5 19s ease-in-out infinite; animation-delay: -5s; }
+    .industries-shape-6 { animation: industries-shape-float-6 21s ease-in-out infinite; animation-delay: -11s; }
+    .industries-shape-7 { animation: industries-shape-float-7 14s ease-in-out infinite; animation-delay: -3s; }
 </style>
 
 @stack('styles')
