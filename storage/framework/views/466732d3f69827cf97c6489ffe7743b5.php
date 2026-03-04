@@ -22,11 +22,12 @@ $xDataJson = json_encode([
     'videoLoading' => true,
     'videoError' => false,
     'videoLoaded' => false,
+    'needsTapToPlay' => false,
     'fullText' => $fullText,
 ]);
 
 $xInitJs = "
-setTimeout(() => {
+\$nextTick(() => {
     const video = document.getElementById('hero-video') || \$refs.video;
     if (!video) return;
 
@@ -34,6 +35,7 @@ setTimeout(() => {
         videoLoading = false;
         videoLoaded = true;
         videoError = false;
+        needsTapToPlay = false;
 
         setTimeout(() => {
             textVisible = true;
@@ -61,31 +63,29 @@ setTimeout(() => {
     video.setAttribute('webkit-playsinline', '');
     if (typeof video.playsInline !== 'undefined') video.playsInline = true;
 
-    const tryPlay = () => {
-        if (video.paused) {
-            video.play().catch(() => {});
-        }
-    };
-
     video.addEventListener('loadedmetadata', checkReady);
     video.addEventListener('timeupdate', checkReady);
     video.addEventListener('playing', markLoaded);
-    video.addEventListener('loadeddata', tryPlay);
-    video.addEventListener('canplay', tryPlay);
-    video.addEventListener('canplaythrough', tryPlay);
     video.addEventListener('error', () => {
         videoLoading = false;
         videoError = true;
     });
 
-    tryPlay();
-    setTimeout(tryPlay, 400);
-    setTimeout(tryPlay, 1200);
+    var isSafari = (navigator.vendor && navigator.vendor.indexOf('Apple') > -1) || (navigator.userAgent.indexOf('Safari') > -1 && navigator.userAgent.indexOf('Chrome') === -1);
+    if (isSafari) {
+        needsTapToPlay = true;
+    } else {
+        setTimeout(() => {
+            if (video.paused && video.readyState >= 1) {
+                needsTapToPlay = true;
+            }
+        }, 1800);
+    }
 
     setTimeout(() => {
         if (videoLoading) markLoaded();
     }, 6000);
-}, 150);
+});
 ";
 ?>
 
@@ -113,12 +113,28 @@ setTimeout(() => {
         </video>
 
         <!-- Preloader -->
-        <div x-cloak x-show="videoLoading"
+        <div x-cloak x-show="videoLoading && !needsTapToPlay"
              x-transition
              class="absolute inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-20">
             <div class="text-center">
                 <div class="inline-block animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-yellow-500"></div>
             </div>
+        </div>
+
+        <!-- Safari: invisible tap-to-play (no button). Tap anywhere starts video. -->
+        <div x-cloak
+             x-show="needsTapToPlay"
+             x-transition
+             @click="
+                 const v = document.getElementById('hero-video');
+                 if (v && v.paused) {
+                   v.muted = true;
+                   v.play();
+                   needsTapToPlay = false;
+                 }
+             "
+             class="absolute inset-0 z-20 cursor-pointer"
+             style="background: transparent;">
         </div>
 
         <!-- Overlay -->

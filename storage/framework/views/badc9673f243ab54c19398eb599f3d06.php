@@ -123,7 +123,8 @@ class="py-20 relative overflow-hidden bg-white">
                 <?php endif; ?>
             </h2>
             <div class="h-2 w-32 bg-gradient-to-r from-yellow-500 via-yellow-400 to-yellow-600 rounded-full mx-auto mb-6 shadow-lg shadow-yellow-500/30"></div>
-            <p class="text-lg md:text-xl text-[#172455] max-w-3xl mx-auto"><?php echo e($subtitle); ?></p>
+            <!-- <p class="text-lg md:text-xl text-[#172455] max-w-3xl mx-auto"><?php echo e($subtitle); ?></p> -->
+            <p class="text-xl text-gray-700 max-w-2xl mx-auto font-medium drop-shadow-sm"><?php echo e($subtitle); ?></p>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
