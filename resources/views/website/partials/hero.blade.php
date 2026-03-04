@@ -22,7 +22,7 @@ $xDataJson = json_encode([
     'videoLoading' => true,
     'videoError' => false,
     'videoLoaded' => false,
-    'showPlayPrompt' => false,
+    'showPlayPrompt' => true,
     'fullText' => $fullText,
 ]);
 
@@ -84,14 +84,9 @@ setTimeout(() => {
     setTimeout(tryPlay, 400);
     setTimeout(tryPlay, 1200);
 
-    var isSafari = (navigator.userAgent.includes('Safari') && !navigator.userAgent.includes('Chrome')) || (navigator.vendor && navigator.vendor.includes('Apple'));
-    if (isSafari) {
-        showPlayPrompt = true;
-    } else {
-        setTimeout(() => {
-            if (video.paused) showPlayPrompt = true;
-        }, 1500);
-    }
+    setTimeout(() => {
+        if (!video.paused) showPlayPrompt = false;
+    }, 2500);
 
     setTimeout(() => {
         if (videoLoading) markLoaded();
