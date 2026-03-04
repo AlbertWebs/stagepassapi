@@ -26,7 +26,7 @@ $xDataJson = json_encode([
 ]);
 
 $xInitJs = "
-setTimeout(() => {
+\$nextTick(() => {
     const video = document.getElementById('hero-video') || \$refs.video;
     if (!video) return;
 
@@ -61,31 +61,18 @@ setTimeout(() => {
     video.setAttribute('webkit-playsinline', '');
     if (typeof video.playsInline !== 'undefined') video.playsInline = true;
 
-    const tryPlay = () => {
-        if (video.paused) {
-            video.play().catch(() => {});
-        }
-    };
-
     video.addEventListener('loadedmetadata', checkReady);
     video.addEventListener('timeupdate', checkReady);
     video.addEventListener('playing', markLoaded);
-    video.addEventListener('loadeddata', tryPlay);
-    video.addEventListener('canplay', tryPlay);
-    video.addEventListener('canplaythrough', tryPlay);
     video.addEventListener('error', () => {
         videoLoading = false;
         videoError = true;
     });
 
-    tryPlay();
-    setTimeout(tryPlay, 400);
-    setTimeout(tryPlay, 1200);
-
     setTimeout(() => {
         if (videoLoading) markLoaded();
     }, 6000);
-}, 150);
+});
 ";
 @endphp
 
