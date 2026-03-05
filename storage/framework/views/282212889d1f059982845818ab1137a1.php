@@ -13,8 +13,9 @@ try {
 if (!empty($faviconUrl)) {
     $faviconUrl = Str::startsWith($faviconUrl, ['http://', 'https://'])
         ? $faviconUrl
-        : asset($faviconUrl);
-} else {
+        : (file_exists(public_path($faviconUrl)) ? asset($faviconUrl) : null);
+}
+if (empty($faviconUrl)) {
     $faviconUrl = asset('favicon.ico');
 }
 

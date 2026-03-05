@@ -3,7 +3,7 @@
 
 <?php $__env->startSection('structured_data'); ?>
 <?php
-    $logoUrl = $homepageData['settings']['site_logo_url'] ?? $homepageData['navigation']['logo_url'] ?? 'https://api.stagepass.co.ke/uploads/StagePass-LOGO-y.png';
+    $logoUrl = $homepageData['settings']['site_logo_url'] ?? $homepageData['navigation']['logo_url'] ?? asset('uploads/StagePass-LOGO-y.png');
 ?>
 <script type="application/ld+json">
 <?php echo json_encode([

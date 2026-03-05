@@ -140,19 +140,13 @@ $xInitJs = "
         <h1
             x-show="videoLoaded"
             x-text="videoLoaded ? fullText : ''"
-            :style="
-                textFadeOut
-                    ? 'opacity: 0; transition: opacity 5s ease-in-out;'
-                    : (
-                        textDimmed
-                            ? 'opacity: 0.15; transition: opacity 1s ease-in-out;'
-                            : (
-                                textVisible
-                                    ? 'opacity: 1; transition: opacity 5s ease-in-out;'
-                                    : 'opacity: 0;'
-                              )
-                      )
-            "
+            :class="{
+                'opacity-0': !videoLoaded || !textVisible || textFadeOut,
+                'opacity-[0.15]': videoLoaded && textVisible && textDimmed && !textFadeOut,
+                'opacity-100': videoLoaded && textVisible && !textDimmed,
+                'transition-opacity duration-1000 ease-in-out': textDimmed && !textFadeOut,
+                'transition-opacity duration-[5000ms] ease-in-out': (textVisible && !textDimmed) || textFadeOut
+            }"
             class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight leading-none mb-6 text-white uppercase drop-shadow-2xl">
         </h1>
     </div>

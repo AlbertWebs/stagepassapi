@@ -71,14 +71,17 @@ class ContentController extends Controller
 
         $settings = DB::table('site_settings')->pluck('value', 'key')->toArray();
         
-        // Get site logo URL from settings, fallback to navbar logo_url
-        $siteLogoUrl = !empty($settings['site_logo_url']) 
-            ? $this->normalizeUrl($settings['site_logo_url'])
-            : $this->normalizeUrl($navbar?->logo_url);
+        // Get site logo URL from settings, fallback to navbar logo_url (skip if file missing to avoid 404)
+        $siteLogoUrl = !empty($settings['site_logo_url'])
+            ? $this->normalizeUrlIfExists($settings['site_logo_url'])
+            : $this->normalizeUrlIfExists($navbar?->logo_url);
+        if (!$siteLogoUrl) {
+            $siteLogoUrl = $this->normalizeUrl('uploads/StagePass-LOGO-y.png');
+        }
 
-        // Get favicon URL from settings
-        $faviconUrl = !empty($settings['favicon_url']) 
-            ? $this->normalizeUrl($settings['favicon_url'])
+        // Get favicon URL from settings (skip if file missing to avoid 404)
+        $faviconUrl = !empty($settings['favicon_url'])
+            ? $this->normalizeUrlIfExists($settings['favicon_url'])
             : null;
 
         // Static file paths - these should point to frontend domain or relative paths
@@ -127,7 +130,7 @@ class ContentController extends Controller
                 ]) : null,
                 'about' => [
                     'section' => $about ? array_merge((array) $about, [
-                        'image_url' => $this->normalizeUrl($about->image_url ?? null),
+                        'image_url' => $this->normalizeUrlIfExists($about->image_url ?? null) ?? $this->normalizeUrl('uploads/banners/visionsp.jpg'),
                     ]) : null,
                     'highlights' => $aboutHighlights->map(function($item) {
                         return (array) $item;
@@ -433,16 +436,28 @@ class ContentController extends Controller
             return $path;
         }
 
-        // For uploads directory, use API base URL
-        if (str_starts_with($path, 'uploads/')) {
-            $apiBaseUrl = env('APP_URL', 'https://api.stagepass.co.ke');
-            // If APP_URL doesn't contain 'api', use the API URL
-            if (!str_contains($apiBaseUrl, 'api')) {
-                $apiBaseUrl = 'https://api.stagepass.co.ke';
-            }
-            return rtrim($apiBaseUrl, '/') . '/' . ltrim($path, '/');
+        // Relative paths: use current app URL so assets resolve on the same domain (avoids ERR_NAME_NOT_RESOLVED when api subdomain is not used)
+        if (str_starts_with($path, 'uploads/') || !str_contains($path, '://')) {
+            $base = rtrim(config('app.url', request()->getSchemeAndHttpHost()), '/');
+            return $base . '/' . ltrim($path, '/');
         }
 
         return asset($path);
+    }
+
+    /** Return normalized URL only if the file exists for relative paths; avoids 404 for missing seeded uploads. */
+    private function normalizeUrlIfExists(?string $path): ?string
+    {
+        if (!$path) {
+            return null;
+        }
+        $relative = $path;
+        if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
+            return $path;
+        }
+        if (str_starts_with($path, 'uploads/') && !file_exists(public_path($path))) {
+            return null;
+        }
+        return $this->normalizeUrl($path);
     }
 }
