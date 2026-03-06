@@ -79,11 +79,11 @@ class="py-20 relative overflow-hidden bg-white">
                     <stop offset="100%" stop-color="#22c55e"/>
                 </linearGradient>
             </defs>
-            <circle cx="30" cy="30" r="26" stroke="url(#industriesGradientTopLeft)" stroke-width="4" stroke-opacity="0.12"/>
-            <circle cx="30" cy="30" r="44" stroke="url(#industriesGradientTopLeft)" stroke-width="3.5" stroke-opacity="0.1"/>
-            <circle cx="30" cy="30" r="62" stroke="url(#industriesGradientTopLeft)" stroke-width="3.2" stroke-opacity="0.09"/>
-            <circle cx="30" cy="30" r="80" stroke="url(#industriesGradientTopLeft)" stroke-width="3" stroke-opacity="0.08"/>
-            <circle cx="30" cy="30" r="98" stroke="url(#industriesGradientTopLeft)" stroke-width="2.8" stroke-opacity="0.07"/>
+            <circle cx="30" cy="30" r="26" stroke="url(#industriesGradientTopLeft)" stroke-width="4" stroke-opacity="0.28"/>
+            <circle cx="30" cy="30" r="44" stroke="url(#industriesGradientTopLeft)" stroke-width="3.5" stroke-opacity="0.24"/>
+            <circle cx="30" cy="30" r="62" stroke="url(#industriesGradientTopLeft)" stroke-width="3.2" stroke-opacity="0.22"/>
+            <circle cx="30" cy="30" r="80" stroke="url(#industriesGradientTopLeft)" stroke-width="3" stroke-opacity="0.2"/>
+            <circle cx="30" cy="30" r="98" stroke="url(#industriesGradientTopLeft)" stroke-width="2.8" stroke-opacity="0.18"/>
             <image href="https://stagepass.co.ke/uploads/favicon_1770661772_698a278c066f6.png" x="14" y="14" width="32" height="32" preserveAspectRatio="xMidYMid meet" opacity="0.5"/>
         </svg>
     </div>
@@ -104,41 +104,41 @@ class="py-20 relative overflow-hidden bg-white">
             </defs>
             <!-- Thin elegant curves: top-left -->
             <g class="industries-shape-1" style="transform-origin: 20% 50%;">
-                <path d="M -60 100 C 80 120 180 360 80 600 C 10 520 -30 280 -60 100 Z" fill="url(#industriesGradient)" fill-opacity="0.07"/>
+                <path d="M -60 100 C 80 120 180 360 80 600 C 10 520 -30 280 -60 100 Z" fill="url(#industriesGradient)" fill-opacity="0.18"/>
             </g>
             <!-- Bottom center accent -->
             <g class="industries-shape-4" style="transform-origin: 15% 85%;">
-                <path d="M 80 500 C 320 460 280 700 100 740 C 30 670 40 530 80 500 Z" fill="url(#industriesGradient)" fill-opacity="0.05"/>
+                <path d="M 80 500 C 320 460 280 700 100 740 C 30 670 40 530 80 500 Z" fill="url(#industriesGradient)" fill-opacity="0.14"/>
             </g>
             <!-- Bottom-left: elegant arc -->
             <g class="industries-shape-5" style="transform-origin: 5% 92%;">
-                <path d="M 0 580 C 0 520 90 620 160 680 C 100 720 20 660 0 580 Z" fill="url(#industriesGradient)" fill-opacity="0.065"/>
+                <path d="M 0 580 C 0 520 90 620 160 680 C 100 720 20 660 0 580 Z" fill="url(#industriesGradient)" fill-opacity="0.17"/>
             </g>
             <!-- Bottom-left: second thin curve -->
             <g class="industries-shape-6" style="transform-origin: 8% 88%;">
-                <path d="M 0 520 C 60 480 180 560 120 700 C 50 680 0 600 0 520 Z" fill="url(#industriesGradient)" fill-opacity="0.055"/>
+                <path d="M 0 520 C 60 480 180 560 120 700 C 50 680 0 600 0 520 Z" fill="url(#industriesGradient)" fill-opacity="0.14"/>
             </g>
             <!-- Center: emblem (beaded collar style) – static, faint -->
             <g>
                 <!-- Concentric rings (collar bands) -->
-                <circle cx="450" cy="350" r="112" fill="none" stroke="url(#industriesGradient)" stroke-width="3" stroke-opacity="0.12"/>
-                <circle cx="450" cy="350" r="98" fill="none" stroke="url(#industriesGradient)" stroke-width="2.5" stroke-opacity="0.14"/>
-                <circle cx="450" cy="350" r="84" fill="none" stroke="url(#industriesGradient)" stroke-width="2.5" stroke-opacity="0.1"/>
-                <circle cx="450" cy="350" r="70" fill="none" stroke="url(#industriesGradient)" stroke-width="1.5" stroke-opacity="0.12"/>
-                <circle cx="450" cy="350" r="58" fill="url(#industriesGradient)" fill-opacity="0.025"/>
+                <circle cx="450" cy="350" r="112" fill="none" stroke="url(#industriesGradient)" stroke-width="3" stroke-opacity="0.28"/>
+                <circle cx="450" cy="350" r="98" fill="none" stroke="url(#industriesGradient)" stroke-width="2.5" stroke-opacity="0.3"/>
+                <circle cx="450" cy="350" r="84" fill="none" stroke="url(#industriesGradient)" stroke-width="2.5" stroke-opacity="0.24"/>
+                <circle cx="450" cy="350" r="70" fill="none" stroke="url(#industriesGradient)" stroke-width="1.5" stroke-opacity="0.26"/>
+                <circle cx="450" cy="350" r="58" fill="url(#industriesGradient)" fill-opacity="0.08"/>
                 <!-- Segmented outer ring (beaded effect) -->
-                <circle cx="450" cy="350" r="105" fill="none" stroke="url(#industriesGradient)" stroke-width="1.5" stroke-opacity="0.08" stroke-dasharray="8 14"/>
+                <circle cx="450" cy="350" r="105" fill="none" stroke="url(#industriesGradient)" stroke-width="1.5" stroke-opacity="0.2" stroke-dasharray="8 14"/>
                 <!-- Dangling elements (bottom and sides) -->
-                <path d="M 450 458 Q 438 510 450 548 Q 462 510 450 458 Z" fill="url(#industriesGradient)" fill-opacity="0.045"/>
-                <circle cx="450" cy="552" r="4" fill="url(#industriesGradient)" fill-opacity="0.06"/>
-                <path d="M 358 400 Q 332 460 352 505 Q 372 460 358 400 Z" fill="url(#industriesGradient)" fill-opacity="0.04"/>
-                <circle cx="354" cy="508" r="3.5" fill="url(#industriesGradient)" fill-opacity="0.055"/>
-                <path d="M 542 400 Q 568 460 548 505 Q 528 460 542 400 Z" fill="url(#industriesGradient)" fill-opacity="0.04"/>
-                <circle cx="546" cy="508" r="3.5" fill="url(#industriesGradient)" fill-opacity="0.055"/>
-                <path d="M 398 358 Q 368 395 382 432 Q 396 395 398 358 Z" fill="url(#industriesGradient)" fill-opacity="0.03"/>
-                <circle cx="392" cy="432" r="3" fill="url(#industriesGradient)" fill-opacity="0.05"/>
-                <path d="M 502 358 Q 532 395 518 432 Q 504 395 502 358 Z" fill="url(#industriesGradient)" fill-opacity="0.03"/>
-                <circle cx="508" cy="432" r="3" fill="url(#industriesGradient)" fill-opacity="0.05"/>
+                <path d="M 450 458 Q 438 510 450 548 Q 462 510 450 458 Z" fill="url(#industriesGradient)" fill-opacity="0.12"/>
+                <circle cx="450" cy="552" r="4" fill="url(#industriesGradient)" fill-opacity="0.16"/>
+                <path d="M 358 400 Q 332 460 352 505 Q 372 460 358 400 Z" fill="url(#industriesGradient)" fill-opacity="0.1"/>
+                <circle cx="354" cy="508" r="3.5" fill="url(#industriesGradient)" fill-opacity="0.14"/>
+                <path d="M 542 400 Q 568 460 548 505 Q 528 460 542 400 Z" fill="url(#industriesGradient)" fill-opacity="0.1"/>
+                <circle cx="546" cy="508" r="3.5" fill="url(#industriesGradient)" fill-opacity="0.14"/>
+                <path d="M 398 358 Q 368 395 382 432 Q 396 395 398 358 Z" fill="url(#industriesGradient)" fill-opacity="0.08"/>
+                <circle cx="392" cy="432" r="3" fill="url(#industriesGradient)" fill-opacity="0.12"/>
+                <path d="M 502 358 Q 532 395 518 432 Q 504 395 502 358 Z" fill="url(#industriesGradient)" fill-opacity="0.08"/>
+                <circle cx="508" cy="432" r="3" fill="url(#industriesGradient)" fill-opacity="0.12"/>
             </g>
         </svg>
     </div>
