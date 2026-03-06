@@ -2,161 +2,91 @@
 $data = $data ?? null;
 
 $fullText = "We Create the Most Engaging Events in the World Using Technology";
-$backgroundVideo = asset('uploads/stagepass-audio-visual-safaricom-ceo-awade.mp4');
-$posterImage = file_exists(public_path('images/video-fallback.jpg')) ? asset('images/video-fallback.jpg') : null;
+$subtitleText = "Creative Solutions • Technical Excellence";
+
+$heroImagePath = 'uploads/hero.jpeg';
+$heroImageUrl = null;
+if (file_exists(public_path($heroImagePath))) {
+    $heroImageUrl = asset($heroImagePath);
+} else {
+    $uploads = public_path('uploads');
+    if (is_dir($uploads)) {
+        foreach (['hero.jpeg', 'hero.JPEG', 'hero.jpg', 'hero.JPG', 'Hero.jpeg', 'hero.png'] as $name) {
+            if (file_exists($uploads . DIRECTORY_SEPARATOR . $name)) {
+                $heroImageUrl = asset('uploads/' . $name);
+                break;
+            }
+        }
+    }
+}
 
 if ($data) {
     if (is_array($data)) {
         $fullText = $data['headline'] ?? $fullText;
-        $backgroundVideo = $data['background_video_url'] ?? $backgroundVideo;
+        $subtitleText = $data['subtitle'] ?? $subtitleText;
     } else {
         $fullText = $data->headline ?? $fullText;
-        $backgroundVideo = $data->background_video_url ?? $backgroundVideo;
+        $subtitleText = $data->subtitle ?? $subtitleText;
     }
 }
-
-$xDataJson = json_encode([
-    'textVisible' => false,
-    'textDimmed' => false,
-    'textFadeOut' => false,
-    'videoLoading' => true,
-    'videoError' => false,
-    'videoLoaded' => false,
-    'needsTapToPlay' => false,
-    'fullText' => $fullText,
-]);
-
-$xInitJs = "
-\$nextTick(() => {
-    const video = document.getElementById('hero-video') || \$refs.video;
-    if (!video) return;
-
-    const markLoaded = () => {
-        videoLoading = false;
-        videoLoaded = true;
-        videoError = false;
-        needsTapToPlay = false;
-
-        setTimeout(() => {
-            textVisible = true;
-
-            setTimeout(() => {
-                textDimmed = true;
-
-                setTimeout(() => {
-                    textFadeOut = true;
-                }, 30000);
-
-            }, 5000);
-
-        }, 5000);
-    };
-
-    video.defaultMuted = true;
-    video.muted = true;
-    video.setAttribute('playsinline', '');
-    video.setAttribute('webkit-playsinline', '');
-
-    video.addEventListener('playing', markLoaded);
-
-    video.addEventListener('error', () => {
-        videoLoading = false;
-        videoError = true;
-    });
-
-    // Proper autoplay detection (Safari safe)
-    video.play().then(() => {
-        needsTapToPlay = false;
-    }).catch(() => {
-        needsTapToPlay = true;
-        videoLoading = false;
-    });
-
-    // Fallback in case 'playing' doesn't fire
-    setTimeout(() => {
-        if (videoLoading) {
-            markLoaded();
-        }
-    }, 6000);
-});
-";
 @endphp
 
+<section
+    id="home"
+    class="relative overflow-hidden text-white -mt-[4.25rem] md:mt-0 min-h-[70vh] md:min-h-screen"
+    style="padding-top: 4.25rem;"
+>
+    <!-- Background image -->
+    <div class="absolute inset-0 z-0 min-h-full">
+        @if($heroImageUrl)
+            <img
+                src="{{ $heroImageUrl }}"
+                alt=""
+                class="absolute inset-0 w-full h-full object-cover object-center"
+                loading="eager"
+                fetchpriority="high"
+            >
+        @else
+            <div class="absolute inset-0 bg-[#0b1220]" style="background: radial-gradient(1200px 600px at 30% 20%, rgba(59,130,246,0.35), transparent 60%), radial-gradient(900px 500px at 70% 60%, rgba(234,179,8,0.28), transparent 55%), #0b1220;"></div>
+        @endif
 
-<section x-data='{!! $xDataJson !!}'
-         x-init="{!! $xInitJs !!}"
-         class="relative h-[56.25vw] md:h-screen flex items-center justify-center overflow-hidden bg-gray-900 text-white -mt-[4.25rem] md:mt-0"
-         style="padding-top: 4.25rem; min-height: calc(100vh - 10rem);">
-
-    <!-- Background -->
-    <div class="absolute inset-0 z-0">
-
-        <!-- Video -->
-        <video
-            id="hero-video"
-            x-ref="video"
-            autoplay
-            muted
-            loop
-            playsinline
-            preload="auto"
-            @if($posterImage) poster="{{ $posterImage }}" @endif
-            class="absolute inset-0 w-full h-full object-cover">
-
-            <source src="{{ $backgroundVideo }}" type="video/mp4">
-        </video>
-
-        <!-- Preloader -->
-        <div x-cloak
-             x-show="videoLoading && !needsTapToPlay"
-             x-transition
-             class="absolute inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-20">
-
-            <div class="inline-block animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-yellow-500"></div>
-        </div>
-
-        <!-- Tap to play overlay (only if autoplay fails) -->
-        <div x-cloak
-             x-show="needsTapToPlay"
-             x-transition
-             @click="
-                const v = document.getElementById('hero-video');
-                if (v) {
-                    v.muted = true;
-                    v.play();
-                    needsTapToPlay = false;
-                }
-             "
-             class="absolute inset-0 z-20 cursor-pointer"
-             style="background: transparent;">
-        </div>
-
-        <!-- Gradient Overlay -->
-        <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70"></div>
+        <!-- Overlays for readability -->
+        <div class="absolute inset-0 bg-gradient-to-b from-black/65 via-black/45 to-black/75"></div>
+        <div class="absolute inset-0 bg-[#172455]/10 mix-blend-overlay"></div>
     </div>
 
     <!-- Content -->
-    <div class="relative z-10 text-center max-w-4xl mx-auto px-4">
-        <h1
-            x-show="videoLoaded"
-            x-text="videoLoaded ? fullText : ''"
-            :class="{
-                'opacity-0': !videoLoaded || !textVisible || textFadeOut,
-                'opacity-[0.15]': videoLoaded && textVisible && textDimmed && !textFadeOut,
-                'opacity-100': videoLoaded && textVisible && !textDimmed,
-                'transition-opacity duration-1000 ease-in-out': textDimmed && !textFadeOut,
-                'transition-opacity duration-[5000ms] ease-in-out': (textVisible && !textDimmed) || textFadeOut
-            }"
-            class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight leading-none mb-6 text-white uppercase drop-shadow-2xl">
-        </h1>
+    <div class="relative z-10 container mx-auto px-6 lg:px-12">
+        <div class="min-h-[70vh] md:min-h-[92vh] flex items-center justify-center text-center">
+            <div class="max-w-5xl">
+                <div class="inline-flex items-center gap-2 rounded-full bg-white/10 ring-1 ring-white/20 px-4 py-2 text-xs sm:text-sm font-bold tracking-wider uppercase backdrop-blur">
+                    StagePass Audio Visual
+                </div>
+
+                <h1 class="mt-6 text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-tight leading-[1.05] uppercase drop-shadow-2xl">
+                    {{ $fullText }}
+                </h1>
+
+                <p class="mt-5 text-sm sm:text-base md:text-lg text-white/90 font-semibold tracking-wide">
+                    {{ $subtitleText }}
+                </p>
+
+                <div class="mt-8 flex flex-row flex-wrap items-center justify-center gap-2 sm:gap-3">
+                    <a href="#contact"
+                       class="inline-flex items-center justify-center rounded-xl sm:rounded-2xl bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 px-4 py-3 sm:px-7 sm:py-4 text-sm sm:text-base font-black text-[#172455] shadow-2xl shadow-yellow-500/30 hover:shadow-yellow-500/40 hover:scale-[1.02] transition-all">
+                        Get AV Quote
+                    </a>
+                    <a href="#portfolio"
+                       class="inline-flex items-center justify-center rounded-xl sm:rounded-2xl bg-white/10 ring-1 ring-white/25 px-4 py-3 sm:px-7 sm:py-4 text-sm sm:text-base font-black text-white backdrop-blur hover:bg-white/15 transition-all">
+                        View Our Work
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Down Arrow -->
     <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10 text-center">
-        <p class="text-white text-sm md:text-base font-bold mb-3 tracking-wide">
-            Creative Solutions<br> Technical Excellence
-        </p>
-
         <a href="#about" class="inline-block animate-bounce">
             <svg class="w-6 h-6 md:w-8 md:h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
