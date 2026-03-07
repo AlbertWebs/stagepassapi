@@ -5,10 +5,18 @@
 @endphp
 <section id="home" class="relative h-screen flex items-center justify-center overflow-hidden bg-gray-900 text-white -mt-[4.25rem] md:mt-0" style="padding-top: 4.25rem;">
     <div class="absolute inset-x-0 top-0 w-full h-screen">
-        <video class="w-full h-full object-cover" autoplay muted loop playsinline webkit-playsinline preload="auto" aria-hidden="true" id="hero-video">
+        <video class="w-full h-full object-cover" autoplay muted loop playsinline webkit-playsinline preload="auto" aria-hidden="true" id="hero-video" disablePictureInPicture>
             <source src="{{ $videoUrl }}" type="video/mp4">
         </video>
         <div class="absolute inset-0 bg-gradient-to-b from-black/40 via-black/50 to-black/70" aria-hidden="true"></div>
+        <div id="hero-play-overlay" class="absolute inset-0 z-10 flex items-center justify-center bg-black/40 transition-opacity duration-500 cursor-pointer" role="button" tabindex="0" aria-label="Click to play video">
+            <div class="flex flex-col items-center gap-4 text-white">
+                <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-full border-4 border-white/80 flex items-center justify-center hover:bg-white/10 transition-colors">
+                    <svg class="w-10 h-10 sm:w-12 sm:h-12 ml-1 text-white" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+                </div>
+                <span class="text-sm sm:text-base font-semibold tracking-wide">Click to play video</span>
+            </div>
+        </div>
     </div>
     <div class="relative z-10 flex flex-col items-center justify-center min-h-screen text-center px-4 sm:px-6">
         <div class="max-w-4xl mx-auto">
@@ -26,17 +34,49 @@
 <script>
 (function(){
     var v = document.getElementById('hero-video');
+    var overlay = document.getElementById('hero-play-overlay');
     if (!v) return;
     v.muted = true;
     v.playsInline = true;
     v.setAttribute('playsinline', '');
     v.setAttribute('webkit-playsinline', '');
+    v.controls = false;
+
+    function hideOverlay() {
+        if (overlay) {
+            overlay.style.opacity = '0';
+            overlay.style.pointerEvents = 'none';
+        }
+    }
+    function showOverlay() {
+        if (overlay) {
+            overlay.style.opacity = '1';
+            overlay.style.pointerEvents = 'auto';
+        }
+    }
+
+    v.addEventListener('playing', hideOverlay);
+
     function tryPlay() {
         v.muted = true;
-        v.play().catch(function(){});
+        v.play().then(hideOverlay).catch(function(){});
     }
     tryPlay();
     v.addEventListener('loadeddata', tryPlay);
     v.addEventListener('canplay', tryPlay);
+
+    if (overlay) {
+        overlay.addEventListener('click', function() {
+            v.muted = true;
+            v.play().then(hideOverlay).catch(function(){});
+        });
+        overlay.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                v.muted = true;
+                v.play().then(hideOverlay).catch(function(){});
+            }
+        });
+    }
 })();
 </script>
