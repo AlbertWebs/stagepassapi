@@ -1,5 +1,5 @@
 @php
-    $headline = $data['headline'] ?? 'We Create the Most Engaging Events in the World Using Technology';
+    $headline = $data['headline'] ?? 'We Create the Most Engaging Events in the World Using Technology & Scenography ';
     $backgroundVideo = $data['background_video_url'] ?? asset('uploads/video/ceo.mp4');
     $posterImage = $data['poster_image_url'] ?? null;
 @endphp

@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\DB;
 
 // Blade Frontend Routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/home-with-video', [HomeController::class, 'homeWithVideo'])->name('home-with-video');
 Route::get('/about', [PageController::class, 'about'])->name('about');
 Route::get('/services', [PageController::class, 'services'])->name('services');
 Route::get('/services/{service}', [PageController::class, 'service'])->name('service');

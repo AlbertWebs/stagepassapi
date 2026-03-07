@@ -213,4 +213,17 @@ class HomeController extends Controller
             'isPage' => false,
         ]);
     }
+
+    /**
+     * Home page with video hero (uses home-with-video.blade.php)
+     */
+    public function homeWithVideo()
+    {
+        $homepageData = $this->getHomepageData();
+
+        return view('home-with-video', [
+            'homepageData' => $homepageData,
+            'isPage' => false,
+        ]);
+    }
 }
