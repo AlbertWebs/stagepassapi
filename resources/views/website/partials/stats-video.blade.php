@@ -11,7 +11,7 @@
 <section id="stats-video-section" class="relative min-h-[70vh] md:min-h-screen flex items-center justify-center overflow-hidden text-white py-16">
     <div class="absolute inset-0">
         @if($videoUrl)
-        <video class="w-full h-full object-cover" autoplay muted loop playsinline preload="auto" aria-hidden="true">
+        <video class="w-full h-full object-cover" autoplay muted loop playsinline webkit-playsinline preload="auto" aria-hidden="true" id="stats-video">
             <source src="{{ $videoUrl }}" type="video/mp4">
         </video>
         @endif
@@ -43,5 +43,21 @@
     </div>
 </section>
 @if($videoUrl)
-<script>(function(){var v=document.querySelector('#stats-video-section video');if(v)v.play().catch(function(){});})();</script>
+<script>
+(function(){
+    var v = document.getElementById('stats-video');
+    if (!v) return;
+    v.muted = true;
+    v.playsInline = true;
+    v.setAttribute('playsinline', '');
+    v.setAttribute('webkit-playsinline', '');
+    function tryPlay() {
+        v.muted = true;
+        v.play().catch(function(){});
+    }
+    tryPlay();
+    v.addEventListener('loadeddata', tryPlay);
+    v.addEventListener('canplay', tryPlay);
+})();
+</script>
 @endif
