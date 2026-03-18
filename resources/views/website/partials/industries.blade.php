@@ -64,7 +64,11 @@
     }
 }"
 id="industries" 
-class="py-20 relative overflow-hidden bg-white">
+class="py-20 relative overflow-hidden min-h-[800px] flex flex-col"
+style="background: linear-gradient(160deg, #f8fafc 0%, #e0e7ff 22%, #fef3c7 45%, #f1f5f9 70%, #fce7f3 88%, #ecfdf5 100%);">
+    <!-- Subtle dot pattern overlay -->
+    <div class="absolute inset-0 opacity-[0.4] pointer-events-none z-0" aria-hidden="true"
+         style="background-image: radial-gradient(circle at 1px 1px, #64748b 0.75px, transparent 0); background-size: 28px 28px;"></div>
     <!-- Top-left: concentric lines (regular circles) + favicon – gradient matches stats separator -->
     <div class="absolute top-0 left-0 w-[280px] md:w-[380px] h-[220px] md:h-[300px] pointer-events-none z-0" aria-hidden="true">
         <svg class="w-full h-full" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="xMinYMin slice">
