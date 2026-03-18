@@ -11,7 +11,7 @@
 <section id="stats-video-section" class="relative min-h-[70vh] md:min-h-screen flex items-center justify-center overflow-hidden text-white py-16">
     <div class="absolute inset-0">
         @if($videoUrl)
-        <video class="w-full h-full object-cover" autoplay muted loop playsinline webkit-playsinline preload="auto" aria-hidden="true" id="stats-video" disablePictureInPicture>
+        <video class="w-full h-full object-cover" autoplay muted loop playsinline preload="auto" aria-hidden="true" id="stats-video" disablePictureInPicture src="{{ $videoUrl }}">
             <source src="{{ $videoUrl }}" type="video/mp4">
         </video>
         <div id="stats-play-overlay" class="absolute inset-0 z-20 flex items-center justify-center bg-[#172455]/60 transition-opacity duration-500 cursor-pointer" role="button" tabindex="0" aria-label="Click to play video">

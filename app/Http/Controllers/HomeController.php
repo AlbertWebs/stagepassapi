@@ -22,6 +22,29 @@ class HomeController extends Controller
         
         return asset(ltrim($url, '/'));
     }
+
+    /**
+     * For same-origin uploads/video/* URLs, return stream URL so Safari gets Range (206) support.
+     * Otherwise return normalized URL.
+     */
+    protected function videoStreamUrl($url)
+    {
+        if (empty($url)) {
+            return null;
+        }
+        $normalized = $this->normalizeUrl($url);
+        $path = parse_url($normalized, PHP_URL_PATH);
+        if ($path && preg_match('#/uploads/video/(.+)$#', $path, $m)) {
+            return url('/stream/video/' . $m[1]);
+        }
+        if (!str_starts_with((string) $url, 'http')) {
+            $path = ltrim($url, '/');
+            if (preg_match('#^uploads/video/(.+)$#', $path, $m)) {
+                return url('/stream/video/' . $m[1]);
+            }
+        }
+        return $normalized;
+    }
     
     /**
      * Get homepage data directly from database (independent from API)
@@ -134,7 +157,7 @@ class HomeController extends Controller
                 ],
                 'hero' => $hero ? array_merge((array) $hero, [
                     'headline' => $hero->headline ?? null,
-                    'background_video_url' => $this->normalizeUrl($hero->background_video_url ?? null),
+                    'background_video_url' => $this->videoStreamUrl($hero->background_video_url ?? null),
                     'thumbnail_url' => $this->normalizeUrl($hero->thumbnail_url ?? null),
                 ]) : null,
                 'about' => [
@@ -148,7 +171,9 @@ class HomeController extends Controller
                     'items' => $services->map(fn($item) => (array) $item)->toArray(),
                 ],
                 'stats' => [
-                    'section' => $statsSection ? (array) $statsSection : null,
+                    'section' => $statsSection ? array_merge((array) $statsSection, [
+                        'background_video_url' => $this->videoStreamUrl($statsSection->background_video_url ?? null),
+                    ]) : null,
                     'items' => $stats->map(fn($item) => (array) $item)->toArray(),
                 ],
                 'portfolio' => [

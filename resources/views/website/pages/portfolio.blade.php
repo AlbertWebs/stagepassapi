@@ -152,7 +152,7 @@
                          style="display: none;">
                         <div @click.stop class="max-w-5xl w-full">
                             <button @click="isVideoModalOpen = false" class="absolute top-4 right-4 text-white text-3xl z-50">×</button>
-                            <video :src="currentVideoUrl" controls class="w-full rounded-lg"></video>
+                            <video :src="currentVideoUrl" controls playsinline class="w-full rounded-lg"></video>
                             <p class="text-white text-center mt-4 text-xl font-bold" x-text="currentVideoTitle"></p>
                         </div>
                     </div>

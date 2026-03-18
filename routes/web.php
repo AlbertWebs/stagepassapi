@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminBackupController;
 use App\Http\Controllers\AdminDashboardController;
+use App\Http\Controllers\VideoStreamController;
 use App\Http\Controllers\AdminInstagramController;
 use App\Http\Controllers\AdminInstagramToolsController;
 use App\Http\Controllers\AdminLogsController;
@@ -18,6 +19,11 @@ use App\Http\Controllers\PageController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\DB;
+
+// Video stream with Range (206) support for Safari
+Route::get('/stream/video/{path}', [VideoStreamController::class, 'stream'])
+    ->where('path', '.*')
+    ->name('video.stream');
 
 // Blade Frontend Routes
 Route::get('/', [HomeController::class, 'index'])->name('home');

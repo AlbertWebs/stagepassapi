@@ -6,7 +6,7 @@
 
 <section class="py-16 h-[50vh] md:h-screen relative overflow-hidden text-white">
     @if($backgroundVideo)
-        <video class="absolute inset-0 w-full h-full object-cover" src="{{ $backgroundVideo }}" autoplay loop muted playsinline></video>
+        <video class="absolute inset-0 w-full h-full object-cover" src="{{ $backgroundVideo }}" autoplay loop muted playsinline preload="auto"></video>
     @endif
     
     <div class="absolute inset-0 bg-[#172455]/70"></div>

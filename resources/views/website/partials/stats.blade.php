@@ -34,11 +34,12 @@
             x-init="
                 const v = $el;
                 v.muted = true;
+                v.playsInline = true;
+                v.setAttribute('playsinline', '');
+                v.setAttribute('webkit-playsinline', '');
                 const playPromise = v.play();
                 if (playPromise !== undefined) {
-                    playPromise.catch(() => {
-                        v.controls = false;
-                    });
+                    playPromise.catch(() => {});
                 }
             "
             class="absolute inset-0 w-full h-full object-cover"
@@ -46,9 +47,9 @@
             muted
             loop
             playsinline
-            webkit-playsinline
-            preload="metadata"
+            preload="auto"
             @if($posterImage) poster="{{ $posterImage }}" @endif
+            src="{{ $backgroundVideo }}"
         >
             <source src="{{ $backgroundVideo }}" type="video/mp4">
         </video>

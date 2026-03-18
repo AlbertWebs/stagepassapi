@@ -331,7 +331,7 @@ document.addEventListener('alpine:init', () => {
         <div @click.stop class="w-[1024px] max-w-full max-h-[90vh] flex flex-col">
             <button @click="isVideoModalOpen = false" class="absolute top-4 right-4 text-white text-3xl z-50 hover:text-yellow-400 transition-colors bg-black/50 rounded-full w-10 h-10 flex items-center justify-center">×</button>
             <div class="w-full aspect-video bg-black rounded-lg overflow-hidden">
-                <video :src="currentVideoUrl" controls class="w-full h-full object-contain"></video>
+                <video :src="currentVideoUrl" controls playsinline class="w-full h-full object-contain"></video>
             </div>
             <p class="text-white text-center mt-4 text-xl font-bold" x-text="currentVideoTitle"></p>
         </div>

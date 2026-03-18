@@ -5,7 +5,8 @@
 @endphp
 <section id="home" class="relative h-screen flex items-center justify-center overflow-hidden bg-gray-900 text-white -mt-[4.25rem] md:mt-0" style="padding-top: 4.25rem;">
     <div class="absolute inset-x-0 top-0 w-full h-screen">
-        <video class="w-full h-full object-cover" autoplay muted loop playsinline webkit-playsinline preload="auto" aria-hidden="true" id="hero-video" disablePictureInPicture>
+        <video class="w-full h-full object-cover" autoplay muted loop playsinline preload="auto" aria-hidden="true" id="hero-video" disablePictureInPicture
+            src="{{ $videoUrl }}">
             <source src="{{ $videoUrl }}" type="video/mp4">
         </video>
         <div class="absolute inset-0 bg-gradient-to-b from-black/40 via-black/50 to-black/70" aria-hidden="true"></div>

@@ -22,12 +22,13 @@
             autoplay
             muted
             playsinline
-            preload="metadata"
+            preload="auto"
             @if($posterImage)
             poster="{{ $posterImage }}"
             @endif
             class="w-full h-full object-cover hero-video"
             style="opacity: 0; transition: opacity 0.5s ease-in-out;"
+            src="{{ $backgroundVideo }}"
         >
             <source src="{{ $backgroundVideo }}" type="video/mp4">
         </video>
@@ -68,25 +69,26 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 70);
     }, 200);
     
-    // Video loading
+    // Video loading – use source already in HTML (Safari needs it for range requests)
     if (video) {
+        video.muted = true;
+        video.playsInline = true;
+        video.setAttribute('playsinline', '');
+        video.setAttribute('webkit-playsinline', '');
+        function onLoaded() {
+            video.style.opacity = '1';
+            if (poster) poster.style.opacity = '0';
+        }
+        video.addEventListener('loadeddata', onLoaded, { once: true });
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    video.src = '{{ $backgroundVideo }}';
                     video.load();
-                    video.play().catch(() => {});
-                    
-                    video.addEventListener('loadeddata', () => {
-                        video.style.opacity = '1';
-                        if (poster) poster.style.opacity = '0';
-                    });
-                    
+                    video.play().catch(function() {});
                     observer.disconnect();
                 }
             });
         }, { threshold: 0.1 });
-        
         observer.observe(video.closest('section'));
     }
 });
