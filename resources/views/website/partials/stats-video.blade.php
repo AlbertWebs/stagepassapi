@@ -16,15 +16,7 @@
         <img id="stats-video-fallback" src="{{ $videoFallbackImage }}" alt="" class="absolute inset-0 w-full h-full object-cover hidden" aria-hidden="true">
         @if($isYoutube)
         <div class="absolute inset-0 w-full h-full" style="pointer-events: none;">
-            <iframe
-                id="stats-youtube"
-                src="https://www.youtube.com/embed/{{ $isYoutube }}?autoplay=1&mute=1&controls=0&rel=0&modestbranding=1&loop=1&playlist={{ $isYoutube }}&playsinline=1&showinfo=0&disablekb=1&fs=0&iv_load_policy=3"
-                class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 border-0"
-                style="width: max(100vw, 177.78vh); height: max(100vh, 56.25vw);"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowfullscreen
-                title="Stats background video"
-                aria-hidden="true"></iframe>
+            <div id="stats-youtube-player" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 border-0" data-youtube-video-id="{{ $isYoutube }}" style="width: max(100vw, 177.78vh); height: max(100vh, 56.25vw);"></div>
         </div>
         @else
         <video class="w-full h-full object-cover" autoplay muted loop playsinline preload="auto" aria-hidden="true" id="stats-video" disablePictureInPicture src="{{ $videoUrl }}">

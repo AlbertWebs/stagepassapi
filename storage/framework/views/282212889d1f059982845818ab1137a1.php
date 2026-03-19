@@ -304,6 +304,56 @@ $defaultLogo =
     </script>
     
     <?php echo $__env->yieldPushContent('scripts'); ?>
+    <script>
+    (function(){
+        var containers = document.querySelectorAll('[data-youtube-video-id]');
+        if (!containers.length) return;
+        if (window.YT && window.YT.Player) {
+            initPlayers();
+            return;
+        }
+        var tag = document.createElement('script');
+        tag.src = 'https://www.youtube.com/iframe_api';
+        var first = document.getElementsByTagName('script')[0];
+        first.parentNode.insertBefore(tag, first);
+        window.onYouTubeIframeAPIReady = function() {
+            initPlayers();
+        };
+        function initPlayers() {
+            containers.forEach(function(el) {
+                var id = el.id;
+                var videoId = el.getAttribute('data-youtube-video-id');
+                if (!id || !videoId) return;
+                new YT.Player(id, {
+                    videoId: videoId,
+                    playerVars: {
+                        autoplay: 1,
+                        mute: 1,
+                        controls: 0,
+                        rel: 0,
+                        modestbranding: 1,
+                        loop: 1,
+                        playlist: videoId,
+                        playsinline: 1,
+                        showinfo: 0,
+                        disablekb: 1,
+                        fs: 0,
+                        iv_load_policy: 3
+                    },
+                    events: {
+                        onReady: function(e) {
+                            try {
+                                var q = e.target.getAvailableQualityLevels && e.target.getAvailableQualityLevels();
+                                if (q && q.length) e.target.setPlaybackQuality(q[0]);
+                                else e.target.setPlaybackQuality('highres');
+                            } catch (err) {}
+                        }
+                    }
+                });
+            });
+        }
+    })();
+    </script>
 </body>
 </html>
 
