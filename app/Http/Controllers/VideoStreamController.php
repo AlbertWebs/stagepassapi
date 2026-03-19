@@ -40,6 +40,8 @@ class VideoStreamController extends Controller
                 'Content-Type' => $mime,
                 'Accept-Ranges' => 'bytes',
                 'Content-Length' => $size,
+                'Cache-Control' => 'no-store, no-cache, must-revalidate, max-age=0',
+                'Pragma' => 'no-cache',
             ]);
         }
 
@@ -77,6 +79,8 @@ class VideoStreamController extends Controller
             'Content-Length' => $length,
             'Content-Range' => sprintf('bytes %d-%d/%d', $start, $end, $size),
             'Accept-Ranges' => 'bytes',
+            'Cache-Control' => 'no-store, no-cache, must-revalidate, max-age=0',
+            'Pragma' => 'no-cache',
         ]);
     }
 }
