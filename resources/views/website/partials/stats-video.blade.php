@@ -12,7 +12,7 @@
 @php
     $videoFallbackImage = asset('uploads/hero.jpeg');
 @endphp
-<section id="stats-video-section" class="relative min-h-[70vh] md:min-h-screen flex items-center justify-center overflow-hidden text-white py-16">
+<section id="stats-video-section" class="relative min-h-[70vh] md:min-h-screen max-h-[700px] flex items-center justify-center overflow-hidden text-white py-16">
     <div class="absolute inset-0">
         <img id="stats-video-fallback" src="{{ $videoFallbackImage }}" alt="" class="absolute inset-0 w-full h-full object-cover hidden" aria-hidden="true">
         <video class="w-full h-full object-cover" autoplay muted loop playsinline preload="auto" aria-hidden="true" id="stats-video" disablePictureInPicture src="{{ $videoUrl }}">
