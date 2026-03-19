@@ -84,12 +84,7 @@
             animation: hero-fade-up 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
         }
         #hero-text-block.hero-text-dim {
-            opacity: 0.4;
-        }
-        #hero-text-block.hero-text-out {
-            opacity: 0;
-            transform: translateY(-12px);
-            pointer-events: none;
+            opacity: 0.2;
         }
     </style>
     <script>
@@ -99,9 +94,6 @@
         setTimeout(function(){
             block.classList.add('hero-text-dim');
         }, 2500);
-        setTimeout(function(){
-            block.classList.add('hero-text-out');
-        }, 22500);
     })();
     </script>
 </section>

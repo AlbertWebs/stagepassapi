@@ -319,6 +319,16 @@ $defaultLogo =
         window.onYouTubeIframeAPIReady = function() {
             initPlayers();
         };
+        function forceHighestQuality(player) {
+            try {
+                var q = player.getAvailableQualityLevels && player.getAvailableQualityLevels();
+                if (q && q.length) {
+                    player.setPlaybackQuality(q[0]);
+                    return;
+                }
+                player.setPlaybackQuality('hd1080');
+            } catch (err) {}
+        }
         function initPlayers() {
             containers.forEach(function(el) {
                 var id = el.id;
@@ -338,15 +348,18 @@ $defaultLogo =
                         showinfo: 0,
                         disablekb: 1,
                         fs: 0,
-                        iv_load_policy: 3
+                        iv_load_policy: 3,
+                        hd: 1
                     },
                     events: {
                         onReady: function(e) {
-                            try {
-                                var q = e.target.getAvailableQualityLevels && e.target.getAvailableQualityLevels();
-                                if (q && q.length) e.target.setPlaybackQuality(q[0]);
-                                else e.target.setPlaybackQuality('highres');
-                            } catch (err) {}
+                            forceHighestQuality(e.target);
+                        },
+                        onStateChange: function(e) {
+                            if (e.data === YT.PlayerState.PLAYING) {
+                                forceHighestQuality(e.target);
+                                setTimeout(function() { forceHighestQuality(e.target); }, 1500);
+                            }
                         }
                     }
                 });

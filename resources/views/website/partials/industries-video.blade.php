@@ -55,12 +55,80 @@
     .industries-track-right { animation: industries-slide-right 45s linear infinite; }
     .industries-row-wrap:hover .industries-track-left,
     .industries-row-wrap:hover .industries-track-right { animation-play-state: paused; }
+    #industries {
+        --mouse-x: 0.5;
+        --mouse-y: 0.5;
+    }
+    .industries-bg-layer {
+        position: absolute;
+        inset: -20%;
+        transition: opacity 0.4s ease, transform 0.35s ease-out;
+        will-change: transform;
+        pointer-events: none;
+    }
+    .industries-bg-blob {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(80px);
+        opacity: 0.5;
+    }
+    .industries-bg-blob-1 {
+        width: 70%;
+        height: 70%;
+        background: radial-gradient(circle, rgba(251,191,36,0.45) 0%, rgba(245,158,11,0.2) 40%, transparent 70%);
+        top: 50%;
+        left: 50%;
+        transform: translate(calc(-50% + (var(--mouse-x) - 0.5) * 120px), calc(-50% + (var(--mouse-y) - 0.5) * 80px));
+    }
+    .industries-bg-blob-2 {
+        width: 55%;
+        height: 55%;
+        background: radial-gradient(circle, rgba(192,132,252,0.35) 0%, rgba(168,85,247,0.15) 45%, transparent 70%);
+        top: 30%;
+        right: 10%;
+        transform: translate(calc((var(--mouse-x) - 0.5) * -90px), calc((var(--mouse-y) - 0.5) * -60px));
+    }
+    .industries-bg-blob-3 {
+        width: 50%;
+        height: 50%;
+        background: radial-gradient(circle, rgba(244,63,94,0.25) 0%, rgba(236,72,153,0.1) 50%, transparent 70%);
+        bottom: 15%;
+        left: 20%;
+        transform: translate(calc((var(--mouse-x) - 0.5) * 70px), calc((var(--mouse-y) - 0.5) * 100px));
+    }
+    .industries-bg-blob-4 {
+        width: 45%;
+        height: 45%;
+        background: radial-gradient(circle, rgba(59,130,246,0.2) 0%, rgba(99,102,241,0.08) 50%, transparent 70%);
+        top: 60%;
+        right: 25%;
+        transform: translate(calc((var(--mouse-x) - 0.5) * -50px), calc((var(--mouse-y) - 0.5) * 70px));
+    }
+    .industries-bg-blob-5 {
+        width: 40%;
+        height: 40%;
+        background: radial-gradient(circle, rgba(34,197,94,0.15) 0%, transparent 60%);
+        top: 20%;
+        left: 15%;
+        transform: translate(calc((var(--mouse-x) - 0.5) * 60px), calc((var(--mouse-y) - 0.5) * -50px));
+    }
 </style>
 <section id="industries"
          class="relative py-24 overflow-hidden bg-gray-900 text-white">
+    <!-- Custom gradient mesh background (mouse-follow) -->
+    <div class="absolute inset-0 z-0 overflow-hidden" aria-hidden="true">
+        <div class="industries-bg-layer">
+            <div class="industries-bg-blob industries-bg-blob-1"></div>
+            <div class="industries-bg-blob industries-bg-blob-2"></div>
+            <div class="industries-bg-blob industries-bg-blob-3"></div>
+            <div class="industries-bg-blob industries-bg-blob-4"></div>
+            <div class="industries-bg-blob industries-bg-blob-5"></div>
+        </div>
+        <div class="absolute inset-0 bg-gray-900/60 pointer-events-none" aria-hidden="true"></div>
+    </div>
     <div class="absolute top-0 left-0 right-0 h-3 bg-gradient-to-r from-blue-500 via-purple-500 via-pink-500 via-red-500 via-orange-500 via-yellow-500 to-green-500 animate-gradient-x z-10" aria-hidden="true"></div>
     <!-- Subtle grid -->
-    <div class="absolute inset-0 opacity-[0.06] pointer-events-none" aria-hidden="true"
+    <div class="absolute inset-0 opacity-[0.06] pointer-events-none z-10" aria-hidden="true"
          style="background-image: linear-gradient(rgba(255,255,255,.08) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.08) 1px, transparent 1px); background-size: 48px 48px;"></div>
 
     <div class="container mx-auto px-6 lg:px-12 relative z-10">
@@ -135,4 +203,23 @@
             </div>
         </div>
     </div>
+    <script>
+    (function(){
+        var section = document.getElementById('industries');
+        if (!section) return;
+        function onMouseMove(e) {
+            var rect = section.getBoundingClientRect();
+            var x = (e.clientX - rect.left) / rect.width;
+            var y = (e.clientY - rect.top) / rect.height;
+            section.style.setProperty('--mouse-x', x);
+            section.style.setProperty('--mouse-y', y);
+        }
+        function onMouseLeave() {
+            section.style.setProperty('--mouse-x', '0.5');
+            section.style.setProperty('--mouse-y', '0.5');
+        }
+        section.addEventListener('mousemove', onMouseMove);
+        section.addEventListener('mouseleave', onMouseLeave);
+    })();
+    </script>
 </section>
