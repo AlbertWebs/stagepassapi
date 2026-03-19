@@ -6,39 +6,39 @@
 @section('structured_data')
 @php
     $logoUrl = $homepageData['settings']['site_logo_url'] ?? $homepageData['navigation']['logo_url'] ?? asset('uploads/StagePass-LOGO-y.png');
+    $logoUrl = is_string($logoUrl) ? $logoUrl : asset('uploads/StagePass-LOGO-y.png');
+    $structuredData = [
+        '@context' => 'https://schema.org',
+        '@type' => 'LocalBusiness',
+        'name' => 'StagePass Audio Visual Limited',
+        'url' => 'https://stagepass.co.ke',
+        'logo' => $logoUrl,
+        'image' => $logoUrl,
+        'description' => 'StagePass Audio Visual Limited provides professional audio visual, sound engineering, stage lighting, LED screens, and event production services across Kenya.',
+        'address' => [
+            '@type' => 'PostalAddress',
+            'streetAddress' => 'Jacaranda Close, Ridgeways',
+            'addressLocality' => 'Nairobi',
+            'addressRegion' => 'Nairobi',
+            'addressCountry' => 'KE'
+        ],
+        'geo' => [
+            '@type' => 'GeoCoordinates',
+            'latitude' => -1.2210922,
+            'longitude' => 36.8443046
+        ],
+        'areaServed' => [['@type' => 'Country', 'name' => 'Kenya']],
+        'priceRange' => '$$',
+        'telephone' => '+254 729 171 351',
+        'email' => 'info@stagepass.co.ke',
+        'sameAs' => [
+            'https://facebook.com/stagepass',
+            'https://twitter.com/stagepass',
+            'https://linkedin.com/company/stagepass'
+        ]
+    ];
 @endphp
-<script type="application/ld+json">
-{!! json_encode([
-    '@context' => 'https://schema.org',
-    '@type' => 'LocalBusiness',
-    'name' => 'StagePass Audio Visual Limited',
-    'url' => 'https://stagepass.co.ke',
-    'logo' => $logoUrl,
-    'image' => $logoUrl,
-    'description' => 'StagePass Audio Visual Limited provides professional audio visual, sound engineering, stage lighting, LED screens, and event production services across Kenya.',
-    'address' => [
-        '@type' => 'PostalAddress',
-        'streetAddress' => 'Jacaranda Close, Ridgeways',
-        'addressLocality' => 'Nairobi',
-        'addressRegion' => 'Nairobi',
-        'addressCountry' => 'KE'
-    ],
-    'geo' => [
-        '@type' => 'GeoCoordinates',
-        'latitude' => -1.2210922,
-        'longitude' => 36.8443046
-    ],
-    'areaServed' => [['@type' => 'Country', 'name' => 'Kenya']],
-    'priceRange' => '$$',
-    'telephone' => '+254 729 171 351',
-    'email' => 'info@stagepass.co.ke',
-    'sameAs' => [
-        'https://facebook.com/stagepass',
-        'https://twitter.com/stagepass',
-        'https://linkedin.com/company/stagepass'
-    ]
-], JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) !!}
-</script>
+<script type="application/ld+json">{!! json_encode($structuredData, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) !!}</script>
 @endsection
 
 @section('content')
