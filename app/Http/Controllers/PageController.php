@@ -26,7 +26,7 @@ class PageController extends Controller
     }
 
     /**
-     * For same-origin uploads/video/* URLs, return stream URL so Safari gets Range (206) support.
+     * Use stream URL for any same-origin uploads video so Safari gets Range (206) support.
      */
     protected function videoStreamUrl($url)
     {
@@ -35,12 +35,20 @@ class PageController extends Controller
         }
         $normalized = $this->normalizeUrl($url);
         $path = parse_url($normalized, PHP_URL_PATH);
-        if ($path && preg_match('#/uploads/video/(.+)$#', $path, $m)) {
-            return url('/stream/video/' . $m[1]);
+        if ($path) {
+            if (preg_match('#/uploads/video/(.+)$#', $path, $m)) {
+                return url('/stream/video/' . $m[1]);
+            }
+            if (preg_match('#/uploads/([^/]+\.(mp4|webm|mov))$#i', $path, $m)) {
+                return url('/stream/video/' . $m[1]);
+            }
         }
         if (!str_starts_with((string) $url, 'http')) {
             $path = ltrim($url, '/');
             if (preg_match('#^uploads/video/(.+)$#', $path, $m)) {
+                return url('/stream/video/' . $m[1]);
+            }
+            if (preg_match('#^uploads/([^/]+\.(mp4|webm|mov))$#i', $path, $m)) {
                 return url('/stream/video/' . $m[1]);
             }
         }

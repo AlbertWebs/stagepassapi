@@ -16,13 +16,17 @@ class VideoStreamController extends Controller
         // Restrict to uploads/video (no directory traversal)
         $path = str_replace(['../', '..\\'], '', $path);
         $path = ltrim($path, '/\\');
-        $path = 'uploads/video/' . $path;
-        if (strpos($path, 'uploads/video/') !== 0) {
+        // Try uploads/video/ first, then uploads/ (so both locations get Range support for Safari)
+        $fullPath = public_path('uploads/video/' . $path);
+        if (!is_file($fullPath) || !is_readable($fullPath)) {
+            $fullPath = public_path('uploads/' . $path);
+        }
+        if (!is_file($fullPath) || !is_readable($fullPath)) {
             abort(404);
         }
-
-        $fullPath = public_path($path);
-        if (!is_file($fullPath) || !is_readable($fullPath)) {
+        $realPath = realpath($fullPath);
+        $realPublic = realpath(public_path('uploads'));
+        if ($realPath === false || $realPublic === false || strpos($realPath, $realPublic) !== 0) {
             abort(404);
         }
 
