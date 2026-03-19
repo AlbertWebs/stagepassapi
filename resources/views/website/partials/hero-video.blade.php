@@ -42,6 +42,8 @@
     var fallback = document.getElementById('hero-video-fallback');
     if (!v) return;
 
+    var isMacOrSafari = /Mac|iPhone|iPad|iPod/.test(navigator.platform || '') || /Safari\/|AppleWebKit/.test(navigator.userAgent || '') && !/Chrome|CriOS|FxiOS/.test(navigator.userAgent || '');
+
     function useFallbackImage() {
         if (fallback) {
             fallback.classList.remove('hidden');
@@ -63,12 +65,6 @@
             overlay.style.pointerEvents = 'none';
         }
     }
-    function showOverlay() {
-        if (overlay) {
-            overlay.style.opacity = '1';
-            overlay.style.pointerEvents = 'auto';
-        }
-    }
 
     v.addEventListener('playing', hideOverlay);
 
@@ -76,20 +72,30 @@
         v.muted = true;
         v.play().then(hideOverlay).catch(function(){});
     }
-    tryPlay();
-    v.addEventListener('loadeddata', tryPlay);
-    v.addEventListener('canplay', tryPlay);
+
+    if (!isMacOrSafari) {
+        tryPlay();
+        v.addEventListener('loadeddata', tryPlay);
+        v.addEventListener('canplay', tryPlay);
+    }
+
+    function playOnUserGesture() {
+        v.muted = true;
+        v.playsInline = true;
+        v.setAttribute('playsinline', '');
+        v.setAttribute('webkit-playsinline', '');
+        v.play().then(hideOverlay).catch(function(){});
+    }
 
     if (overlay) {
-        overlay.addEventListener('click', function() {
-            v.muted = true;
-            v.play().then(hideOverlay).catch(function(){});
+        overlay.addEventListener('click', function(e) {
+            e.preventDefault();
+            playOnUserGesture();
         });
         overlay.addEventListener('keydown', function(e) {
             if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
-                v.muted = true;
-                v.play().then(hideOverlay).catch(function(){});
+                playOnUserGesture();
             }
         });
     }

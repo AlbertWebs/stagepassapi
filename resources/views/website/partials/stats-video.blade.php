@@ -60,6 +60,9 @@
     var fallback = document.getElementById('stats-video-fallback');
     var section = document.getElementById('stats-video-section');
     if (!v) return;
+
+    var isMacOrSafari = /Mac|iPhone|iPad|iPod/.test(navigator.platform || '') || /Safari\/|AppleWebKit/.test(navigator.userAgent || '') && !/Chrome|CriOS|FxiOS/.test(navigator.userAgent || '');
+
     function useFallbackImage() {
         if (fallback) {
             fallback.classList.remove('hidden');
@@ -85,27 +88,38 @@
         v.muted = true;
         v.play().then(hideOverlay).catch(function(){});
     }
-    tryPlay();
-    v.addEventListener('loadeddata', tryPlay);
-    v.addEventListener('canplay', tryPlay);
-    if (section && typeof IntersectionObserver !== 'undefined') {
-        var obs = new IntersectionObserver(function(entries) {
-            entries.forEach(function(entry) {
-                if (entry.isIntersecting) tryPlay();
-            });
-        }, { rootMargin: '50px', threshold: 0.1 });
-        obs.observe(section);
+
+    if (!isMacOrSafari) {
+        tryPlay();
+        v.addEventListener('loadeddata', tryPlay);
+        v.addEventListener('canplay', tryPlay);
+        if (section && typeof IntersectionObserver !== 'undefined') {
+            var obs = new IntersectionObserver(function(entries) {
+                entries.forEach(function(entry) {
+                    if (entry.isIntersecting) tryPlay();
+                });
+            }, { rootMargin: '50px', threshold: 0.1 });
+            obs.observe(section);
+        }
     }
+
+    function playOnUserGesture() {
+        v.muted = true;
+        v.playsInline = true;
+        v.setAttribute('playsinline', '');
+        v.setAttribute('webkit-playsinline', '');
+        v.play().then(hideOverlay).catch(function(){});
+    }
+
     if (overlay) {
-        overlay.addEventListener('click', function() {
-            v.muted = true;
-            v.play().then(hideOverlay).catch(function(){});
+        overlay.addEventListener('click', function(e) {
+            e.preventDefault();
+            playOnUserGesture();
         });
         overlay.addEventListener('keydown', function(e) {
             if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
-                v.muted = true;
-                v.play().then(hideOverlay).catch(function(){});
+                playOnUserGesture();
             }
         });
     }
