@@ -37,7 +37,7 @@
         </div>
         <a href="#about" class="hero-cta absolute bottom-8 left-1/2 -translate-x-1/2 inline-flex flex-col items-center gap-1 text-white hover:text-white transition-opacity duration-200 group opacity-0 animate-hero-fade-up" style="animation-delay: 0.65s; animation-fill-mode: forwards;" aria-label="Scroll to about">
             <span class="hero-scroll-label tracking-[0.25em] uppercase">Scroll</span>
-            <span class="hero-body-text leading-none text-white/80 group-hover:text-white animate-bounce group-hover:animate-none">↓</span>
+            <svg class="hero-scroll-arrow text-white/80 group-hover:text-white animate-bounce group-hover:animate-none" width="24" height="28" viewBox="0 0 24 28" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v20M6 14l6 6 6-6"/></svg>
         </a>
     </div>
     <style>
