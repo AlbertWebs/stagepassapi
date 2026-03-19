@@ -12,20 +12,12 @@
 <?php
     $videoFallbackImage = asset('uploads/hero.jpeg');
 ?>
-<section id="stats-video-section" class="relative min-h-[70vh] md:min-h-screen flex items-center justify-center overflow-hidden text-white py-16">
+<section id="stats-video-section" class="relative min-h-[700px] max-h-[700px] flex items-center justify-center overflow-hidden text-white py-16">
     <div class="absolute inset-0">
         <img id="stats-video-fallback" src="<?php echo e($videoFallbackImage); ?>" alt="" class="absolute inset-0 w-full h-full object-cover hidden" aria-hidden="true">
         <video class="w-full h-full object-cover" autoplay muted loop playsinline preload="auto" aria-hidden="true" id="stats-video" disablePictureInPicture src="<?php echo e($videoUrl); ?>">
             <source src="<?php echo e($videoUrl); ?>" type="video/mp4">
         </video>
-        <div id="stats-play-overlay" class="absolute inset-0 z-20 flex items-center justify-center bg-[#172455]/60 transition-opacity duration-500 cursor-pointer" role="button" tabindex="0" aria-label="Click to play video">
-            <div class="flex flex-col items-center gap-3 text-white">
-                <div class="w-16 h-16 rounded-full border-2 border-white/80 flex items-center justify-center hover:bg-white/10 transition-colors">
-                    <svg class="w-8 h-8 ml-0.5 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                </div>
-                <span class="text-sm font-semibold">Click to play video</span>
-            </div>
-        </div>
         <div class="absolute inset-0 bg-[#172455]/70"></div>
     </div>
     <div class="relative z-10 container mx-auto px-6 lg:px-12">
@@ -56,17 +48,16 @@
 <script>
 (function(){
     var v = document.getElementById('stats-video');
-    var overlay = document.getElementById('stats-play-overlay');
     var fallback = document.getElementById('stats-video-fallback');
     var section = document.getElementById('stats-video-section');
     if (!v) return;
+
     function useFallbackImage() {
         if (fallback) {
             fallback.classList.remove('hidden');
             fallback.classList.add('block');
         }
         v.style.display = 'none';
-        if (overlay) overlay.style.display = 'none';
     }
     v.addEventListener('error', useFallbackImage);
     v.muted = true;
@@ -74,16 +65,9 @@
     v.setAttribute('playsinline', '');
     v.setAttribute('webkit-playsinline', '');
     v.controls = false;
-    function hideOverlay() {
-        if (overlay) {
-            overlay.style.opacity = '0';
-            overlay.style.pointerEvents = 'none';
-        }
-    }
-    v.addEventListener('playing', hideOverlay);
     function tryPlay() {
         v.muted = true;
-        v.play().then(hideOverlay).catch(function(){});
+        v.play().catch(function(){});
     }
     tryPlay();
     v.addEventListener('loadeddata', tryPlay);
@@ -95,19 +79,6 @@
             });
         }, { rootMargin: '50px', threshold: 0.1 });
         obs.observe(section);
-    }
-    if (overlay) {
-        overlay.addEventListener('click', function() {
-            v.muted = true;
-            v.play().then(hideOverlay).catch(function(){});
-        });
-        overlay.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                v.muted = true;
-                v.play().then(hideOverlay).catch(function(){});
-            }
-        });
     }
 })();
 </script>

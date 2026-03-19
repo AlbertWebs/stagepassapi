@@ -1,19 +1,32 @@
 @php
     $data = $data ?? null;
     $headline = is_array($data) ? ($data['headline'] ?? 'We Create the Most Engaging Events in the World Using Technology') : ($data->headline ?? 'We Create the Most Engaging Events in the World Using Technology');
-    $videoUrl = is_array($data) ? ($data['background_video_url'] ?? asset('uploads/stagepass-audio-visual-safaricom-ceo-awade.mp4')) : ($data->background_video_url ?? asset('uploads/stagepass-audio-visual-safaricom-ceo-awade.mp4'));
+    $priorityYoutube = 'https://www.youtube.com/watch?v=Ki9C3r4mD4M';
+    $videoUrl = $priorityYoutube;
+    $isYoutube = preg_match('#(?:youtube\.com/watch\?v=|youtu\.be/)([a-zA-Z0-9_-]+)#', $videoUrl, $yt) ? $yt[1] : null;
+    $videoFallbackImage = asset('uploads/hero.jpeg');
 @endphp
 <section id="home" class="relative h-screen flex items-center justify-center overflow-hidden bg-gray-900 text-white -mt-[4.25rem] md:mt-0" style="padding-top: 4.25rem;">
-    @php
-        $videoFallbackImage = asset('uploads/hero.jpeg');
-    @endphp
-    <div class="absolute inset-x-0 top-0 w-full h-screen">
+    <div class="absolute inset-x-0 top-0 w-full h-screen overflow-hidden">
         <img id="hero-video-fallback" src="{{ $videoFallbackImage }}" alt="" class="absolute inset-0 w-full h-full object-cover hidden" aria-hidden="true">
+        @if($isYoutube)
+        {{-- YouTube embed: no controls, no branding, autoplay muted loop, scaled to cover so no chrome visible --}}
+        <div class="absolute inset-0 w-full h-full" style="pointer-events: none;">
+            <iframe
+                id="hero-youtube"
+                src="https://www.youtube.com/embed/{{ $isYoutube }}?autoplay=1&mute=1&controls=0&rel=0&modestbranding=1&loop=1&playlist={{ $isYoutube }}&playsinline=1&showinfo=0&disablekb=1&fs=0&iv_load_policy=3"
+                class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 border-0"
+                style="width: max(100vw, 177.78vh); height: max(100vh, 56.25vw);"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen
+                title="Background video"
+                aria-hidden="true"></iframe>
+        </div>
+        @else
         <video class="w-full h-full object-cover" autoplay muted loop playsinline preload="auto" aria-hidden="true" id="hero-video" disablePictureInPicture
             src="{{ $videoUrl }}">
             <source src="{{ $videoUrl }}" type="video/mp4">
         </video>
-        <div class="absolute inset-0 bg-gradient-to-b from-black/40 via-black/50 to-black/70" aria-hidden="true"></div>
         <div id="hero-play-overlay" class="absolute inset-0 z-10 flex items-center justify-center bg-black/50 transition-opacity duration-500 cursor-pointer" role="button" tabindex="0" aria-label="Click to play video">
             <div class="flex flex-col items-center gap-4 text-white">
                 <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-full border-4 border-white/80 flex items-center justify-center hover:bg-white/10 transition-colors">
@@ -22,6 +35,8 @@
                 <span class="text-sm sm:text-base font-semibold tracking-wide">Click to play video</span>
             </div>
         </div>
+        @endif
+        <div class="absolute inset-0 bg-gradient-to-b from-black/40 via-black/50 to-black/70" aria-hidden="true" style="pointer-events: none;"></div>
     </div>
     <div class="relative z-10 flex flex-col items-center justify-center min-h-screen text-center px-4 sm:px-6">
         <div class="max-w-4xl mx-auto">
@@ -35,36 +50,27 @@
         </a>
     </div>
 </section>
+@if(!$isYoutube)
 <script>
 (function(){
     var v = document.getElementById('hero-video');
     var overlay = document.getElementById('hero-play-overlay');
     var fallback = document.getElementById('hero-video-fallback');
     if (!v) return;
-
     function useFallbackImage() {
-        if (fallback) {
-            fallback.classList.remove('hidden');
-            fallback.classList.add('block');
-        }
+        if (fallback) { fallback.classList.remove('hidden'); fallback.classList.add('block'); }
         v.style.display = 'none';
         if (overlay) overlay.style.display = 'none';
     }
     v.addEventListener('error', useFallbackImage);
     v.muted = true;
     v.playsInline = true;
-    v.setAttribute('playsinline', '');
-    v.setAttribute('webkit-playsinline', '');
+    v.setAttribute('playsinline', ''); v.setAttribute('webkit-playsinline', '');
     v.controls = false;
-
     function hideOverlay() {
-        if (overlay) {
-            overlay.style.opacity = '0';
-            overlay.style.pointerEvents = 'none';
-        }
+        if (overlay) { overlay.style.opacity = '0'; overlay.style.pointerEvents = 'none'; }
     }
     v.addEventListener('playing', hideOverlay);
-
     function tryPlay() {
         v.muted = true;
         v.play().then(hideOverlay).catch(function(){});
@@ -72,20 +78,12 @@
     tryPlay();
     v.addEventListener('loadeddata', tryPlay);
     v.addEventListener('canplay', tryPlay);
-
     if (overlay) {
-        overlay.addEventListener('click', function(e) {
-            e.preventDefault();
-            v.muted = true;
-            v.play().then(hideOverlay).catch(function(){});
-        });
+        overlay.addEventListener('click', function(e) { e.preventDefault(); v.muted = true; v.play().then(hideOverlay).catch(function(){}); });
         overlay.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                v.muted = true;
-                v.play().then(hideOverlay).catch(function(){});
-            }
+            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); v.muted = true; v.play().then(hideOverlay).catch(function(){}); }
         });
     }
 })();
 </script>
+@endif
