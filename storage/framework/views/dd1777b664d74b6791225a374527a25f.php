@@ -6,18 +6,31 @@
         (object)['icon' => 'Users', 'value' => '421', 'label' => 'Happy Clients'],
         (object)['icon' => 'Calendar', 'value' => '2,362', 'label' => 'Events'],
     ];
-    $videoUrl = is_array($section) ? ($section['background_video_url'] ?? null) : ($section->background_video_url ?? null);
-    $videoUrl = $videoUrl ?: asset('uploads/stagepass-audio-visual-safaricom-ceo-awade.mp4');
-?>
-<?php
+    $priorityYoutube = 'https://www.youtube.com/watch?v=EbNwoqsDgEg';
+    $videoUrl = $priorityYoutube;
+    $isYoutube = preg_match('#(?:youtube\.com/watch\?v=|youtu\.be/)([a-zA-Z0-9_-]+)#', $videoUrl, $yt) ? $yt[1] : null;
     $videoFallbackImage = asset('uploads/hero.jpeg');
 ?>
 <section id="stats-video-section" class="relative min-h-[700px] max-h-[700px] flex items-center justify-center overflow-hidden text-white py-16">
-    <div class="absolute inset-0">
+    <div class="absolute inset-0 overflow-hidden">
         <img id="stats-video-fallback" src="<?php echo e($videoFallbackImage); ?>" alt="" class="absolute inset-0 w-full h-full object-cover hidden" aria-hidden="true">
+        <?php if($isYoutube): ?>
+        <div class="absolute inset-0 w-full h-full" style="pointer-events: none;">
+            <iframe
+                id="stats-youtube"
+                src="https://www.youtube.com/embed/<?php echo e($isYoutube); ?>?autoplay=1&mute=1&controls=0&rel=0&modestbranding=1&loop=1&playlist=<?php echo e($isYoutube); ?>&playsinline=1&showinfo=0&disablekb=1&fs=0&iv_load_policy=3"
+                class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 border-0"
+                style="width: max(100vw, 177.78vh); height: max(100vh, 56.25vw);"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen
+                title="Stats background video"
+                aria-hidden="true"></iframe>
+        </div>
+        <?php else: ?>
         <video class="w-full h-full object-cover" autoplay muted loop playsinline preload="auto" aria-hidden="true" id="stats-video" disablePictureInPicture src="<?php echo e($videoUrl); ?>">
             <source src="<?php echo e($videoUrl); ?>" type="video/mp4">
         </video>
+        <?php endif; ?>
         <div class="absolute inset-0 bg-[#172455]/70"></div>
     </div>
     <div class="relative z-10 container mx-auto px-6 lg:px-12">
@@ -45,25 +58,21 @@
         </div>
     </div>
 </section>
+<?php if(!$isYoutube): ?>
 <script>
 (function(){
     var v = document.getElementById('stats-video');
     var fallback = document.getElementById('stats-video-fallback');
     var section = document.getElementById('stats-video-section');
     if (!v) return;
-
     function useFallbackImage() {
-        if (fallback) {
-            fallback.classList.remove('hidden');
-            fallback.classList.add('block');
-        }
+        if (fallback) { fallback.classList.remove('hidden'); fallback.classList.add('block'); }
         v.style.display = 'none';
     }
     v.addEventListener('error', useFallbackImage);
     v.muted = true;
     v.playsInline = true;
-    v.setAttribute('playsinline', '');
-    v.setAttribute('webkit-playsinline', '');
+    v.setAttribute('playsinline', ''); v.setAttribute('webkit-playsinline', '');
     v.controls = false;
     function tryPlay() {
         v.muted = true;
@@ -82,4 +91,5 @@
     }
 })();
 </script>
+<?php endif; ?>
 <?php /**PATH C:\projects\stagepassapi\resources\views/website/partials/stats-video.blade.php ENDPATH**/ ?>

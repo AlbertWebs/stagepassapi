@@ -36,19 +36,45 @@
             </div>
         </div>
         <?php endif; ?>
-        <div class="absolute inset-0 bg-gradient-to-b from-black/40 via-black/50 to-black/70" aria-hidden="true" style="pointer-events: none;"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-black/50 via-black/45 to-black/80" aria-hidden="true" style="pointer-events: none;"></div>
+        <div class="absolute inset-0 bg-gradient-to-r from-black/30 via-transparent to-black/30" aria-hidden="true" style="pointer-events: none;"></div>
+        <div class="absolute inset-0 opacity-60" style="background: radial-gradient(ellipse 80% 50% at 50% 50%, transparent 0%, rgba(0,0,0,0.6) 100%); pointer-events: none;" aria-hidden="true"></div>
     </div>
     <div class="relative z-10 flex flex-col items-center justify-center min-h-screen text-center px-4 sm:px-6">
-        <div class="max-w-4xl mx-auto">
-            <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold leading-[1.1] tracking-tight text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.5)]"><?php echo e($headline); ?></h1>
-            <div class="mt-6 h-1 w-16 sm:w-20 bg-gradient-to-r from-amber-400 to-yellow-500 rounded-full mx-auto" aria-hidden="true"></div>
-            <p class="mt-6 text-lg sm:text-xl text-white/95 font-semibold tracking-wide drop-shadow-[0_1px_6px_rgba(0,0,0,0.4)]">Creative Solutions · Technical Excellence</p>
+        <div id="hero-text-block" class="max-w-4xl mx-auto transition-all duration-[1.8s] ease-out">
+            <p class="hero-badge text-amber-400/95 text-xs sm:text-sm font-bold tracking-[0.3em] uppercase mb-4 sm:mb-5 opacity-0 animate-hero-fade-up" style="animation-delay: 0.1s; animation-fill-mode: forwards;">Events · Technology · Excellence</p>
+            <h1 class="hero-headline text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black leading-[1.05] tracking-tight text-white opacity-0 animate-hero-fade-up drop-shadow-[0_2px_20px_rgba(0,0,0,0.6)]" style="animation-delay: 0.25s; animation-fill-mode: forwards; text-shadow: 0 0 40px rgba(0,0,0,0.4);"><?php echo e($headline); ?></h1>
+            <div class="mt-6 sm:mt-8 h-1.5 w-20 sm:w-28 bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 rounded-full mx-auto opacity-0 animate-hero-fade-up shadow-[0_0_20px_rgba(251,191,36,0.5)]" aria-hidden="true" style="animation-delay: 0.45s; animation-fill-mode: forwards;"></div>
+            <p class="mt-6 sm:mt-8 text-lg sm:text-xl md:text-2xl text-white/95 font-semibold tracking-wide opacity-0 animate-hero-fade-up drop-shadow-[0_1px_8px_rgba(0,0,0,0.5)]" style="animation-delay: 0.6s; animation-fill-mode: forwards;">Creative Solutions · Technical Excellence</p>
         </div>
-        <a href="#about" class="absolute bottom-10 left-1/2 -translate-x-1/2 inline-flex flex-col items-center gap-1.5 text-white/80 hover:text-white transition-all duration-300 hover:scale-105 group" aria-label="Scroll to about">
+        <a href="#about" class="hero-cta absolute bottom-10 left-1/2 -translate-x-1/2 inline-flex flex-col items-center gap-1.5 text-white/80 hover:text-white transition-all duration-300 hover:scale-105 group opacity-0 animate-hero-fade-up" style="animation-delay: 0.85s; animation-fill-mode: forwards;" aria-label="Scroll to about">
             <span class="text-xs sm:text-sm font-semibold tracking-wider uppercase">Scroll</span>
             <span class="text-lg sm:text-xl leading-none animate-bounce group-hover:animate-none">↓</span>
         </a>
     </div>
+    <style>
+        @keyframes hero-fade-up {
+            from { opacity: 0; transform: translateY(24px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-hero-fade-up {
+            animation: hero-fade-up 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+        #hero-text-block.hero-text-out {
+            opacity: 0;
+            transform: translateY(-12px);
+            pointer-events: none;
+        }
+    </style>
+    <script>
+    (function(){
+        var block = document.getElementById('hero-text-block');
+        if (!block) return;
+        setTimeout(function(){
+            block.classList.add('hero-text-out');
+        }, 10000);
+    })();
+    </script>
 </section>
 <?php if(!$isYoutube): ?>
 <script>
