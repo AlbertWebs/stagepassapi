@@ -31,16 +31,43 @@
     </div>
     <div class="relative z-10 flex flex-col items-center justify-center min-h-screen text-center px-4 sm:px-6">
         <div id="hero-text-block" class="max-w-4xl mx-auto transition-all duration-[2s] ease-out">
-            <h1 class="hero-headline text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black leading-[1.08] tracking-tight text-white opacity-0 animate-hero-fade-up" style="animation-delay: 0.1s; animation-fill-mode: forwards;">{{ $headline }}</h1>
+            <h1 class="hero-headline opacity-0 animate-hero-fade-up" style="animation-delay: 0.1s; animation-fill-mode: forwards;">{{ $headline }}</h1>
             <div class="mt-5 sm:mt-6 h-0.5 w-16 sm:w-20 bg-yellow-400 rounded-full mx-auto opacity-0 animate-hero-fade-up" aria-hidden="true" style="animation-delay: 0.3s; animation-fill-mode: forwards;"></div>
-            <p class="hero-body-text mt-4 sm:mt-5 opacity-0 animate-hero-fade-up" style="animation-delay: 0.45s; animation-fill-mode: forwards;">Creative Solutions · Technical Excellence</p>
+            <p class="hero-subheadline mt-4 sm:mt-5 opacity-0 animate-hero-fade-up" style="animation-delay: 0.45s; animation-fill-mode: forwards;">Creative Solutions · Technical Excellence</p>
         </div>
         <a href="#about" class="hero-cta absolute bottom-8 left-1/2 -translate-x-1/2 inline-flex flex-col items-center gap-1 text-white hover:text-white transition-opacity duration-200 group opacity-0 animate-hero-fade-up" style="animation-delay: 0.65s; animation-fill-mode: forwards;" aria-label="Scroll to about">
-            <span class="hero-body-text tracking-[0.25em] uppercase">Scroll</span>
+            <span class="hero-scroll-label tracking-[0.25em] uppercase">Scroll</span>
             <span class="hero-body-text leading-none text-white/80 group-hover:text-white animate-bounce group-hover:animate-none">↓</span>
         </a>
     </div>
     <style>
+        .hero-headline {
+            font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+            font-style: normal;
+            font-weight: 800;
+            color: rgb(255, 255, 255);
+            font-size: 60px;
+            line-height: 60px;
+        }
+        @media (max-width: 1023px) {
+            .hero-headline { font-size: clamp(28px, 6vw, 48px); line-height: 1.1; }
+        }
+        .hero-subheadline {
+            font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+            font-style: normal;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.95);
+            font-size: 20px;
+            line-height: 28px;
+        }
+        .hero-scroll-label {
+            font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+            font-style: normal;
+            font-weight: 600;
+            color: rgb(255, 255, 255);
+            font-size: 14px;
+            line-height: 20px;
+        }
         .hero-body-text {
             font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
             font-style: normal;
