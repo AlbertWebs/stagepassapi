@@ -4,7 +4,11 @@
     $videoUrl = is_array($data) ? ($data['background_video_url'] ?? asset('uploads/stagepass-audio-visual-safaricom-ceo-awade.mp4')) : ($data->background_video_url ?? asset('uploads/stagepass-audio-visual-safaricom-ceo-awade.mp4'));
 @endphp
 <section id="home" class="relative h-screen flex items-center justify-center overflow-hidden bg-gray-900 text-white -mt-[4.25rem] md:mt-0" style="padding-top: 4.25rem;">
+    @php
+        $videoFallbackImage = asset('uploads/hero.jpeg');
+    @endphp
     <div class="absolute inset-x-0 top-0 w-full h-screen">
+        <img id="hero-video-fallback" src="{{ $videoFallbackImage }}" alt="" class="absolute inset-0 w-full h-full object-cover hidden" aria-hidden="true">
         <video class="w-full h-full object-cover" autoplay muted loop playsinline preload="auto" aria-hidden="true" id="hero-video" disablePictureInPicture
             src="{{ $videoUrl }}">
             <source src="{{ $videoUrl }}" type="video/mp4">
@@ -21,7 +25,6 @@
     </div>
     <div class="relative z-10 flex flex-col items-center justify-center min-h-screen text-center px-4 sm:px-6">
         <div class="max-w-4xl mx-auto">
-            <span class="inline-block px-4 py-2 rounded-full text-xs sm:text-sm font-bold tracking-widest uppercase text-white/90 bg-white/10 backdrop-blur-sm border border-white/20 mb-6">StagePass Audio Visual</span>
             <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold leading-[1.1] tracking-tight text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.5)]">{{ $headline }}</h1>
             <div class="mt-6 h-1 w-16 sm:w-20 bg-gradient-to-r from-amber-400 to-yellow-500 rounded-full mx-auto" aria-hidden="true"></div>
             <p class="mt-6 text-lg sm:text-xl text-white/95 font-semibold tracking-wide drop-shadow-[0_1px_6px_rgba(0,0,0,0.4)]">Creative Solutions · Technical Excellence</p>
@@ -36,7 +39,18 @@
 (function(){
     var v = document.getElementById('hero-video');
     var overlay = document.getElementById('hero-play-overlay');
+    var fallback = document.getElementById('hero-video-fallback');
     if (!v) return;
+
+    function useFallbackImage() {
+        if (fallback) {
+            fallback.classList.remove('hidden');
+            fallback.classList.add('block');
+        }
+        v.style.display = 'none';
+        if (overlay) overlay.style.display = 'none';
+    }
+    v.addEventListener('error', useFallbackImage);
     v.muted = true;
     v.playsInline = true;
     v.setAttribute('playsinline', '');

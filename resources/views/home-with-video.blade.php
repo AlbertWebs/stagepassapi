@@ -56,7 +56,7 @@
     @include('website.partials.about', ['data' => $homepageData['about'] ?? null])
     @include('website.partials.services', ['data' => $homepageData['services'] ?? null])
     @include('website.partials.stats-video', ['data' => $homepageData['stats'] ?? null])
-    @include('website.partials.industries', ['data' => $homepageData['industries'] ?? null])
+    @include('website.partials.industries-video', ['data' => $homepageData['industries'] ?? null])
     @include('website.partials.portfolio', ['data' => $homepageData['portfolio'] ?? null, 'portfolioSource' => $homepageData['settings']['portfolio_source'] ?? 'database'])
     @include('website.partials.clients', ['data' => $homepageData['clients'] ?? null])
     @include('website.partials.contact', ['data' => $homepageData['contact'] ?? null])

@@ -1,1 +1,0 @@
-<?php /**PATH C:\projects\stagepassapi\resources\views/sections/hero.blade.php ENDPATH**/ ?>

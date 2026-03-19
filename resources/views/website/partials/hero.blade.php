@@ -59,11 +59,7 @@ if ($data) {
     <div class="relative z-10 container mx-auto px-6 lg:px-12">
         <div class="min-h-[70vh] md:min-h-[92vh] flex items-center justify-center text-center">
             <div class="max-w-5xl">
-                <div class="inline-flex items-center gap-2 rounded-full bg-white/10 ring-1 ring-white/20 px-4 py-2 text-xs sm:text-sm font-bold tracking-wider uppercase backdrop-blur">
-                    StagePass Audio Visual
-                </div>
-
-                <h1 class="mt-6 text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-tight leading-[1.05] uppercase drop-shadow-2xl">
+                <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-tight leading-[1.05] uppercase drop-shadow-2xl">
                     {{ $fullText }}
                 </h1>
 

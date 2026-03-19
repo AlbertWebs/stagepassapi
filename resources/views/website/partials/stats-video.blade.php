@@ -7,10 +7,14 @@
         (object)['icon' => 'Calendar', 'value' => '2,362', 'label' => 'Events'],
     ];
     $videoUrl = is_array($section) ? ($section['background_video_url'] ?? null) : ($section->background_video_url ?? null);
+    $videoUrl = $videoUrl ?: asset('uploads/stagepass-audio-visual-safaricom-ceo-awade.mp4');
+@endphp
+@php
+    $videoFallbackImage = asset('uploads/hero.jpeg');
 @endphp
 <section id="stats-video-section" class="relative min-h-[70vh] md:min-h-screen flex items-center justify-center overflow-hidden text-white py-16">
     <div class="absolute inset-0">
-        @if($videoUrl)
+        <img id="stats-video-fallback" src="{{ $videoFallbackImage }}" alt="" class="absolute inset-0 w-full h-full object-cover hidden" aria-hidden="true">
         <video class="w-full h-full object-cover" autoplay muted loop playsinline preload="auto" aria-hidden="true" id="stats-video" disablePictureInPicture src="{{ $videoUrl }}">
             <source src="{{ $videoUrl }}" type="video/mp4">
         </video>
@@ -22,8 +26,7 @@
                 <span class="text-sm font-semibold">Click to play video</span>
             </div>
         </div>
-        @endif
-        <div class="absolute inset-0 {{ $videoUrl ? 'bg-[#172455]/70' : 'bg-[#172455]' }}"></div>
+        <div class="absolute inset-0 bg-[#172455]/70"></div>
     </div>
     <div class="relative z-10 container mx-auto px-6 lg:px-12">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
@@ -50,12 +53,22 @@
         </div>
     </div>
 </section>
-@if($videoUrl)
 <script>
 (function(){
     var v = document.getElementById('stats-video');
     var overlay = document.getElementById('stats-play-overlay');
+    var fallback = document.getElementById('stats-video-fallback');
+    var section = document.getElementById('stats-video-section');
     if (!v) return;
+    function useFallbackImage() {
+        if (fallback) {
+            fallback.classList.remove('hidden');
+            fallback.classList.add('block');
+        }
+        v.style.display = 'none';
+        if (overlay) overlay.style.display = 'none';
+    }
+    v.addEventListener('error', useFallbackImage);
     v.muted = true;
     v.playsInline = true;
     v.setAttribute('playsinline', '');
@@ -75,6 +88,14 @@
     tryPlay();
     v.addEventListener('loadeddata', tryPlay);
     v.addEventListener('canplay', tryPlay);
+    if (section && typeof IntersectionObserver !== 'undefined') {
+        var obs = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) tryPlay();
+            });
+        }, { rootMargin: '50px', threshold: 0.1 });
+        obs.observe(section);
+    }
     if (overlay) {
         overlay.addEventListener('click', function() {
             v.muted = true;
@@ -90,4 +111,3 @@
     }
 })();
 </script>
-@endif
