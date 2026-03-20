@@ -1,9 +1,7 @@
 @php
     $data = $data ?? null;
     $headline = is_array($data) ? ($data['headline'] ?? 'We Create the Most Engaging Events in the World Using Technology') : ($data->headline ?? 'We Create the Most Engaging Events in the World Using Technology');
-    $priorityYoutube = 'https://www.youtube.com/watch?v=Ki9C3r4mD4M';
-    $videoUrl = $priorityYoutube;
-    $isYoutube = preg_match('#(?:youtube\.com/watch\?v=|youtu\.be/)([a-zA-Z0-9_-]+)#', $videoUrl, $yt) ? $yt[1] : null;
+    $vimeoUrl = 'https://player.vimeo.com/video/1175144955?badge=0&autopause=0&player_id=0&app_id=58479&autoplay=1&muted=1&loop=1&background=1';
     $videoFallbackImage = asset('uploads/hero.jpeg');
 @endphp
 <section id="home" class="relative h-screen flex items-center justify-center overflow-hidden bg-gray-900 text-white -mt-[4.25rem] md:mt-0" style="padding-top: 4.25rem;">
@@ -15,25 +13,11 @@
             </div>
         </div>
         <img id="hero-video-fallback" src="{{ $videoFallbackImage }}" alt="" class="absolute inset-0 w-full h-full object-cover hidden" aria-hidden="true">
-        @if($isYoutube)
         <div class="absolute inset-0 w-full h-full" style="pointer-events: none;">
-            <div id="hero-youtube-player" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 border-0" data-youtube-video-id="{{ $isYoutube }}" style="width: max(100vw, 177.78vh); height: max(100vh, 56.25vw);"></div>
+            <iframe id="hero-vimeo-player" src="{{ $vimeoUrl }}" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 border-0" style="width: max(100vw, 177.78vh); height: max(100vh, 56.25vw);" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" referrerpolicy="strict-origin-when-cross-origin" title="stagepass-audio-visual-safaricom-ceo-awade"></iframe>
         </div>
-        @else
-        <video class="w-full h-full object-cover" autoplay muted loop playsinline preload="auto" aria-hidden="true" id="hero-video" disablePictureInPicture
-            src="{{ $videoUrl }}">
-            <source src="{{ $videoUrl }}" type="video/mp4">
-        </video>
-        <div id="hero-play-overlay" class="absolute inset-0 z-10 flex items-center justify-center bg-black/50 transition-opacity duration-500 cursor-pointer" role="button" tabindex="0" aria-label="Click to play video">
-            <div class="flex flex-col items-center gap-4 text-white">
-                <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-full border-4 border-white/80 flex items-center justify-center hover:bg-white/10 transition-colors">
-                    <svg class="w-10 h-10 sm:w-12 sm:h-12 ml-1 text-white" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
-                </div>
-                <span class="text-sm sm:text-base font-semibold tracking-wide">Click to play video</span>
-            </div>
-        </div>
-        @endif
         <div class="absolute inset-0 bg-black/35" aria-hidden="true" style="pointer-events: none;"></div>
+        <div class="absolute inset-0 hero-cinematic-vignette" aria-hidden="true" style="pointer-events: none;"></div>
     </div>
     <div class="relative z-30 flex flex-col items-center justify-center min-h-screen text-center px-4 sm:px-6">
         <div id="hero-text-block" class="max-w-4xl mx-auto transition-all duration-[2s] ease-out">
@@ -54,6 +38,7 @@
             color: rgb(255, 255, 255);
             font-size: 60px;
             line-height: 60px;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.45), 0 12px 40px rgba(0, 0, 0, 0.35), 0 0 26px rgba(250, 204, 21, 0.16);
         }
         @media (max-width: 1023px) {
             .hero-headline { font-size: clamp(28px, 6vw, 48px); line-height: 1.1; }
@@ -68,6 +53,7 @@
             opacity: 0;
             transform: translateY(24px);
             transition: opacity 1.1s cubic-bezier(0.22, 1, 0.36, 1), transform 1.1s cubic-bezier(0.22, 1, 0.36, 1);
+            text-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
         }
         .hero-subheadline.is-visible {
             opacity: 1;
@@ -80,6 +66,7 @@
             color: rgb(255, 255, 255);
             font-size: 14px;
             line-height: 20px;
+            text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
         }
         .hero-body-text {
             font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
@@ -98,6 +85,40 @@
         }
         #hero-text-block.hero-text-dim {
             opacity: 0.2;
+        }
+        #hero-text-block {
+            filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.35));
+        }
+        .hero-cta {
+            text-shadow: 0 2px 12px rgba(0, 0, 0, 0.55);
+        }
+        .hero-cta::before {
+            content: "";
+            position: absolute;
+            inset: -10px -12px;
+            border-radius: 9999px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.12) 0%, transparent 70%);
+            opacity: 0;
+            transform: scale(0.9);
+            transition: opacity 0.25s ease, transform 0.25s ease;
+            pointer-events: none;
+        }
+        .hero-cta:hover::before {
+            opacity: 1;
+            transform: scale(1);
+        }
+        .hero-cinematic-vignette {
+            background:
+                radial-gradient(120% 90% at 50% 20%, rgba(0, 0, 0, 0) 35%, rgba(0, 0, 0, 0.2) 78%, rgba(0, 0, 0, 0.4) 100%),
+                linear-gradient(to bottom, rgba(0, 0, 0, 0.18) 0%, rgba(0, 0, 0, 0.04) 30%, rgba(0, 0, 0, 0.28) 100%);
+            mix-blend-mode: normal;
+        }
+        @keyframes hero-accent-pulse {
+            0%, 100% { box-shadow: 0 0 0 rgba(250, 204, 21, 0.0), 0 0 16px rgba(250, 204, 21, 0.18); }
+            50% { box-shadow: 0 0 0 rgba(250, 204, 21, 0.0), 0 0 26px rgba(250, 204, 21, 0.35); }
+        }
+        #hero-text-block > div[aria-hidden="true"] {
+            animation: hero-accent-pulse 2.8s ease-in-out infinite;
         }
         .hero-loader-spinner {
             width: 54px;
@@ -126,6 +147,7 @@
         var headline = document.getElementById('hero-headline');
         var subheadline = document.getElementById('hero-subheadline');
         var preloader = document.getElementById('hero-video-preloader');
+        var vimeo = document.getElementById('hero-vimeo-player');
         if (!block) return;
         function hidePreloader() {
             if (!preloader) return;
@@ -133,7 +155,41 @@
             preloader.style.pointerEvents = 'none';
             setTimeout(function(){ preloader.style.display = 'none'; }, 500);
         }
-        window.addEventListener('hero-video-ready', hidePreloader, { once: true });
+        if (vimeo) {
+            function bindVimeoReady() {
+                if (!(window.Vimeo && window.Vimeo.Player)) return false;
+                try {
+                    var player = new window.Vimeo.Player(vimeo);
+                    var resolved = false;
+                    function hideOnce() {
+                        if (resolved) return;
+                        resolved = true;
+                        hidePreloader();
+                    }
+                    player.on('play', hideOnce);
+                    player.on('playing', hideOnce);
+                    player.on('loaded', function() {
+                        setTimeout(hideOnce, 250);
+                    });
+                    return true;
+                } catch (e) {
+                    return false;
+                }
+            }
+            if (!bindVimeoReady()) {
+                var existingVimeoScript = document.querySelector('script[data-vimeo-player-api]');
+                if (!existingVimeoScript) {
+                    var s = document.createElement('script');
+                    s.src = 'https://player.vimeo.com/api/player.js';
+                    s.async = true;
+                    s.setAttribute('data-vimeo-player-api', '1');
+                    s.onload = bindVimeoReady;
+                    document.head.appendChild(s);
+                } else {
+                    existingVimeoScript.addEventListener('load', bindVimeoReady, { once: true });
+                }
+            }
+        }
         // Fallback so loader never hangs indefinitely.
         setTimeout(hidePreloader, 7000);
         if (!headline) return;
@@ -160,51 +216,3 @@
     })();
     </script>
 </section>
-@if(!$isYoutube)
-<script>
-(function(){
-    var v = document.getElementById('hero-video');
-    var overlay = document.getElementById('hero-play-overlay');
-    var fallback = document.getElementById('hero-video-fallback');
-    var preloader = document.getElementById('hero-video-preloader');
-    if (!v) return;
-    function hidePreloader() {
-        if (!preloader) return;
-        preloader.style.opacity = '0';
-        preloader.style.pointerEvents = 'none';
-        setTimeout(function(){ preloader.style.display = 'none'; }, 500);
-    }
-    function useFallbackImage() {
-        if (fallback) { fallback.classList.remove('hidden'); fallback.classList.add('block'); }
-        v.style.display = 'none';
-        if (overlay) overlay.style.display = 'none';
-        hidePreloader();
-    }
-    v.addEventListener('error', useFallbackImage);
-    v.muted = true;
-    v.playsInline = true;
-    v.setAttribute('playsinline', ''); v.setAttribute('webkit-playsinline', '');
-    v.controls = false;
-    function hideOverlay() {
-        if (overlay) { overlay.style.opacity = '0'; overlay.style.pointerEvents = 'none'; }
-    }
-    v.addEventListener('loadeddata', hidePreloader);
-    v.addEventListener('canplay', hidePreloader);
-    v.addEventListener('playing', hideOverlay);
-    v.addEventListener('playing', hidePreloader);
-    function tryPlay() {
-        v.muted = true;
-        v.play().then(hideOverlay).catch(function(){});
-    }
-    tryPlay();
-    v.addEventListener('loadeddata', tryPlay);
-    v.addEventListener('canplay', tryPlay);
-    if (overlay) {
-        overlay.addEventListener('click', function(e) { e.preventDefault(); v.muted = true; v.play().then(hideOverlay).catch(function(){}); });
-        overlay.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); v.muted = true; v.play().then(hideOverlay).catch(function(){}); }
-        });
-    }
-})();
-</script>
-@endif
