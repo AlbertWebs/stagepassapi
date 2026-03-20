@@ -54,6 +54,65 @@
         return $icons[$iconName] ?? $icons['Building2'];
     }
 ?>
+<style>
+    @keyframes industries-float-a {
+        0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+        50% { transform: translate3d(18px, -14px, 0) scale(1.04); }
+    }
+    @keyframes industries-float-b {
+        0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+        50% { transform: translate3d(-16px, 12px, 0) scale(1.06); }
+    }
+    @keyframes industries-shine-sweep {
+        0% { transform: translateX(-140%) skewX(-12deg); opacity: 0; }
+        35% { opacity: .28; }
+        100% { transform: translateX(180%) skewX(-12deg); opacity: 0; }
+    }
+    .industries-title-premium {
+        text-shadow: 0 10px 24px rgba(23, 36, 85, 0.14);
+        letter-spacing: -0.02em;
+    }
+    .industries-aurora-a,
+    .industries-aurora-b {
+        position: absolute;
+        border-radius: 9999px;
+        filter: blur(55px);
+        pointer-events: none;
+        z-index: 0;
+    }
+    .industries-aurora-a {
+        width: 360px;
+        height: 360px;
+        right: -70px;
+        top: 140px;
+        background: radial-gradient(circle, rgba(251, 191, 36, 0.28) 0%, rgba(236, 72, 153, 0.14) 45%, transparent 75%);
+        animation: industries-float-a 8s ease-in-out infinite;
+    }
+    .industries-aurora-b {
+        width: 320px;
+        height: 320px;
+        left: -90px;
+        bottom: 70px;
+        background: radial-gradient(circle, rgba(59, 130, 246, 0.24) 0%, rgba(168, 85, 247, 0.14) 45%, transparent 75%);
+        animation: industries-float-b 10s ease-in-out infinite;
+    }
+    .industries-card-premium {
+        isolation: isolate;
+        overflow: hidden;
+    }
+    .industries-card-premium::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(110deg, transparent 0%, transparent 42%, rgba(255, 255, 255, 0.35) 50%, transparent 58%, transparent 100%);
+        transform: translateX(-140%) skewX(-12deg);
+        opacity: 0;
+        pointer-events: none;
+    }
+    .industries-card-premium:hover::after {
+        animation: industries-shine-sweep 800ms ease-out;
+    }
+</style>
 <section x-data="{ 
     selectedIndustry: null, 
     isModalOpen: false,
@@ -69,6 +128,8 @@ style="background: linear-gradient(160deg, #f8fafc 0%, #e0e7ff 22%, #fef3c7 45%,
     <!-- Subtle dot pattern overlay -->
     <div class="absolute inset-0 opacity-[0.4] pointer-events-none z-0" aria-hidden="true"
          style="background-image: radial-gradient(circle at 1px 1px, #64748b 0.75px, transparent 0); background-size: 28px 28px;"></div>
+    <div class="industries-aurora-a" aria-hidden="true"></div>
+    <div class="industries-aurora-b" aria-hidden="true"></div>
     <!-- Top-left: concentric lines (regular circles) + favicon – gradient matches stats separator -->
     <div class="absolute top-0 left-0 w-[280px] md:w-[380px] h-[220px] md:h-[300px] pointer-events-none z-0" aria-hidden="true">
         <svg class="w-full h-full" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="xMinYMin slice">
@@ -152,7 +213,7 @@ style="background: linear-gradient(160deg, #f8fafc 0%, #e0e7ff 22%, #fef3c7 45%,
              :class="headerVisible ? 'animate-fade-in-up' : ''"
              style="opacity: 1;">
             <span class="inline-block text-sm font-bold text-yellow-600 tracking-wider uppercase bg-gradient-to-r from-yellow-100 via-yellow-50 to-yellow-100 px-4 py-2 rounded-full shadow-lg shadow-yellow-200/50 border border-yellow-200/50">Industries</span>
-            <h2 class="text-4xl lg:text-6xl font-black text-[#172455] mb-4 mt-6">
+            <h2 class="industries-title-premium text-4xl lg:text-6xl font-black text-[#172455] mb-4 mt-6">
                 <?php if(str_starts_with($title, 'Industries')): ?>
                     <span class="text-yellow-500">Industries</span><span class="text-[#172455]"><?php echo e(substr($title, strlen('Industries'))); ?></span>
                 <?php elseif(str_contains($title, 'Industries')): ?>
@@ -216,14 +277,14 @@ style="background: linear-gradient(160deg, #f8fafc 0%, #e0e7ff 22%, #fef3c7 45%,
                 <div class="relative w-full transition-all duration-1000 transform opacity-100 translate-y-0 <?php echo e($gridColumnClass); ?>"
                      style="transition-delay: <?php echo e($index * 100); ?>ms">
                     <!-- Desktop: white card like clients -->
-                    <div class="relative h-72 w-full rounded-2xl p-[3px] bg-gradient-to-br from-yellow-400 via-orange-500 to-yellow-600 hover:from-yellow-300 hover:via-orange-400 hover:to-yellow-500 group transition-all duration-500 transform hover:-translate-y-2 hover:shadow-2xl hover:shadow-yellow-500/30 ring-2 ring-white/50 hidden md:block cursor-pointer"
+                    <div class="industries-card-premium relative h-72 w-full rounded-2xl p-[3px] bg-gradient-to-br from-yellow-400 via-orange-500 to-yellow-600 hover:from-yellow-300 hover:via-orange-400 hover:to-yellow-500 group transition-all duration-700 transform hover:-translate-y-2 hover:shadow-2xl hover:shadow-yellow-500/35 ring-2 ring-white/50 hidden md:block cursor-pointer"
                          @mouseenter="selectedIndustry = <?php echo \Illuminate\Support\Js::from($industryForJs)->toHtml() ?>"
                          @mouseleave="selectedIndustry = null">
-                        <div class="relative h-full w-full rounded-2xl overflow-hidden bg-white shadow-lg shadow-gray-200/30 hover:shadow-xl transition-all duration-500">
+                        <div class="relative h-full w-full rounded-2xl overflow-hidden bg-white/95 backdrop-blur-[2px] shadow-lg shadow-gray-200/30 hover:shadow-xl transition-all duration-500 border border-white/70">
                         
                         <!-- Front of the card -->
                         <div class="absolute inset-0 flex flex-col items-center justify-center p-6 transition-transform duration-500 group-hover:scale-95">
-                            <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#172455] to-[#1e3a8a] flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform duration-500">
+                            <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#172455] to-[#1e3a8a] flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform duration-500 ring-1 ring-white/20">
                                 <?php if($iconUrl): ?>
                                     <img src="<?php echo e($iconUrl); ?>" alt="<?php echo e($industryTitle); ?>" class="h-10 w-10 object-contain" />
                                 <?php else: ?>
@@ -233,13 +294,13 @@ style="background: linear-gradient(160deg, #f8fafc 0%, #e0e7ff 22%, #fef3c7 45%,
                                     </svg>
                                 <?php endif; ?>
                             </div>
-                            <h3 class="text-2xl font-extrabold text-[#172455] mt-6 text-center"><?php echo e($industryTitle); ?></h3>
+                            <h3 class="text-2xl font-extrabold text-[#172455] mt-6 text-center drop-shadow-[0_1px_0_rgba(255,255,255,0.6)]"><?php echo e($industryTitle); ?></h3>
                             <p class="text-sm text-gray-500 mt-2 text-center">Tailored event solutions</p>
                         </div>
 
                         <!-- Hover Overlay with Details -->
                         <div :class="selectedIndustry && selectedIndustry.title === '<?php echo e($industryTitle); ?>' ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'"
-                             class="absolute inset-0 bg-gradient-to-br from-[#172455] to-[#1e3a8a] text-white p-4 flex flex-col justify-start items-center transition-all duration-500 overflow-hidden">
+                             class="absolute inset-0 bg-gradient-to-br from-[#172455] via-[#1d326f] to-[#1e3a8a] text-white p-4 flex flex-col justify-start items-center transition-all duration-500 overflow-hidden">
                             <div class="flex-shrink-0">
                                 <?php if($iconUrl): ?>
                                     <img src="<?php echo e($iconUrl); ?>" alt="<?php echo e($industryTitle); ?>" class="h-10 w-10 object-contain mb-2" />
@@ -263,13 +324,13 @@ style="background: linear-gradient(160deg, #f8fafc 0%, #e0e7ff 22%, #fef3c7 45%,
                     </div>
 
                     <!-- Mobile: white card like clients -->
-                    <div class="relative h-72 w-full rounded-2xl p-[3px] bg-gradient-to-br from-yellow-400 via-orange-500 to-yellow-600 group transition-all duration-500 transform active:scale-95 block md:hidden cursor-pointer"
+                    <div class="industries-card-premium relative h-72 w-full rounded-2xl p-[3px] bg-gradient-to-br from-yellow-400 via-orange-500 to-yellow-600 group transition-all duration-500 transform active:scale-95 block md:hidden cursor-pointer"
                          @click="handleCardTap(<?php echo \Illuminate\Support\Js::from($industryForJs)->toHtml() ?>)">
-                        <div class="relative h-full w-full rounded-2xl overflow-hidden bg-white shadow-lg shadow-gray-200/30">
+                        <div class="relative h-full w-full rounded-2xl overflow-hidden bg-white/95 backdrop-blur-[2px] shadow-lg shadow-gray-200/30 border border-white/70">
                         
                         <!-- Front of the card -->
                         <div class="absolute inset-0 flex flex-col items-center justify-center p-6">
-                            <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#172455] to-[#1e3a8a] flex items-center justify-center shadow-2xl">
+                            <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#172455] to-[#1e3a8a] flex items-center justify-center shadow-2xl ring-1 ring-white/20">
                                 <?php if($iconUrl): ?>
                                     <img src="<?php echo e($iconUrl); ?>" alt="<?php echo e($industryTitle); ?>" class="h-10 w-10 object-contain" />
                                 <?php else: ?>
@@ -288,16 +349,6 @@ style="background: linear-gradient(160deg, #f8fafc 0%, #e0e7ff 22%, #fef3c7 45%,
             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </div>
 
-        <?php if(!$showAll): ?>
-        <div class="mt-12 md:mt-16 text-center">
-            <a href="<?php echo e(route('industries')); ?>" class="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-[#172455] text-white font-semibold text-sm tracking-wide hover:bg-[#0f1b3d] focus:ring-2 focus:ring-[#172455] focus:ring-offset-2 transition-all duration-200 shadow-lg shadow-[#172455]/20 hover:shadow-xl hover:shadow-[#172455]/30">
-                <span>Explore more industries</span>
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-                </svg>
-            </a>
-        </div>
-        <?php endif; ?>
     </div>
 
     <!-- Mobile Modal -->
