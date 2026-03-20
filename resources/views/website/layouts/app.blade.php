@@ -354,11 +354,13 @@ $defaultLogo =
                     events: {
                         onReady: function(e) {
                             forceHighestQuality(e.target);
+                            window.dispatchEvent(new CustomEvent('hero-video-ready', { detail: { playerId: id, state: 'ready' } }));
                         },
                         onStateChange: function(e) {
                             if (e.data === YT.PlayerState.PLAYING) {
                                 forceHighestQuality(e.target);
                                 setTimeout(function() { forceHighestQuality(e.target); }, 1500);
+                                window.dispatchEvent(new CustomEvent('hero-video-ready', { detail: { playerId: id, state: 'playing' } }));
                             }
                         }
                     }

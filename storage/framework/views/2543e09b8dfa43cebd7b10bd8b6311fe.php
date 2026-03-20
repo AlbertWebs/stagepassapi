@@ -8,6 +8,12 @@
 ?>
 <section id="home" class="relative h-screen flex items-center justify-center overflow-hidden bg-gray-900 text-white -mt-[4.25rem] md:mt-0" style="padding-top: 4.25rem;">
     <div class="absolute inset-x-0 top-0 w-full h-screen overflow-hidden">
+        <div id="hero-video-preloader" class="absolute inset-0 z-20 flex items-center justify-center bg-gray-900/80 transition-opacity duration-500">
+            <div class="flex flex-col items-center gap-4">
+                <span class="hero-loader-spinner" aria-hidden="true"></span>
+                <span class="hero-scroll-label tracking-[0.08em] uppercase text-white/90">Loading....</span>
+            </div>
+        </div>
         <img id="hero-video-fallback" src="<?php echo e($videoFallbackImage); ?>" alt="" class="absolute inset-0 w-full h-full object-cover hidden" aria-hidden="true">
         <?php if($isYoutube): ?>
         <div class="absolute inset-0 w-full h-full" style="pointer-events: none;">
@@ -29,11 +35,11 @@
         <?php endif; ?>
         <div class="absolute inset-0 bg-black/35" aria-hidden="true" style="pointer-events: none;"></div>
     </div>
-    <div class="relative z-10 flex flex-col items-center justify-center min-h-screen text-center px-4 sm:px-6">
+    <div class="relative z-30 flex flex-col items-center justify-center min-h-screen text-center px-4 sm:px-6">
         <div id="hero-text-block" class="max-w-4xl mx-auto transition-all duration-[2s] ease-out">
-            <h1 class="hero-headline opacity-0 animate-hero-fade-up" style="animation-delay: 0.1s; animation-fill-mode: forwards;"><?php echo e($headline); ?></h1>
+            <h1 id="hero-headline" class="hero-headline" data-full-headline="<?php echo e($headline); ?>"><?php echo e($headline); ?></h1>
             <div class="mt-5 sm:mt-6 h-0.5 w-16 sm:w-20 bg-yellow-400 rounded-full mx-auto opacity-0 animate-hero-fade-up" aria-hidden="true" style="animation-delay: 0.3s; animation-fill-mode: forwards;"></div>
-            <p class="hero-subheadline mt-4 sm:mt-5 opacity-0 animate-hero-fade-up" style="animation-delay: 0.45s; animation-fill-mode: forwards;">Creative Solutions · Technical Excellence</p>
+            <p id="hero-subheadline" class="hero-subheadline mt-4 sm:mt-5">Creative Solutions · Technical Excellence</p>
         </div>
         <a href="#about" class="hero-cta absolute bottom-8 left-1/2 -translate-x-1/2 inline-flex flex-col items-center gap-1 text-white hover:text-white transition-opacity duration-200 group opacity-0 animate-hero-fade-up" style="animation-delay: 0.65s; animation-fill-mode: forwards;" aria-label="Scroll to about">
             <span class="hero-scroll-label tracking-[0.25em] uppercase">Scroll</span>
@@ -59,6 +65,13 @@
             color: rgba(255, 255, 255, 0.95);
             font-size: 20px;
             line-height: 28px;
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity 1.1s cubic-bezier(0.22, 1, 0.36, 1), transform 1.1s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .hero-subheadline.is-visible {
+            opacity: 1;
+            transform: translateY(0);
         }
         .hero-scroll-label {
             font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
@@ -86,14 +99,64 @@
         #hero-text-block.hero-text-dim {
             opacity: 0.2;
         }
+        .hero-loader-spinner {
+            width: 54px;
+            height: 54px;
+            border-radius: 9999px;
+            border: 3px solid rgba(255, 255, 255, 0.25);
+            border-top-color: rgb(250, 204, 21);
+            animation: hero-spin 0.9s linear infinite;
+        }
+        .hero-headline.is-typing {
+            border-right: 3px solid rgba(250, 204, 21, 0.95);
+            white-space: normal;
+            animation: hero-caret-blink 0.8s step-end infinite;
+        }
+        @keyframes hero-caret-blink {
+            0%, 49% { border-right-color: rgba(250, 204, 21, 0.95); }
+            50%, 100% { border-right-color: transparent; }
+        }
+        @keyframes hero-spin {
+            to { transform: rotate(360deg); }
+        }
     </style>
     <script>
     (function(){
         var block = document.getElementById('hero-text-block');
+        var headline = document.getElementById('hero-headline');
+        var subheadline = document.getElementById('hero-subheadline');
+        var preloader = document.getElementById('hero-video-preloader');
         if (!block) return;
-        setTimeout(function(){
-            block.classList.add('hero-text-dim');
-        }, 2500);
+        function hidePreloader() {
+            if (!preloader) return;
+            preloader.style.opacity = '0';
+            preloader.style.pointerEvents = 'none';
+            setTimeout(function(){ preloader.style.display = 'none'; }, 500);
+        }
+        window.addEventListener('hero-video-ready', hidePreloader, { once: true });
+        // Fallback so loader never hangs indefinitely.
+        setTimeout(hidePreloader, 7000);
+        if (!headline) return;
+        var fullText = headline.getAttribute('data-full-headline') || headline.textContent || '';
+        var i = 0;
+        headline.textContent = '';
+        headline.classList.add('is-typing');
+        function typeNext() {
+            if (i < fullText.length) {
+                headline.textContent += fullText.charAt(i);
+                i += 1;
+                setTimeout(typeNext, 52);
+                return;
+            }
+            headline.classList.remove('is-typing');
+            if (subheadline) {
+                setTimeout(function(){ subheadline.classList.add('is-visible'); }, 220);
+            }
+            setTimeout(function(){
+                block.classList.add('hero-text-dim');
+            }, 10000);
+        }
+        setTimeout(typeNext, 3000);
     })();
     </script>
 </section>
@@ -103,11 +166,19 @@
     var v = document.getElementById('hero-video');
     var overlay = document.getElementById('hero-play-overlay');
     var fallback = document.getElementById('hero-video-fallback');
+    var preloader = document.getElementById('hero-video-preloader');
     if (!v) return;
+    function hidePreloader() {
+        if (!preloader) return;
+        preloader.style.opacity = '0';
+        preloader.style.pointerEvents = 'none';
+        setTimeout(function(){ preloader.style.display = 'none'; }, 500);
+    }
     function useFallbackImage() {
         if (fallback) { fallback.classList.remove('hidden'); fallback.classList.add('block'); }
         v.style.display = 'none';
         if (overlay) overlay.style.display = 'none';
+        hidePreloader();
     }
     v.addEventListener('error', useFallbackImage);
     v.muted = true;
@@ -117,7 +188,10 @@
     function hideOverlay() {
         if (overlay) { overlay.style.opacity = '0'; overlay.style.pointerEvents = 'none'; }
     }
+    v.addEventListener('loadeddata', hidePreloader);
+    v.addEventListener('canplay', hidePreloader);
     v.addEventListener('playing', hideOverlay);
+    v.addEventListener('playing', hidePreloader);
     function tryPlay() {
         v.muted = true;
         v.play().then(hideOverlay).catch(function(){});
