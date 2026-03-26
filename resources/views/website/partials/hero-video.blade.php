@@ -9,7 +9,7 @@
         <div id="hero-video-preloader" class="absolute inset-0 z-20 flex items-center justify-center bg-gray-900/80 transition-opacity duration-500">
             <div class="flex flex-col items-center gap-4">
                 <span class="hero-loader-spinner" aria-hidden="true"></span>
-                <span class="hero-scroll-label tracking-[0.08em] uppercase text-white/90">Loading....</span>
+                <span class="hero-scroll-label tracking-[0.08em] uppercase text-white/90">Loading...</span>
             </div>
         </div>
         <img id="hero-video-fallback" src="{{ $videoFallbackImage }}" alt="" class="absolute inset-0 w-full h-full object-cover hidden" aria-hidden="true">
@@ -20,12 +20,12 @@
         <div class="absolute inset-0 hero-cinematic-vignette" aria-hidden="true" style="pointer-events: none;"></div>
     </div>
     <div class="relative z-30 flex flex-col items-center justify-center min-h-screen text-center px-4 sm:px-6">
-        <div id="hero-text-block" class="max-w-4xl mx-auto transition-all duration-[2s] ease-out">
+        <div id="hero-text-block" class="hero-text-shell max-w-4xl mx-auto transition-all duration-[2s] ease-out">
             <h1 id="hero-headline" class="hero-headline" data-full-headline="{{ $headline }}">{{ $headline }}</h1>
             <div class="mt-5 sm:mt-6 h-0.5 w-16 sm:w-20 bg-yellow-400 rounded-full mx-auto opacity-0 animate-hero-fade-up" aria-hidden="true" style="animation-delay: 0.3s; animation-fill-mode: forwards;"></div>
             <p id="hero-subheadline" class="hero-subheadline mt-4 sm:mt-5">Creative Solutions · Technical Excellence</p>
         </div>
-        <a href="#about" class="hero-cta absolute bottom-8 left-1/2 -translate-x-1/2 inline-flex flex-col items-center gap-1 text-white hover:text-white transition-opacity duration-200 group opacity-0 animate-hero-fade-up" style="animation-delay: 0.65s; animation-fill-mode: forwards;" aria-label="Scroll to about">
+        <a href="#about" class="hero-cta absolute bottom-8 inset-x-0 inline-flex flex-col items-center gap-1 text-white hover:text-white transition-opacity duration-200 group opacity-0 animate-hero-fade-up" style="animation-delay: 0.65s; animation-fill-mode: forwards;" aria-label="Scroll to about">
             <span class="hero-scroll-label tracking-[0.25em] uppercase">Scroll</span>
             <svg class="hero-scroll-arrow text-white/80 group-hover:text-white animate-bounce group-hover:animate-none" width="24" height="28" viewBox="0 0 24 28" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v20M6 14l6 6 6-6"/></svg>
         </a>
@@ -39,6 +39,7 @@
             font-size: 60px;
             line-height: 60px;
             text-shadow: 0 2px 8px rgba(0, 0, 0, 0.45), 0 12px 40px rgba(0, 0, 0, 0.35), 0 0 26px rgba(250, 204, 21, 0.16);
+            min-height: 60px;
         }
         @media (max-width: 1023px) {
             .hero-headline { font-size: clamp(28px, 6vw, 48px); line-height: 1.1; }
@@ -88,6 +89,28 @@
         }
         #hero-text-block {
             filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.35));
+        }
+        .hero-text-shell {
+            position: relative;
+            padding: 1.15rem 1.2rem 1.55rem;
+            border-radius: 1.25rem;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: linear-gradient(145deg, rgba(12, 20, 54, 0.36), rgba(12, 20, 54, 0.12));
+            backdrop-filter: blur(5px);
+        }
+        .hero-text-shell::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            pointer-events: none;
+            background: radial-gradient(circle at 50% 0%, rgba(250, 204, 21, 0.12), transparent 48%);
+        }
+        .hero-kicker {
+            box-shadow: 0 8px 20px rgba(250, 204, 21, 0.15);
+        }
+        @media (max-width: 640px) {
+            .hero-text-shell { padding: 0.9rem 0.85rem 1.25rem; }
         }
         .hero-cta {
             text-shadow: 0 2px 12px rgba(0, 0, 0, 0.55);
@@ -194,6 +217,27 @@
         setTimeout(hidePreloader, 7000);
         if (!headline) return;
         var fullText = headline.getAttribute('data-full-headline') || headline.textContent || '';
+        // Lock shell width before typing so it does not expand/shrink mid-animation.
+        var blockWidth = block.getBoundingClientRect().width;
+        if (blockWidth > 0) {
+            block.style.width = Math.ceil(blockWidth) + 'px';
+            block.style.maxWidth = '100%';
+        }
+        // Reserve final headline height before typing so the dark shell is fully sized first.
+        var measure = document.createElement('span');
+        measure.className = 'hero-headline';
+        measure.style.position = 'absolute';
+        measure.style.visibility = 'hidden';
+        measure.style.pointerEvents = 'none';
+        measure.style.inset = '0 auto auto 0';
+        measure.style.width = headline.offsetWidth ? (headline.offsetWidth + 'px') : '100%';
+        measure.textContent = fullText;
+        block.appendChild(measure);
+        var measuredHeight = measure.offsetHeight;
+        block.removeChild(measure);
+        if (measuredHeight > 0) {
+            headline.style.minHeight = measuredHeight + 'px';
+        }
         var i = 0;
         headline.textContent = '';
         headline.classList.add('is-typing');

@@ -254,13 +254,15 @@ class HomeController extends Controller
     /**
      * Home page with video hero (uses home-with-video.blade.php)
      */
-    public function homeWithVideo()
+    public function homeWithVideo(?int $capabilitiesOption = null, ?int $industriesOption = null)
     {
         $homepageData = $this->getHomepageData();
 
         return view('home-with-video', [
             'homepageData' => $homepageData,
             'isPage' => false,
+            'capabilitiesOption' => $capabilitiesOption,
+            'industriesOption' => $industriesOption,
         ]);
     }
 }
