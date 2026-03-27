@@ -8,6 +8,7 @@
 ?>
 
 <section id="services" class="relative overflow-hidden py-20 text-white">
+    
     <style>
         @keyframes cap2Glow {
             0%, 100% { transform: translateY(0) scale(1); opacity: .35; }
@@ -42,7 +43,8 @@
             <span class="inline-flex items-center rounded-full border border-yellow-300/50 bg-yellow-500/10 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.18em] text-yellow-300">Capabilities</span>
             <h2 class="mt-5 text-3xl lg:text-5xl font-black text-[#eaf0ff]"><?php echo e($title); ?></h2>
             <div class="mx-auto mt-4 h-1.5 w-24 rounded-full bg-gradient-to-r from-yellow-400 via-yellow-500 to-amber-500"></div>
-            <p class="mt-5 text-base lg:text-lg text-slate-300"><?php echo e($subtitle); ?></p>
+            <p class="text-xl text-gray-200 max-w-2xl mx-auto font-medium"><?php echo e($subtitle); ?></p>
+            
         </div>
         <div class="mt-2 mb-4 flex items-center justify-between gap-3">
             <p class="text-xs uppercase tracking-[0.14em] text-slate-400">Explore our end-to-end AV services and solutions</p>
@@ -51,7 +53,7 @@
                 <button type="button" data-cap-next="<?php echo e($sliderId); ?>" class="h-9 w-9 rounded-full border border-slate-600 text-slate-200 hover:border-yellow-400 hover:text-yellow-300 transition-colors">→</button>
             </div>
         </div>
-        <div id="<?php echo e($sliderId); ?>" class="mt-4 flex gap-6 overflow-x-auto snap-x snap-mandatory pb-4 [scrollbar-width:none] [-ms-overflow-style:none]" style="-webkit-overflow-scrolling:touch;">
+        <div id="<?php echo e($sliderId); ?>" class="mt-4 flex gap-6 overflow-x-auto pb-4 [scrollbar-width:none] [-ms-overflow-style:none]" style="-webkit-overflow-scrolling:touch;">
             <?php $__currentLoopData = $items; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $idx => $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                 <?php
                     $titleItem = is_array($item) ? ($item['title'] ?? '') : ($item->title ?? '');
@@ -92,46 +94,50 @@
         if (!slider) return;
         var prev = document.querySelector('[data-cap-prev="' + id + '"]');
         var next = document.querySelector('[data-cap-next="' + id + '"]');
-        var autoTimer = null;
-        var userInteracted = false;
-        function move(dir) {
-            slider.scrollBy({ left: dir * slider.clientWidth * 0.75, behavior: 'smooth' });
+        var pxPerSecond = 30;
+        var lastTs = null;
+        var rafId = null;
+
+        // Duplicate cards once for seamless infinite marquee effect.
+        var original = Array.prototype.slice.call(slider.children);
+        if (!slider.dataset.duplicated) {
+            original.forEach(function(node) {
+                slider.appendChild(node.cloneNode(true));
+            });
+            slider.dataset.duplicated = '1';
         }
-        function moveAuto() {
-            if (userInteracted) return;
-            var maxScroll = slider.scrollWidth - slider.clientWidth;
-            if (maxScroll <= 0) return;
-            // Loop to start when reaching end.
-            if (slider.scrollLeft >= maxScroll - 8) {
-                slider.scrollTo({ left: 0, behavior: 'smooth' });
-                return;
+
+        function halfWidth() {
+            return slider.scrollWidth / 2;
+        }
+
+        function tick(ts) {
+            if (lastTs == null) lastTs = ts;
+            var dt = (ts - lastTs) / 1000;
+            lastTs = ts;
+            var h = halfWidth();
+            if (h > 0) {
+                slider.scrollLeft = (slider.scrollLeft + (pxPerSecond * dt)) % h;
             }
-            move(1);
+            rafId = window.requestAnimationFrame(tick);
         }
-        function startAuto() {
-            if (autoTimer || userInteracted) return;
-            autoTimer = setInterval(moveAuto, 2800);
+
+        function jump(dir) {
+            var h = halfWidth();
+            slider.scrollLeft += dir * slider.clientWidth * 0.65;
+            if (h > 0 && slider.scrollLeft < 0) slider.scrollLeft += h;
+            if (h > 0 && slider.scrollLeft >= h) slider.scrollLeft -= h;
         }
-        function stopAuto(permanent) {
-            if (autoTimer) {
-                clearInterval(autoTimer);
-                autoTimer = null;
-            }
-            if (permanent) userInteracted = true;
-        }
-        function onUserInteraction() {
-            stopAuto(true);
-        }
-        if (prev) prev.addEventListener('click', function(){ onUserInteraction(); move(-1); });
-        if (next) next.addEventListener('click', function(){ onUserInteraction(); move(1); });
-        slider.addEventListener('pointerdown', onUserInteraction, { passive: true });
-        slider.addEventListener('wheel', onUserInteraction, { passive: true });
-        slider.addEventListener('touchstart', onUserInteraction, { passive: true });
-        slider.addEventListener('keydown', onUserInteraction);
-        slider.addEventListener('mouseenter', function(){ stopAuto(false); });
-        slider.addEventListener('mouseleave', function(){ if (!userInteracted) startAuto(); });
-        startAuto();
+
+        if (prev) prev.addEventListener('click', function(){ jump(-1); });
+        if (next) next.addEventListener('click', function(){ jump(1); });
+
+        rafId = window.requestAnimationFrame(tick);
+        window.addEventListener('beforeunload', function(){
+            if (rafId) window.cancelAnimationFrame(rafId);
+        });
     })();
     </script>
+    <div class="absolute bottom-0 left-0 right-0 h-3 bg-gradient-to-r from-blue-500 via-purple-500 via-pink-500 via-red-500 via-orange-500 via-yellow-500 to-green-500 animate-gradient-x"></div>
 </section>
 <?php /**PATH C:\projects\stagepassapi\resources\views/website/partials/options/CapabilitiesOption2.blade.php ENDPATH**/ ?>

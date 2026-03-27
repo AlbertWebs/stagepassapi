@@ -97,6 +97,7 @@
             border: 1px solid rgba(255, 255, 255, 0.12);
             background: linear-gradient(145deg, rgba(12, 20, 54, 0.36), rgba(12, 20, 54, 0.12));
             backdrop-filter: blur(5px);
+            overflow: visible;
         }
         .hero-text-shell::before {
             content: "";
@@ -105,6 +106,35 @@
             border-radius: inherit;
             pointer-events: none;
             background: radial-gradient(circle at 50% 0%, rgba(250, 204, 21, 0.12), transparent 48%);
+        }
+        .hero-text-shell::after {
+            content: "";
+            position: absolute;
+            inset: -8px;
+            border-radius: 1.6rem;
+            border: 2px solid rgba(250, 204, 21, 0);
+            pointer-events: none;
+            opacity: 0;
+            transform: scale(0.96);
+        }
+        .hero-text-shell.hero-shell-ring-on::after {
+            animation: hero-shell-ring-once 1.15s ease-out forwards;
+        }
+        @keyframes hero-shell-ring-once {
+            0% {
+                opacity: 0;
+                border-color: rgba(250, 204, 21, 0);
+                transform: scale(0.96);
+            }
+            30% {
+                opacity: 1;
+                border-color: rgba(250, 204, 21, 0.95);
+            }
+            100% {
+                opacity: 0;
+                border-color: rgba(250, 204, 21, 0);
+                transform: scale(1.08);
+            }
         }
         .hero-kicker {
             box-shadow: 0 8px 20px rgba(250, 204, 21, 0.15);
@@ -152,13 +182,7 @@
             animation: hero-spin 0.9s linear infinite;
         }
         .hero-headline.is-typing {
-            border-right: 3px solid rgba(250, 204, 21, 0.95);
             white-space: normal;
-            animation: hero-caret-blink 0.8s step-end infinite;
-        }
-        @keyframes hero-caret-blink {
-            0%, 49% { border-right-color: rgba(250, 204, 21, 0.95); }
-            50%, 100% { border-right-color: transparent; }
         }
         @keyframes hero-spin {
             to { transform: rotate(360deg); }
@@ -249,6 +273,8 @@
                 return;
             }
             headline.classList.remove('is-typing');
+            block.classList.add('hero-shell-ring-on');
+            setTimeout(function(){ block.classList.remove('hero-shell-ring-on'); }, 1300);
             if (subheadline) {
                 setTimeout(function(){ subheadline.classList.add('is-visible'); }, 220);
             }

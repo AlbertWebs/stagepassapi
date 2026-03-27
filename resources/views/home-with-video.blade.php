@@ -85,6 +85,7 @@
     @else
         @include('website.partials.industries-video', ['data' => $homepageData['industries'] ?? null])
     @endif
+    
     @include('website.partials.stats-video', ['data' => $homepageData['stats'] ?? null])
     @include('website.partials.portfolio', ['data' => $homepageData['portfolio'] ?? null, 'portfolioSource' => $homepageData['settings']['portfolio_source'] ?? 'database'])
     @include('website.partials.clients', ['data' => $homepageData['clients'] ?? null])
