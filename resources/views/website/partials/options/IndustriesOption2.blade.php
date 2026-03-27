@@ -46,6 +46,37 @@
         // Fallback
         return '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>';
     }
+
+    function industriesOption2Media(string $name, ?string $imageUrl): array {
+        $n = strtolower($name);
+        $videoUrl = null;
+        $img = $imageUrl;
+
+        if (str_contains($n, 'corporate') || str_contains($n, 'business')) {
+            $img = asset('uploads/backgrounds/coporate.webp');
+        } elseif (str_contains($n, 'entertainment') || str_contains($n, 'live show') || str_contains($n, 'live shows')) {
+            $videoUrl = 'https://player.vimeo.com/video/1177450080?badge=0&autopause=0&player_id=0&app_id=58479&autoplay=1&muted=1&loop=1&background=1';
+            $img = asset('uploads/backgrounds/liveshow.webp');
+        } elseif (str_contains($n, 'exhibition') || str_contains($n, 'trade show') || str_contains($n, 'trade shows')) {
+            $img = asset('uploads/backgrounds/trade.webp');
+        } elseif (str_contains($n, 'education') || str_contains($n, 'training')) {
+            $img = asset('uploads/backgrounds/training.webp');
+        } elseif (str_contains($n, 'religious') || str_contains($n, 'institution')) {
+            $img = asset('uploads/backgrounds/religiouss.webp');
+        } elseif (str_contains($n, 'media') || str_contains($n, 'film') || str_contains($n, 'broadcast')) {
+            $img = asset('uploads/backgrounds/tourism.webp');
+        } elseif (str_contains($n, 'hospitality') || str_contains($n, 'tourism')) {
+            $img = asset('uploads/backgrounds/tour.webp');
+        } elseif (str_contains($n, 'healthcare') || str_contains($n, 'medical')) {
+            $img = asset('uploads/backgrounds/health.webp');
+        } elseif (str_contains($n, 'government') || str_contains($n, 'public sector')) {
+            $img = asset('uploads/backgrounds/gov.webp');
+        } elseif (str_contains($n, 'retail') || str_contains($n, 'brand')) {
+            $img = asset('uploads/backgrounds/brand.webp');
+        }
+
+        return ['image' => $img, 'video' => $videoUrl];
+    }
 @endphp
 
 <section id="industries" x-data="{ selectedIndustry: null, isModalOpen: false }" class="py-20 bg-slate-100">
@@ -117,43 +148,51 @@
         }
     </style>
     <div class="container mx-auto px-6 lg:px-12">
-        <div class="text-center max-w-3xl mx-auto">
-            <span class="inline-flex items-center rounded-full border border-amber-200 bg-amber-50 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.18em] text-amber-700">Industries</span>
-            <h2 class="text-5xl lg:text-6xl font-black text-[#172455] mt-6 mb-6">{{ $title }}</h2>
-            <div class="h-2 w-32 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-full mx-auto"></div>
-            <p class="text-xl text-gray-700 max-w-2xl mx-auto font-medium">{{ $subtitle }}</p>
-        </div>
         @php
-            $totalItems = is_countable($items) ? count($items) : 0;
-            $rightPanelImage = asset('uploads/backgrounds/industries.webp');
-            $sectionImage = is_array($section) ? ($section['image_url'] ?? null) : ($section->image_url ?? null);
-            $firstItemImage = $totalItems > 0
-                ? (is_array($items[0] ?? null) ? ($items[0]['image_url'] ?? null) : (($items[0]->image_url ?? null)))
-                : null;
-            $showcaseImage = $rightPanelImage ?: ($sectionImage ?: $firstItemImage);
+            $itemsForRandom = is_array($items) ? $items : (is_iterable($items) ? iterator_to_array($items) : []);
+            $totalItems = count($itemsForRandom);
+            $randomIndustryKey = null;
+            foreach ($itemsForRandom as $idx => $candidateItem) {
+                $candidateTitle = is_array($candidateItem) ? ($candidateItem['title'] ?? '') : ($candidateItem->title ?? '');
+                if (str_contains(strtolower($candidateTitle), 'entertainment') && str_contains(strtolower($candidateTitle), 'live')) {
+                    $randomIndustryKey = $idx;
+                    break;
+                }
+            }
+            if ($randomIndustryKey === null) {
+                $randomIndustryKey = $totalItems > 0 ? array_rand($itemsForRandom) : null;
+            }
+            $randomIndustry = $randomIndustryKey !== null ? ($itemsForRandom[$randomIndustryKey] ?? null) : null;
+            $randomIndustryTitle = is_array($randomIndustry) ? ($randomIndustry['title'] ?? $title) : ($randomIndustry->title ?? $title);
+            $randomIndustryDescription = is_array($randomIndustry) ? ($randomIndustry['description'] ?? null) : ($randomIndustry->description ?? null);
+            $randomIndustryImage = is_array($randomIndustry) ? ($randomIndustry['image_url'] ?? null) : ($randomIndustry->image_url ?? null);
+            $randomIndustryMedia = industriesOption2Media($randomIndustryTitle, $randomIndustryImage);
+            $showcaseImage = $randomIndustryMedia['image'] ?? null;
+            $showcaseVideoUrl = $randomIndustryMedia['video'] ?? null;
+            $gridItems = $itemsForRandom;
+            if ($randomIndustryKey !== null && array_key_exists($randomIndustryKey, $gridItems)) {
+                unset($gridItems[$randomIndustryKey]);
+            }
         @endphp
-        <div class="mt-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            <div class="lg:col-span-8">
+        <div class="mt-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            <div class="lg:col-span-8 lg:order-2">
                 <div id="industries-option2-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    @foreach($items as $idx => $item)
+                    @foreach(array_values($gridItems) as $idx => $item)
                         @php
                             $name = is_array($item) ? ($item['title'] ?? '') : ($item->title ?? '');
                             $img = is_array($item) ? ($item['image_url'] ?? null) : ($item->image_url ?? null);
                             $desc = is_array($item) ? ($item['description'] ?? '') : ($item->description ?? '');
                             $overlayDescription = is_array($item) ? ($item['overlay_description'] ?? null) : ($item->overlay_description ?? null);
-                            $videoUrl = null;
-                            if (str_contains(strtolower($name), 'corporate') || str_contains(strtolower($name), 'business')) {
-                                $img = asset('uploads/backgrounds/coporate.webp');
-                            } elseif (str_contains(strtolower($name), 'entertainment') || str_contains(strtolower($name), 'live show') || str_contains(strtolower($name), 'live shows')) {
-                                $videoUrl = 'https://player.vimeo.com/video/1177450080?badge=0&autopause=0&player_id=0&app_id=58479&autoplay=1&muted=1&loop=1&background=1';
-                                $img = asset('uploads/backgrounds/liveshow.webp');
-                            }
+                            $resolvedMedia = industriesOption2Media($name, $img);
+                            $img = $resolvedMedia['image'] ?? $img;
+                            $videoUrl = $resolvedMedia['video'] ?? null;
                             $iconSvg = industriesOption2Icon($name);
                             $industryForJs = [
                                 'title' => $name,
                                 'description' => $desc ?: 'Tailored AV solutions crafted for this industry.',
                                 'overlay_description' => $overlayDescription ? html_entity_decode($overlayDescription, ENT_QUOTES | ENT_HTML5, 'UTF-8') : null,
                                 'image_url' => $img,
+                                'icon_svg' => $iconSvg,
                             ];
                         @endphp
                         <div class="ind2-reveal" data-ind2-delay="{{ $idx * 0.1 }}">
@@ -183,9 +222,6 @@
                             <div class="absolute inset-0 bg-gradient-to-br from-white/[0.06] via-transparent to-yellow-300/[0.05] opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
                             <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/35 to-transparent pointer-events-none"></div>
                             <div class="relative h-full p-8 flex flex-col justify-end">
-                                <div class="absolute top-6 left-6 h-10 w-10 rounded-xl border border-white/25 bg-[#172455]/85 text-yellow-300 grid place-items-center shadow-lg shadow-black/25">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">{!! $iconSvg !!}</svg>
-                                </div>
                                 <h3 class="ind2-title text-white text-xl font-semibold transition-transform duration-300 group-hover:-translate-y-1">{{ $name }}</h3>
                                 <p class="ind2-desc mt-2 text-sm text-gray-400 leading-relaxed line-clamp-2">
                                     {{ $desc ?: 'Tailored AV solutions crafted for this industry.' }}
@@ -198,10 +234,30 @@
                     @endforeach
                 </div>
             </div>
-            <aside class="lg:col-span-4">
+            <aside class="lg:col-span-4 lg:self-end lg:order-1 space-y-4">
+                <div class="max-w-md">
+                    <p class="inline-flex items-center rounded-full border border-[#172455]/20 bg-[#172455]/5 px-4 py-1.5 text-xs sm:text-sm font-extrabold uppercase tracking-[0.2em] text-[#172455] shadow-sm">
+                        Industries
+                    </p>
+                    <h3 class="mt-3 text-3xl sm:text-4xl xl:text-5xl font-black text-[#172455] leading-tight mb-2">We Serve</h3>
+                    <div class="h-2 w-32 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-full  mb-6"></div>
+                    <p class="text-xl text-gray-700 max-w-2xl mx-auto font-medium">
+                        StagePass Audio Visual serves a wide range of industries, delivering tailored audio-visual solutions designed to meet the unique needs of each sector while ensuring seamless and reliable experiences.
+
+
+                    </p>
+                </div>
                 <div class="rounded-2xl overflow-hidden border border-[#172455]/20 shadow-xl bg-white" style="position: static;">
                     <div class="relative h-[320px] xl:h-[420px]">
-                        @if($showcaseImage)
+                        @if($showcaseVideoUrl)
+                            <iframe
+                                src="{{ $showcaseVideoUrl }}"
+                                class="ind2-video-cover"
+                                frameborder="0"
+                                allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
+                                referrerpolicy="strict-origin-when-cross-origin"
+                                title="{{ $randomIndustryTitle }} video background"></iframe>
+                        @elseif($showcaseImage)
                             <img src="{{ $showcaseImage }}" alt="{{ $title }} showcase" class="absolute inset-0 h-full w-full object-cover">
                         @else
                             <div class="absolute inset-0 bg-gradient-to-br from-[#172455] via-slate-900 to-black"></div>
@@ -209,7 +265,8 @@
                         <div class="absolute inset-0 bg-gradient-to-t from-[#0b1436]/90 via-[#172455]/50 to-transparent"></div>
                         <div class="absolute left-0 right-0 bottom-0 p-5 text-white">
                             <p class="text-xs font-semibold uppercase tracking-[0.18em] text-yellow-300">Sector Expertise</p>
-                            <p class="mt-2 text-sm text-slate-100/90">Purpose-built AV strategies aligned to each industry's operational goals.</p>
+                            <p class="mt-2 text-xl font-bold text-white">{{ $randomIndustryTitle }}</p>
+                            <p class="mt-2 text-sm text-slate-100/90">{{ $randomIndustryDescription ?: "Purpose-built AV strategies aligned to each industry's operational goals." }}</p>
                         </div>
                     </div>
                 </div>
@@ -217,33 +274,55 @@
         </div>
     </div>
     <div x-show="isModalOpen"
-         x-transition.opacity.duration.200ms
+         x-transition.opacity.duration.250ms
          @click.self="isModalOpen = false"
          @keydown.escape.window="isModalOpen = false"
-         class="fixed inset-0 z-[120] grid place-items-center bg-black/70 p-4 sm:p-6"
+         class="fixed inset-0 z-[120] grid place-items-center bg-[#030712]/80 backdrop-blur-sm p-4 sm:p-6"
          x-cloak
          style="display: none;">
-        <div class="relative w-full max-w-3xl rounded-2xl border border-[#172455]/25 bg-white shadow-2xl overflow-hidden"
+        <div class="relative w-full max-w-5xl rounded-3xl border border-[#172455]/20 bg-white shadow-2xl overflow-hidden"
              @click.stop>
             <div class="h-1.5 w-full bg-gradient-to-r from-yellow-400 via-amber-500 to-[#172455]"></div>
             <button type="button"
                     @click="isModalOpen = false"
-                    class="absolute right-3 top-3 inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-500 hover:text-[#172455] hover:border-[#172455]/40 transition-colors"
+                    class="absolute right-3 top-3 z-20 inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200/80 bg-white/95 text-slate-500 hover:text-[#172455] hover:border-[#172455]/40 transition-colors"
                     aria-label="Close industry details">
                 <span class="text-lg leading-none">&times;</span>
             </button>
-            <div class="p-6 sm:p-8">
-                <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-[#172455]/70">Industry Profile</p>
-                <h3 class="mt-2 text-2xl sm:text-3xl font-black text-[#172455]" x-text="selectedIndustry && selectedIndustry.title"></h3>
-                <div class="mt-4 h-px w-full bg-gradient-to-r from-[#172455]/35 via-yellow-400/60 to-transparent"></div>
-                <div class="mt-5 max-h-[50vh] overflow-y-auto pr-1 text-slate-700">
-                    <template x-if="selectedIndustry && selectedIndustry.overlay_description">
-                        <div class="prose prose-sm max-w-none text-slate-700 [&_p]:mb-3 [&_ul]:mb-3 [&_li]:mb-1 [&_strong]:text-[#172455] [&_h1]:text-[#172455] [&_h2]:text-[#172455] [&_h3]:text-[#172455]" x-html="selectedIndustry.overlay_description"></div>
-                    </template>
-                    <template x-if="selectedIndustry && !selectedIndustry.overlay_description">
-                        <p class="text-sm sm:text-base leading-relaxed" x-text="selectedIndustry && selectedIndustry.description"></p>
-                    </template>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12">
+                <div class="lg:col-span-7 p-6 sm:p-8 lg:p-10">
+                    <div class="inline-flex h-12 w-12 items-center justify-center rounded-xl border border-[#172455]/20 bg-[#172455]/8 text-[#172455]">
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-html="selectedIndustry && selectedIndustry.icon_svg ? selectedIndustry.icon_svg : ''"></svg>
+                    </div>
+                    <h3 class="mt-4 text-2xl sm:text-3xl lg:text-4xl font-black leading-tight text-[#172455]" x-text="selectedIndustry && selectedIndustry.title"></h3>
+                    <div class="mt-5 h-px w-full bg-gradient-to-r from-[#172455]/35 via-yellow-400/60 to-transparent"></div>
+                    <div class="mt-5 max-h-[52vh] overflow-y-auto pr-1 text-slate-700">
+                        <template x-if="selectedIndustry && selectedIndustry.overlay_description">
+                            <div class="prose prose-sm sm:prose-base max-w-none text-slate-700 [&_p]:mb-3 [&_ul]:mb-3 [&_li]:mb-1 [&_strong]:text-[#172455] [&_h1]:text-[#172455] [&_h2]:text-[#172455] [&_h3]:text-[#172455]" x-html="selectedIndustry.overlay_description"></div>
+                        </template>
+                        <template x-if="selectedIndustry && !selectedIndustry.overlay_description">
+                            <p class="text-sm sm:text-base leading-relaxed" x-text="selectedIndustry && selectedIndustry.description"></p>
+                        </template>
+                    </div>
                 </div>
+
+                <aside class="lg:col-span-5 relative min-h-[260px] lg:min-h-full bg-slate-950">
+                    <template x-if="selectedIndustry && selectedIndustry.image_url">
+                        <img :src="selectedIndustry.image_url"
+                             :alt="(selectedIndustry && selectedIndustry.title ? selectedIndustry.title : 'Industry') + ' image'"
+                             class="absolute inset-0 h-full w-full object-cover">
+                    </template>
+                    <template x-if="!selectedIndustry || !selectedIndustry.image_url">
+                        <div class="absolute inset-0 bg-gradient-to-br from-[#172455] via-slate-900 to-black"></div>
+                    </template>
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-[#172455]/35 to-transparent"></div>
+                    <div class="absolute left-0 right-0 bottom-0 p-5 sm:p-6 text-white">
+                        <p class="text-xs font-semibold uppercase tracking-[0.18em] text-yellow-300">Featured Industry</p>
+                        <p class="mt-2 text-xl font-bold leading-tight" x-text="selectedIndustry && selectedIndustry.title"></p>
+                        <p class="mt-2 text-sm text-slate-100/90 line-clamp-3" x-text="selectedIndustry && selectedIndustry.description"></p>
+                    </div>
+                </aside>
             </div>
         </div>
     </div>
