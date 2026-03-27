@@ -1,11 +1,11 @@
-@php
+<?php
     $data = $data ?? null;
     $section = is_array($data) ? ($data['section'] ?? null) : ($data->section ?? null);
     $items = is_array($data) ? ($data['items'] ?? []) : ($data->items ?? []);
     $title = is_array($section) ? ($section['title'] ?? 'Industries We Serve') : ($section->title ?? 'Industries We Serve');
     $subtitle = is_array($section) ? ($section['subtitle'] ?? 'StagePass Audio Visual serves a diverse range of industries with tailored solutions.') : ($section->subtitle ?? 'StagePass Audio Visual serves a diverse range of industries with tailored solutions.');
     $sliderId = 'industries-slider-' . uniqid();
-@endphp
+?>
 
 <section class="py-20 bg-white">
     <style>
@@ -29,28 +29,28 @@
                 <p class="inline-flex items-center rounded-full border border-[#172455]/20 bg-[#172455]/5 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.2em] text-[#172455]">
                     Industries
                 </p>
-                <h2 class="mt-4 text-3xl lg:text-5xl font-black text-[#172455]">{{ $title }}</h2>
-                <p class="mt-4 text-base sm:text-lg text-slate-600">{{ $subtitle }}</p>
+                <h2 class="mt-4 text-3xl lg:text-5xl font-black text-[#172455]"><?php echo e($title); ?></h2>
+                <p class="mt-4 text-base sm:text-lg text-slate-600"><?php echo e($subtitle); ?></p>
             </div>
             <div class="hidden md:flex gap-2">
-                <button type="button" data-prev="{{ $sliderId }}" class="h-10 w-10 rounded-full border border-[#172455]/20 text-[#172455] hover:bg-[#172455] hover:text-white transition-colors duration-200">←</button>
-                <button type="button" data-next="{{ $sliderId }}" class="h-10 w-10 rounded-full border border-[#172455]/20 text-[#172455] hover:bg-[#172455] hover:text-white transition-colors duration-200">→</button>
+                <button type="button" data-prev="<?php echo e($sliderId); ?>" class="h-10 w-10 rounded-full border border-[#172455]/20 text-[#172455] hover:bg-[#172455] hover:text-white transition-colors duration-200">←</button>
+                <button type="button" data-next="<?php echo e($sliderId); ?>" class="h-10 w-10 rounded-full border border-[#172455]/20 text-[#172455] hover:bg-[#172455] hover:text-white transition-colors duration-200">→</button>
             </div>
         </div>
         <div class="mt-6 h-1.5 w-28 rounded-full bg-gradient-to-r from-[#172455] to-amber-500"></div>
-        <div id="{{ $sliderId }}" class="ind3-scroll mt-8 flex gap-6 overflow-x-auto snap-x snap-mandatory pb-4">
-            @foreach($items as $item)
-                @php $name = is_array($item) ? ($item['title'] ?? '') : ($item->title ?? ''); @endphp
+        <div id="<?php echo e($sliderId); ?>" class="ind3-scroll mt-8 flex gap-6 overflow-x-auto snap-x snap-mandatory pb-4">
+            <?php $__currentLoopData = $items; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <?php $name = is_array($item) ? ($item['title'] ?? '') : ($item->title ?? ''); ?>
                 <article class="ind3-card snap-start shrink-0 w-[86%] sm:w-[58%] lg:w-[33%] rounded-2xl border p-7 shadow-sm">
                     <div class="h-12 w-12 rounded-xl bg-gradient-to-br from-[#172455] to-[#1e3a8a] text-amber-300 grid place-items-center shadow-sm">▣</div>
-                    <h3 class="mt-4 text-xl font-bold text-[#172455]">{{ $name }}</h3>
+                    <h3 class="mt-4 text-xl font-bold text-[#172455]"><?php echo e($name); ?></h3>
                 </article>
-            @endforeach
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </div>
     </div>
     <script>
     (function(){
-        var id = @json($sliderId);
+        var id = <?php echo json_encode($sliderId, 15, 512) ?>;
         var slider = document.getElementById(id);
         if (!slider) return;
         var prev = document.querySelector('[data-prev="' + id + '"]');
@@ -91,3 +91,4 @@
     })();
     </script>
 </section>
+<?php /**PATH C:\projects\stagepassapi\resources\views/website/partials/options/IndustriesOption3.blade.php ENDPATH**/ ?>

@@ -2,22 +2,137 @@
     $data = $data ?? null;
     $section = is_array($data) ? ($data['section'] ?? null) : ($data->section ?? null);
     $items = is_array($data) ? ($data['items'] ?? []) : ($data->items ?? []);
+    $itemsArray = is_array($items) ? $items : (is_iterable($items) ? iterator_to_array($items) : []);
+    $totalItems = is_countable($itemsArray) ? count($itemsArray) : 0;
     $title = is_array($section) ? ($section['title'] ?? 'Industries We Serve') : ($section->title ?? 'Industries We Serve');
+    $subtitle = is_array($section) ? ($section['subtitle'] ?? 'StagePass Audio Visual serves a diverse range of industries with tailored solutions.') : ($section->subtitle ?? 'StagePass Audio Visual serves a diverse range of industries with tailored solutions.');
+    $sectionId = 'industries-option4-' . uniqid();
 @endphp
 
-<section class="relative py-20 overflow-hidden" style="background: radial-gradient(circle at 20% 20%, #eef2ff 0%, #fff7ed 45%, #f8fafc 100%);">
-    <div class="absolute inset-0 opacity-30 pointer-events-none" style="background-image: radial-gradient(#94a3b8 0.8px, transparent 0.8px); background-size: 22px 22px;"></div>
+<section id="{{ $sectionId }}" class="relative py-20 overflow-hidden" style="background: radial-gradient(circle at 20% 20%, #eef2ff 0%, #fff7ed 45%, #f8fafc 100%);">
+    <style>
+        .ind4-card {
+            border: 1px solid rgba(23, 36, 85, 0.10);
+            background: linear-gradient(180deg, rgba(255,255,255,0.92) 0%, rgba(248,250,252,0.92) 100%);
+            box-shadow: 0 14px 34px rgba(2, 6, 23, 0.08);
+            transform: translateY(16px);
+            opacity: 0;
+            transition:
+                transform .32s ease-out,
+                opacity .32s ease-out,
+                box-shadow .28s ease,
+                border-color .28s ease,
+                background .28s ease;
+        }
+        .ind4-card.is-visible {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        .ind4-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(245, 158, 11, 0.45);
+            box-shadow: 0 22px 55px rgba(2, 6, 23, 0.12);
+            background: linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(248,250,252,0.98) 100%);
+        }
+        .ind4-card:focus-within {
+            border-color: rgba(245, 158, 11, 0.55);
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.18), 0 22px 55px rgba(2, 6, 23, 0.12);
+        }
+        .ind4-underline {
+            position: relative;
+            overflow: hidden;
+        }
+        .ind4-underline::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(to right, #172455, #f59e0b);
+            transform-origin: left;
+            transform: scaleX(0);
+            transition: transform .3s ease;
+        }
+        .ind4-card:hover .ind4-underline::after {
+            transform: scaleX(1);
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .ind4-card { transition: none; }
+        }
+    </style>
     <div class="container relative z-10 mx-auto px-6 lg:px-12">
-        <h2 class="text-center text-3xl lg:text-5xl font-black text-slate-900">{{ $title }}</h2>
-        <div class="mt-10 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            @foreach($items as $item)
+        <div class="text-center max-w-3xl mx-auto">
+            <p class="inline-flex items-center rounded-full border border-[#172455]/20 bg-white/70 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.2em] text-[#172455]">
+                Industries
+            </p>
+            <h2 class="mt-4 text-3xl lg:text-5xl font-black text-[#172455]">{{ $title }}</h2>
+            <div class="mt-5 h-1.5 w-24 rounded-full bg-gradient-to-r from-[#172455] to-amber-500 mx-auto"></div>
+            <p class="mt-5 text-base sm:text-lg text-slate-600">{{ $subtitle }}</p>
+        </div>
+        <div class="mt-10 grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            @foreach($itemsArray as $index => $item)
                 @php $name = is_array($item) ? ($item['title'] ?? '') : ($item->title ?? ''); @endphp
-                <article class="rounded-2xl bg-white/85 backdrop-blur p-6 shadow-lg shadow-slate-200/60 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
-                    <div class="h-11 w-11 rounded-xl bg-amber-400/20 text-amber-700 grid place-items-center font-bold">✦</div>
-                    <h3 class="mt-4 text-lg lg:text-xl font-bold text-slate-900">{{ $name }}</h3>
-                    <p class="mt-2 text-sm text-slate-600">Tailored strategy, implementation, and support for this sector.</p>
+                @if($totalItems > 2 && $index >= $totalItems - 2)
+                    @continue
+                @endif
+                <article class="ind4-card rounded-2xl p-6" style="transition-delay: {{ $index * 40 }}ms;">
+                    <p class="text-[11px] font-bold tracking-[0.18em] uppercase text-[#172455]/55">
+                        {{ str_pad((string) ($index + 1), 2, '0', STR_PAD_LEFT) }}
+                    </p>
+                    <h3 class="ind4-underline mt-2 text-lg lg:text-xl font-bold text-[#172455] pb-1.5">{{ $name }}</h3>
+                    <p class="mt-3 text-sm text-slate-600 leading-relaxed">
+                        Tailored strategy, implementation, and support for this sector.
+                    </p>
                 </article>
             @endforeach
         </div>
+        @if($totalItems > 2)
+            <div class="mt-6 grid sm:grid-cols-2 lg:grid-cols-2 gap-6 max-w-3xl mx-auto">
+                @foreach(array_slice($itemsArray, -2) as $offset => $item)
+                    @php $name = is_array($item) ? ($item['title'] ?? '') : ($item->title ?? ''); @endphp
+                    @php $index = max(0, $totalItems - 2 + $offset); @endphp
+                    <article class="ind4-card rounded-2xl p-6" style="transition-delay: {{ $index * 40 }}ms;">
+                        <p class="text-[11px] font-bold tracking-[0.18em] uppercase text-[#172455]/55">
+                            {{ str_pad((string) ($index + 1), 2, '0', STR_PAD_LEFT) }}
+                        </p>
+                        <h3 class="ind4-underline mt-2 text-lg lg:text-xl font-bold text-[#172455] pb-1.5">{{ $name }}</h3>
+                        <p class="mt-3 text-sm text-slate-600 leading-relaxed">
+                            Tailored strategy, implementation, and support for this sector.
+                        </p>
+                    </article>
+                @endforeach
+            </div>
+        @endif
     </div>
+    <script>
+    (function(){
+        var section = document.getElementById(@json($sectionId));
+        if (!section) return;
+        var cards = section.querySelectorAll('.ind4-card');
+        if (!cards.length) return;
+
+        function reveal() {
+            cards.forEach(function(card){
+                card.classList.add('is-visible');
+            });
+        }
+
+        if (typeof IntersectionObserver !== 'undefined') {
+            var done = false;
+            var io = new IntersectionObserver(function(entries){
+                entries.forEach(function(entry){
+                    if (!done && entry.isIntersecting) {
+                        done = true;
+                        reveal();
+                        io.disconnect();
+                    }
+                });
+            }, { threshold: 0.15 });
+            io.observe(section);
+        } else {
+            reveal();
+        }
+    })();
+    </script>
 </section>

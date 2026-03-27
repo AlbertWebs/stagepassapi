@@ -1,15 +1,15 @@
-@php
+<?php
     $data = $data ?? null;
     $section = is_array($data) ? ($data['section'] ?? null) : ($data->section ?? null);
     $items = is_array($data) ? ($data['items'] ?? []) : ($data->items ?? []);
     $title = is_array($section) ? ($section['title'] ?? 'Our Capabilities') : ($section->title ?? 'Our Capabilities');
     $subtitle = is_array($section) ? ($section['subtitle'] ?? 'Cinematic presentation with glass cards for a premium story-driven section.') : ($section->subtitle ?? 'Cinematic presentation with glass cards for a premium story-driven section.');
     $sectionId = 'capabilities-option4-' . uniqid();
-@endphp
+?>
 
-<section id="{{ $sectionId }}" class="py-20 bg-slate-50">
+<section id="<?php echo e($sectionId); ?>" class="py-20 bg-slate-50">
     <style>
-        #{{ $sectionId }} {
+        #<?php echo e($sectionId); ?> {
             --cap4-progress: 0%;
         }
         .cap4-card {
@@ -71,42 +71,42 @@
                     <p class="inline-flex items-center rounded-full border border-[#172455]/20 bg-[#172455]/5 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.18em] text-[#172455]">
                         Capabilities
                     </p>
-                    <h2 class="mt-4 text-3xl lg:text-5xl font-black text-[#172455] leading-tight">{{ $title }}</h2>
+                    <h2 class="mt-4 text-3xl lg:text-5xl font-black text-[#172455] leading-tight"><?php echo e($title); ?></h2>
                     <div class="mt-4 cap4-progress-track">
                         <div class="cap4-progress-bar"></div>
                     </div>
-                    <p class="mt-5 text-slate-600 text-base lg:text-lg">{{ $subtitle }}</p>
+                    <p class="mt-5 text-slate-600 text-base lg:text-lg"><?php echo e($subtitle); ?></p>
                 </div>
             </div>
             <div class="lg:col-span-8 space-y-4">
-                @forelse($items as $idx => $item)
-                    @php
+                <?php $__empty_1 = true; $__currentLoopData = $items; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $idx => $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                    <?php
                         $titleItem = is_array($item) ? ($item['title'] ?? '') : ($item->title ?? '');
                         $desc = is_array($item) ? ($item['description'] ?? '') : ($item->description ?? '');
-                    @endphp
-                    <article class="cap4-card cap4-reveal group rounded-2xl border p-6 lg:p-7" data-cap4-delay="{{ $idx * 0.08 }}">
+                    ?>
+                    <article class="cap4-card cap4-reveal group rounded-2xl border p-6 lg:p-7" data-cap4-delay="<?php echo e($idx * 0.08); ?>">
                         <div class="grid grid-cols-[56px_1fr] lg:grid-cols-[72px_1fr] gap-4 lg:gap-6">
                             <div class="cap4-icon h-14 w-14 lg:h-18 lg:w-18 rounded-2xl bg-slate-900 text-amber-300 grid place-items-center text-2xl transition-colors duration-300 group-hover:bg-amber-400 group-hover:text-slate-900">◆</div>
                             <div>
-                                <p class="text-[11px] uppercase tracking-[0.2em] font-bold text-[#172455]/60">{{ str_pad((string)($idx + 1), 2, '0', STR_PAD_LEFT) }}</p>
-                                <h3 class="mt-1 text-xl font-bold text-slate-900">{{ $titleItem }}</h3>
-                                <p class="mt-2 text-sm lg:text-base text-slate-600 leading-relaxed">{{ $desc }}</p>
+                                <p class="text-[11px] uppercase tracking-[0.2em] font-bold text-[#172455]/60"><?php echo e(str_pad((string)($idx + 1), 2, '0', STR_PAD_LEFT)); ?></p>
+                                <h3 class="mt-1 text-xl font-bold text-slate-900"><?php echo e($titleItem); ?></h3>
+                                <p class="mt-2 text-sm lg:text-base text-slate-600 leading-relaxed"><?php echo e($desc); ?></p>
                                 <div class="mt-4 h-px w-full bg-gradient-to-r from-amber-400/70 via-[#172455]/20 to-transparent"></div>
                             </div>
                         </div>
                     </article>
-                @empty
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                     <article class="cap4-card rounded-2xl border p-6 lg:p-7">
                         <h3 class="text-xl font-bold text-slate-900">Capabilities coming soon</h3>
                         <p class="mt-2 text-sm lg:text-base text-slate-600">We are preparing an updated capabilities lineup for this section.</p>
                     </article>
-                @endforelse
+                <?php endif; ?>
             </div>
         </div>
     </div>
     <script>
     (function(){
-        var section = document.getElementById(@json($sectionId));
+        var section = document.getElementById(<?php echo json_encode($sectionId, 15, 512) ?>);
         if (!section) return;
 
         var cards = section.querySelectorAll('.cap4-reveal');
@@ -155,3 +155,4 @@
     })();
     </script>
 </section>
+<?php /**PATH C:\projects\stagepassapi\resources\views/website/partials/options/CapabilitiesOption4.blade.php ENDPATH**/ ?>
