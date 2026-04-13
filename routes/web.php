@@ -28,6 +28,7 @@ Route::get('/stream/video/{path}', [VideoStreamController::class, 'stream'])
 // Blade Frontend Routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/home-with-video', [HomeController::class, 'homeWithVideo'])->name('home-with-video');
+Route::get('/selected', [HomeController::class, 'selectedHome'])->name('home.selected');
 Route::get('/home-with-video/options/capabilities-{capabilitiesOption}/industries-{industriesOption}', [HomeController::class, 'homeWithVideo'])
     ->where(['capabilitiesOption' => '[1-5]', 'industriesOption' => '[1-5]'])
     ->name('home-with-video.options');

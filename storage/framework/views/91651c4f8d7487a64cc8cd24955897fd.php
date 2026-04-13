@@ -1,5 +1,3 @@
-
-
 <?php $__env->startSection('title', 'The Best Audio Visual Company in Kenya — StagePass Audio Visual Limited'); ?>
 <?php $__env->startSection('description', 'StagePass Audio Visual Limited is Kenya\'s leading events and audio-visual company — offering professional sound systems, event production, video conferencing, stage lighting, LED screens and technical event support in Nairobi and across Kenya.'); ?>
 

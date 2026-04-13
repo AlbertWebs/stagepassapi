@@ -265,4 +265,10 @@ class HomeController extends Controller
             'industriesOption' => $industriesOption,
         ]);
     }
+
+    /** /selected: capabilities option 3, industries option 2. */
+    public function selectedHome()
+    {
+        return $this->homeWithVideo(3, 2);
+    }
 }
