@@ -16,12 +16,12 @@
         <div class="absolute inset-0 w-full h-full" style="pointer-events: none;">
             <iframe id="hero-vimeo-player" src="<?php echo e($vimeoUrl); ?>" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 border-0" style="width: max(100vw, 177.78vh); height: max(100vh, 56.25vw);" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" referrerpolicy="strict-origin-when-cross-origin" title="stagepass-audio-visual-safaricom-ceo-awade"></iframe>
         </div>
-        <div class="absolute inset-0 bg-black/35" aria-hidden="true" style="pointer-events: none;"></div>
+        <div class="absolute inset-0 bg-black/45" aria-hidden="true" style="pointer-events: none;"></div>
         <div class="absolute inset-0 hero-cinematic-vignette" aria-hidden="true" style="pointer-events: none;"></div>
     </div>
     <div class="relative z-30 flex flex-col items-center justify-center min-h-screen text-center px-4 sm:px-6">
         <div id="hero-text-block" class="hero-text-shell max-w-4xl mx-auto transition-all duration-[2s] ease-out">
-            <h1 id="hero-headline" class="hero-headline" data-full-headline="<?php echo e($headline); ?>"><?php echo e($headline); ?></h1>
+            <h1 id="hero-headline" class="hero-headline font-black" data-full-headline="<?php echo e($headline); ?>"><?php echo e($headline); ?></h1>
             <div class="mt-5 sm:mt-6 h-0.5 w-16 sm:w-20 bg-yellow-400 rounded-full mx-auto opacity-0 animate-hero-fade-up" aria-hidden="true" style="animation-delay: 0.3s; animation-fill-mode: forwards;"></div>
             <p id="hero-subheadline" class="hero-subheadline mt-4 sm:mt-5">Creative Solutions · Technical Excellence</p>
         </div>
@@ -34,12 +34,20 @@
         .hero-headline {
             font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
             font-style: normal;
-            font-weight: 800;
+            font-weight: 900;
             color: rgb(255, 255, 255);
             font-size: 60px;
             line-height: 60px;
-            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.45), 0 12px 40px rgba(0, 0, 0, 0.35), 0 0 26px rgba(250, 204, 21, 0.16);
+            text-shadow:
+                0 0 20px rgba(0, 0, 0, 0.75),
+                0 2px 10px rgba(0, 0, 0, 0.65),
+                0 14px 44px rgba(0, 0, 0, 0.5),
+                0 0 28px rgba(250, 204, 21, 0.14);
             min-height: 60px;
+        }
+        /* Tailwind preflight sets h1 to font-weight: inherit — keep headline black while typing */
+        h1.hero-headline {
+            font-weight: 900;
         }
         @media (max-width: 1023px) {
             .hero-headline { font-size: clamp(28px, 6vw, 48px); line-height: 1.1; }
@@ -48,13 +56,13 @@
             font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
             font-style: normal;
             font-weight: 600;
-            color: rgba(255, 255, 255, 0.95);
+            color: rgb(255, 255, 255);
             font-size: 20px;
             line-height: 28px;
             opacity: 0;
             transform: translateY(24px);
             transition: opacity 1.1s cubic-bezier(0.22, 1, 0.36, 1), transform 1.1s cubic-bezier(0.22, 1, 0.36, 1);
-            text-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
+            text-shadow: 0 0 14px rgba(0, 0, 0, 0.7), 0 2px 14px rgba(0, 0, 0, 0.55);
         }
         .hero-subheadline.is-visible {
             opacity: 1;
@@ -84,20 +92,26 @@
         .animate-hero-fade-up {
             animation: hero-fade-up 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
         }
+        /* After typing: slight fade on the whole panel (copy + glass) so video shows through a bit */
         #hero-text-block.hero-text-dim {
-            opacity: 0.2;
+            opacity: 0.86;
+            filter: drop-shadow(0 8px 22px rgba(0, 0, 0, 0.36));
         }
         #hero-text-block {
             filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.35));
+            transition: opacity 1.35s ease, filter 1.35s ease;
         }
         .hero-text-shell {
             position: relative;
             padding: 1.15rem 1.2rem 1.55rem;
             border-radius: 1.25rem;
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            background: linear-gradient(145deg, rgba(12, 20, 54, 0.36), rgba(12, 20, 54, 0.12));
-            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            background:
+                linear-gradient(145deg, rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.18)),
+                linear-gradient(145deg, rgba(12, 20, 54, 0.62), rgba(12, 20, 54, 0.38));
+            backdrop-filter: blur(8px);
             overflow: visible;
+            transition: background 1.4s ease, border-color 1.4s ease, backdrop-filter 1.4s ease;
         }
         .hero-text-shell::before {
             content: "";
@@ -183,6 +197,7 @@
         }
         .hero-headline.is-typing {
             white-space: normal;
+            font-weight: 900;
         }
         @keyframes hero-spin {
             to { transform: rotate(360deg); }
@@ -249,7 +264,7 @@
         }
         // Reserve final headline height before typing so the dark shell is fully sized first.
         var measure = document.createElement('span');
-        measure.className = 'hero-headline';
+        measure.className = headline.className;
         measure.style.position = 'absolute';
         measure.style.visibility = 'hidden';
         measure.style.pointerEvents = 'none';
@@ -278,9 +293,10 @@
             if (subheadline) {
                 setTimeout(function(){ subheadline.classList.add('is-visible'); }, 220);
             }
+            /* Slight fade once copy is on screen (typing + subheadline beat) */
             setTimeout(function(){
                 block.classList.add('hero-text-dim');
-            }, 10000);
+            }, 2200);
         }
         setTimeout(typeNext, 3000);
     })();

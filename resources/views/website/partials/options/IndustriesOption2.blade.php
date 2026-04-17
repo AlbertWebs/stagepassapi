@@ -120,9 +120,6 @@
             text-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
             letter-spacing: -0.01em;
         }
-        .ind2-card .ind2-desc {
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
-        }
         .ind2-reveal {
             opacity: 0;
             transform: translateY(20px);
@@ -223,10 +220,7 @@
                             <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/35 to-transparent pointer-events-none"></div>
                             <div class="relative h-full p-8 flex flex-col justify-end">
                                 <h3 class="ind2-title text-white text-xl font-semibold transition-transform duration-300 group-hover:-translate-y-1">{{ $name }}</h3>
-                                <p class="ind2-desc mt-2 text-sm text-gray-400 leading-relaxed line-clamp-2">
-                                    {{ $desc ?: 'Tailored AV solutions crafted for this industry.' }}
-                                </p>
-                                <div class="mt-3 h-px w-full bg-gradient-to-r from-yellow-300/75 via-white/45 to-transparent"></div>
+                                <div class="mt-4 h-px w-full bg-gradient-to-r from-yellow-300/75 via-white/45 to-transparent"></div>
                             </div>
                             </div>
                             </article>

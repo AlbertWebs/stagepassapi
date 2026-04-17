@@ -73,11 +73,57 @@
     $imageUrl = $imageUrl ?? asset('uploads/banners/visionsp.jpg');
     $statValue = $statValue ?? '2362+';
     $statLabel = $statLabel ?? 'Successful Events';
+
+    $statValueRaw = trim((string) $statValue);
+    if (preg_match('/^[^\d]*([\d][\d,\s]*)(.*)$/u', $statValueRaw, $statParts)) {
+        $statNumber = (int) preg_replace('/\D/', '', $statParts[1]);
+        $statSuffix = trim($statParts[2] ?? '');
+    } else {
+        $statNumber = 2362;
+        $statSuffix = '+';
+    }
+    if ($statNumber < 0) {
+        $statNumber = 0;
+    }
     $visionTitle = $visionTitle ?? 'Our Mission';
     $visionText = $visionText ?? "TO BE AFRICA'S REVOLUTIONARY EVENTS TECHNOLOGY EXPERTS";
     $peopleTitle = $peopleTitle ?? 'Our People';
     $peopleDescription = $peopleDescription ?? "While we've got the most trusted audiovisual, staging and lighting brands available to you, it is our unparalleled team that will exceed your expectations.";
 ?>
+<script>
+document.addEventListener('alpine:init', () => {
+    Alpine.data('aboutFloatingStat', () => ({
+        target: <?php echo e($statNumber); ?>,
+        suffix: <?php echo json_encode($statSuffix); ?>,
+        display: 0,
+        done: false,
+        startCount() {
+            if (this.done) {
+                return;
+            }
+            this.done = true;
+            if (this.target <= 0) {
+                this.display = 0;
+                return;
+            }
+            const duration = 2000;
+            const start = performance.now();
+            const tgt = this.target;
+            const ease = (t) => 1 - Math.pow(1 - t, 3);
+            const frame = (now) => {
+                const u = Math.min(1, (now - start) / duration);
+                this.display = Math.round(tgt * ease(u));
+                if (u < 1) {
+                    requestAnimationFrame(frame);
+                } else {
+                    this.display = tgt;
+                }
+            };
+            requestAnimationFrame(frame);
+        },
+    }));
+});
+</script>
 <div class="h-12 bg-gradient-to-b from-white to-gray-50 relative">
     <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-transparent via-[#172455] to-transparent"></div>
 </div>
@@ -101,10 +147,12 @@
                     <div class="absolute inset-0 bg-gradient-to-br from-yellow-500/5 to-transparent"></div>
                 </div>
                 
-                <!-- Floating stat card -->
-                <div class="absolute -bottom-4 -right-4 bg-gradient-to-br from-yellow-400 via-yellow-500 to-yellow-600 rounded-2xl shadow-2xl shadow-yellow-500/30 ring-4 ring-white/50 p-4 max-w-xs animate-float hover:shadow-yellow-500/40 hover:scale-105 transition-all duration-300">
+                <!-- Floating stat card: count up from 0 when scrolled into view -->
+                <div class="absolute -bottom-4 -right-4 bg-gradient-to-br from-yellow-400 via-yellow-500 to-yellow-600 rounded-2xl shadow-2xl shadow-yellow-500/30 ring-4 ring-white/50 p-4 max-w-xs animate-float hover:shadow-yellow-500/40 hover:scale-105 transition-all duration-300"
+                     x-data="aboutFloatingStat"
+                     x-intersect.once="startCount()">
                     <div class="text-center">
-                        <div class="text-3xl md:text-5xl font-black text-white drop-shadow-lg"><?php echo e($statValue); ?></div>
+                        <div class="text-3xl md:text-5xl font-black text-white drop-shadow-lg tabular-nums" x-text="display.toLocaleString('en-US') + suffix"></div>
                         <div class="text-white font-bold mt-2 drop-shadow-md"><?php echo e($statLabel); ?></div>
                     </div>
                 </div>

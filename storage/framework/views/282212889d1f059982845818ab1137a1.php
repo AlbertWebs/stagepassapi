@@ -117,6 +117,31 @@ $defaultLogo =
     .animate-bounce-slow {
         animation: bounce-slow 2s ease-in-out infinite;
     }
+
+    /* Navbar top accent: wide gradient, position driven by scroll (see navbar Alpine) */
+    .nav-top-accent {
+        background-image: linear-gradient(
+            90deg,
+            #172455 0%,
+            #eab308 22%,
+            #172455 45%,
+            #facc15 68%,
+            #172455 100%
+        );
+        background-size: 220% 100%;
+        background-repeat: no-repeat;
+        will-change: background-position;
+    }
+
+    /* Used by stats, footer, industries stripes, etc. */
+    @keyframes gradient-x {
+        0%, 100% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+    }
+    .animate-gradient-x {
+        background-size: 200% 200%;
+        animation: gradient-x 3s ease infinite;
+    }
     
     /* Scroll animations */
     @keyframes fade-in-up {

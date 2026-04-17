@@ -6,12 +6,91 @@
         (object)['icon' => 'Users', 'value' => '421', 'label' => 'Happy Clients'],
         (object)['icon' => 'Calendar', 'value' => '2,362', 'label' => 'Events'],
     ];
+    if ($items instanceof \Illuminate\Support\Collection) {
+        $items = $items->values()->all();
+    } elseif (!is_array($items)) {
+        $items = [
+            (object)['icon' => 'Package', 'value' => '43,234', 'label' => 'AV Equipment'],
+            (object)['icon' => 'Users', 'value' => '421', 'label' => 'Happy Clients'],
+            (object)['icon' => 'Calendar', 'value' => '2,362', 'label' => 'Events'],
+        ];
+    }
+
+    $statsRows = [];
+    foreach ($items as $stat) {
+        $icon = is_array($stat) ? ($stat['icon'] ?? 'Package') : ($stat->icon ?? 'Package');
+        $valueRaw = trim((string) (is_array($stat) ? ($stat['value'] ?? '') : ($stat->value ?? '')));
+        $label = is_array($stat) ? ($stat['label'] ?? '') : ($stat->label ?? '');
+        if (preg_match('/^[^\d]*([\d][\d,\s]*)(.*)$/u', $valueRaw, $m)) {
+            $target = (int) preg_replace('/\D/', '', $m[1]);
+            $suffix = trim($m[2] ?? '');
+            if ($target < 0) {
+                $target = 0;
+            }
+            $statsRows[] = [
+                'icon' => $icon,
+                'label' => $label,
+                'numeric' => true,
+                'target' => $target,
+                'suffix' => $suffix,
+            ];
+        } else {
+            $statsRows[] = [
+                'icon' => $icon,
+                'label' => $label,
+                'numeric' => false,
+                'staticValue' => $valueRaw !== '' ? $valueRaw : '—',
+            ];
+        }
+    }
+
     $priorityYoutube = 'https://www.youtube.com/watch?v=EbNwoqsDgEg';
     $videoUrl = $priorityYoutube;
     $isYoutube = preg_match('#(?:youtube\.com/watch\?v=|youtu\.be/)([a-zA-Z0-9_-]+)#', $videoUrl, $yt) ? $yt[1] : null;
     $videoFallbackImage = asset('uploads/hero.jpeg');
 @endphp
-<section id="stats-video-section" class="relative min-h-[700px] max-h-[700px] flex items-center justify-center overflow-hidden text-white py-16">
+<script>
+document.addEventListener('alpine:init', () => {
+    const baseRows = @json($statsRows);
+    Alpine.data('statsSectionCounters', () => ({
+        rows: baseRows.map((r) => (r.numeric ? { ...r, display: 0 } : { ...r })),
+        started: false,
+        startAll() {
+            if (this.started) {
+                return;
+            }
+            this.started = true;
+            const duration = 2000;
+            const start = performance.now();
+            const ease = (t) => 1 - Math.pow(1 - t, 3);
+            const frame = (now) => {
+                const u = Math.min(1, (now - start) / duration);
+                const eased = ease(u);
+                this.rows.forEach((r) => {
+                    if (!r.numeric) {
+                        return;
+                    }
+                    const tgt = r.target;
+                    r.display = tgt <= 0 ? 0 : Math.round(tgt * eased);
+                });
+                if (u < 1) {
+                    requestAnimationFrame(frame);
+                } else {
+                    this.rows.forEach((r) => {
+                        if (r.numeric) {
+                            r.display = r.target;
+                        }
+                    });
+                }
+            };
+            requestAnimationFrame(frame);
+        },
+    }));
+});
+</script>
+<section id="stats-video-section" class="relative min-h-[700px] max-h-[700px] flex items-center justify-center overflow-hidden text-white py-16"
+         x-data="statsSectionCounters"
+         x-intersect.threshold.0.15.once="startAll()">
     <div class="absolute inset-0 overflow-hidden">
         <img id="stats-video-fallback" src="{{ $videoFallbackImage }}" alt="" class="absolute inset-0 w-full h-full object-cover hidden" aria-hidden="true">
         @if($isYoutube)
@@ -27,12 +106,8 @@
     </div>
     <div class="relative z-10 container mx-auto px-6 lg:px-12">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
-            @foreach($items as $stat)
-            @php
-                $icon = is_array($stat) ? ($stat['icon'] ?? 'Package') : ($stat->icon ?? 'Package');
-                $value = is_array($stat) ? ($stat['value'] ?? '') : ($stat->value ?? '');
-                $label = is_array($stat) ? ($stat['label'] ?? '') : ($stat->label ?? '');
-            @endphp
+            @foreach($statsRows as $row)
+            @php $icon = $row['icon']; $label = $row['label']; $idx = $loop->index; @endphp
             <div>
                 <div class="inline-flex items-center justify-center w-24 h-24 rounded-full bg-yellow-500 text-white mb-4">
                     @if($icon === 'Users')
@@ -43,7 +118,8 @@
                     <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
                     @endif
                 </div>
-                <div class="text-5xl md:text-6xl font-bold text-yellow-400">{{ $value }}</div>
+                <div class="text-5xl md:text-6xl font-bold text-yellow-400 tabular-nums"
+                     x-text="rows[{{ $idx }}].numeric ? (rows[{{ $idx }}].display.toLocaleString('en-US') + rows[{{ $idx }}].suffix) : rows[{{ $idx }}].staticValue"></div>
                 <div class="text-xl font-semibold mt-2">{{ $label }}</div>
             </div>
             @endforeach

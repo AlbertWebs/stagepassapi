@@ -117,6 +117,59 @@ $defaultLogo =
     .animate-bounce-slow {
         animation: bounce-slow 2s ease-in-out infinite;
     }
+
+    /* Navbar top accent: wide gradient, position driven by scroll (see navbar Alpine) */
+    .nav-top-accent {
+        background-image: linear-gradient(
+            90deg,
+            #172455 0%,
+            #eab308 22%,
+            #172455 45%,
+            #facc15 68%,
+            #172455 100%
+        );
+        background-size: 220% 100%;
+        background-repeat: no-repeat;
+        will-change: background-position;
+    }
+
+    /* Used by stats, footer, industries stripes, etc. */
+    @keyframes gradient-x {
+        0%, 100% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+    }
+    .animate-gradient-x {
+        background-size: 200% 200%;
+        animation: gradient-x 3s ease infinite;
+    }
+
+    /* Contact form (before footer): animated gradient frame */
+    @keyframes contact-form-border-flow {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+    .contact-form-gradient-border {
+        background-image: linear-gradient(
+            125deg,
+            #172455 0%,
+            #eab308 18%,
+            #172455 36%,
+            #facc15 54%,
+            #1e3a8a 72%,
+            #eab308 88%,
+            #172455 100%
+        );
+        background-size: 320% 320%;
+        animation: contact-form-border-flow 6s ease-in-out infinite;
+        box-shadow: 0 25px 50px -12px rgba(23, 36, 85, 0.18);
+    }
+    @media (prefers-reduced-motion: reduce) {
+        .contact-form-gradient-border {
+            animation: none;
+            background-position: 50% 50%;
+        }
+    }
     
     /* Scroll animations */
     @keyframes fade-in-up {

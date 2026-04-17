@@ -72,9 +72,18 @@ document.addEventListener('alpine:init', () => {
         isScrolled: <?php echo e($isPageJs); ?>,
         isMobileMenuOpen: false,
         activeLink: <?php echo $currentPathJson; ?>,
+        topGradientPos: 0,
+        updateTopGradient() {
+            const y = window.scrollY;
+            const range = document.documentElement.scrollHeight - window.innerHeight;
+            const t = range > 0 ? Math.min(1, Math.max(0, y / range)) : 0;
+            this.topGradientPos = Math.round(t * 100);
+        },
         init() {
-            if (!<?php echo e($isPageJs); ?>) {
-                const handleScroll = () => {
+            const isPage = <?php echo e($isPageJs); ?>;
+            const handleScroll = () => {
+                this.updateTopGradient();
+                if (!isPage) {
                     this.isScrolled = window.scrollY > 50;
                     const sections = <?php echo $sectionsJson; ?>;
                     const currentActive = sections.find(href => {
@@ -84,13 +93,15 @@ document.addEventListener('alpine:init', () => {
                         return rect.top <= 100 && rect.bottom >= 100;
                     });
                     if (currentActive) this.activeLink = '#' + currentActive;
-                };
-                handleScroll();
-                window.addEventListener('scroll', handleScroll);
-            } else {
+                }
+            };
+            if (isPage) {
                 this.activeLink = <?php echo $currentPathJson; ?>;
                 this.isScrolled = true;
             }
+            handleScroll();
+            window.addEventListener('scroll', handleScroll, { passive: true });
+            window.addEventListener('resize', handleScroll, { passive: true });
         }
     }));
 });
@@ -99,8 +110,9 @@ document.addEventListener('alpine:init', () => {
 <div x-data="navbar">
     <nav :class="(isScrolled || <?php echo e($isPageJs); ?>) ? 'bg-[#0f1b3d] shadow-xl border-b-2 border-[#172455]/10' : 'bg-[#0f1b3d] backdrop-blur-md'"
          class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
-        <!-- Top accent bar -->
-        <div class="h-1 md:h-2 bg-gradient-to-r from-[#172455] via-yellow-500 to-[#172455] animate-gradient-x"></div>
+        <!-- Top accent bar: gradient shifts with scroll depth -->
+        <div class="nav-top-accent h-1 md:h-2"
+             :style="'background-position: ' + topGradientPos + '% 50%'"></div>
         
         <div class="container mx-auto px-4 lg:px-12">
             <div class="flex items-center justify-between h-16 md:h-20">
