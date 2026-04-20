@@ -4,8 +4,8 @@
     $items = is_array($data) ? ($data['items'] ?? []) : ($data->items ?? []);
     $title = is_array($section) ? ($section['title'] ?? 'Our Capabilities') : ($section->title ?? 'Our Capabilities');
     $subtitle = is_array($section)
-        ? ($section['subtitle'] ?? 'Hover reveal cards: minimal first glance, richer detail on interaction.')
-        : ($section->subtitle ?? 'Hover reveal cards: minimal first glance, richer detail on interaction.');
+        ? ($section['subtitle'] ?? "From concept to set-up to on-site support, we're here every step of the way to deliver the exceptional product and service you deserve.")
+        : ($section->subtitle ?? "From concept to set-up to on-site support, we're here every step of the way to deliver the exceptional product and service you deserve.");
 
     $portfolioFiles = [];
     try {
@@ -84,6 +84,7 @@
         }
         .cap5-card:hover .cap5-scrim { opacity: 0.08; }
         .cap5-topcopy {
+            position: relative;
             display: inline-block;
             width: 100%;
             min-height: 92px;
@@ -97,10 +98,41 @@
             flex-direction: column;
             justify-content: center;
         }
+        .cap5-topcopy::before {
+            content: "";
+            position: absolute;
+            inset: -1px;
+            border-radius: inherit;
+            padding: 1px;
+            background: linear-gradient(
+                120deg,
+                #021c55 0%,
+                #0b3f81 20%,
+                #e86705 40%,
+                #f1850a 58%,
+                #fcb00d 78%,
+                #f7b82c 100%
+            );
+            background-size: 240% 240%;
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
+            transition: opacity .35s ease;
+            pointer-events: none;
+        }
         .cap5-card:hover .cap5-topcopy {
             background: rgba(2,6,23,0.15);
             border-color: rgba(255,255,255,0.18);
             box-shadow: 0 16px 34px rgba(0,0,0,0.22);
+        }
+        .cap5-card:hover .cap5-topcopy::before {
+            opacity: 1;
+            animation: cap5GradientShift 2.2s linear infinite;
+        }
+        @keyframes cap5GradientShift {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
         }
         .cap5-title {
             text-shadow: 0 1px 0 rgba(255,255,255,0.25);
@@ -108,11 +140,27 @@
         .cap5-card:hover .cap5-title {
             text-shadow: 0 10px 28px rgba(0,0,0,0.35);
         }
+        .cap5-footer {
+            border-radius: 10px;
+            padding: 10px 12px;
+            background: linear-gradient(180deg, rgba(2, 18, 54, 0.72) 0%, rgba(2, 18, 54, 0.84) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+            color: rgba(255,255,255,0.92);
+            line-height: 1.4;
+            backdrop-filter: blur(4px);
+        }
+        .cap5-card:hover .cap5-footer {
+            background: linear-gradient(180deg, rgba(2, 18, 54, 0.78) 0%, rgba(2, 18, 54, 0.9) 100%);
+            border-color: rgba(255,255,255,0.24);
+            color: rgba(255,255,255,0.98);
+        }
         @media (prefers-reduced-motion: reduce) {
             .cap5-card,
             .cap5-overlay,
             .cap5-photo,
-            .cap5-scrim { transition: none !important; }
+            .cap5-scrim,
+            .cap5-topcopy::before { transition: none !important; animation: none !important; }
         }
     </style>
     <div class="cap5-bg-blob cap5-blob-1" aria-hidden="true"></div>
@@ -141,10 +189,9 @@
                         <div class="text-slate-900 group-hover:text-white transition-colors duration-300">
                             <div class="cap5-topcopy">
                                 <h3 class="cap5-title text-xl font-black leading-snug line-clamp-2 text-[#172455] group-hover:text-white transition-colors duration-300"><?php echo e($titleItem); ?></h3>
-                                <p class="mt-2 text-sm font-semibold text-slate-700/90 group-hover:text-slate-100 transition-colors duration-300">Hover to explore</p>
                             </div>
                         </div>
-                        <div class="mt-auto text-sm lg:text-base text-white/0 group-hover:text-white/90 transition-colors duration-300">
+                        <div class="cap5-footer mt-auto text-sm lg:text-base font-medium transition-all duration-300 line-clamp-2">
                             <?php echo e($desc); ?>
 
                         </div>

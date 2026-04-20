@@ -97,6 +97,24 @@ document.addEventListener('alpine:init', () => {
         suffix: <?php echo json_encode($statSuffix); ?>,
         display: 0,
         done: false,
+        init() {
+            this.display = 0;
+            const el = this.$el;
+            if (!el) return;
+            if (typeof IntersectionObserver === 'undefined') {
+                this.startCount();
+                return;
+            }
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        this.startCount();
+                        observer.disconnect();
+                    }
+                });
+            }, { threshold: 0.35 });
+            observer.observe(el);
+        },
         startCount() {
             if (this.done) {
                 return;
@@ -150,7 +168,7 @@ document.addEventListener('alpine:init', () => {
                 <!-- Floating stat card: count up from 0 when scrolled into view -->
                 <div class="absolute -bottom-4 -right-4 bg-gradient-to-br from-yellow-400 via-yellow-500 to-yellow-600 rounded-2xl shadow-2xl shadow-yellow-500/30 ring-4 ring-white/50 p-4 max-w-xs animate-float hover:shadow-yellow-500/40 hover:scale-105 transition-all duration-300"
                      x-data="aboutFloatingStat"
-                     x-intersect.once="startCount()">
+                     x-init="init()">
                     <div class="text-center">
                         <div class="text-3xl md:text-5xl font-black text-white drop-shadow-lg tabular-nums" x-text="display.toLocaleString('en-US') + suffix"></div>
                         <div class="text-white font-bold mt-2 drop-shadow-md"><?php echo e($statLabel); ?></div>

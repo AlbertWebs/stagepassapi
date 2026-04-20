@@ -152,11 +152,12 @@ class="py-32 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden">
                 </div>
             </div>
 
-            <!-- Right - Contact Form -->
-            <div class="bg-gradient-to-br from-white via-gray-50 to-white rounded-3xl shadow-2xl shadow-gray-300/50 p-10 lg:p-14 border-2 border-gray-200/50 ring-2 ring-gray-100/50 hover:shadow-gray-400/60 hover:border-gray-300/50 transition-all duration-300"
+            <!-- Right - Contact Form (animated gradient border) -->
+            <div class="contact-form-gradient-border rounded-3xl p-[3px] lg:p-[4px]"
                  x-intersect.threshold.0.1="rightVisible = true"
                  :class="rightVisible ? 'animate-fade-in-right' : ''"
                  style="opacity: 1;">
+                <div class="bg-gradient-to-br from-white via-gray-50 to-white rounded-3xl shadow-inner shadow-gray-200/40 p-10 lg:p-14 ring-1 ring-white/80">
                 <form @submit.prevent="handleSubmit()" class="space-y-6">
                     <div x-show="error" x-transition class="p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm" x-text="error"></div>
                     
@@ -196,6 +197,7 @@ class="py-32 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden">
                         <span x-text="isSubmitting ? 'Sending...' : 'Send Message'"></span>
                     </button>
                 </form>
+                </div>
             </div>
         </div>
     </div>
