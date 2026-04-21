@@ -19,7 +19,7 @@
     $defaultPortfolioImage = asset('uploads/portfolio/6.jpg');
 ?>
 
-<section class="relative py-20 bg-white overflow-hidden">
+<section id="services" class="relative py-20 bg-white overflow-hidden">
     <style>
         .cap5-bg-blob {
             position: absolute;
@@ -194,18 +194,30 @@
             border-width: 0;
             overflow: hidden;
         }
+        .cap5-reveal {
+            opacity: 0;
+            transform: translateY(22px);
+            transition:
+                opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+                transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .cap5-reveal.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
         @media (prefers-reduced-motion: reduce) {
             .cap5-card,
             .cap5-overlay,
             .cap5-photo,
             .cap5-scrim,
-            .cap5-topcopy::before { transition: none !important; animation: none !important; }
+            .cap5-topcopy::before,
+            .cap5-reveal { transition: none !important; animation: none !important; transform: none !important; opacity: 1 !important; }
         }
     </style>
     <div class="cap5-bg-blob cap5-blob-1" aria-hidden="true"></div>
     <div class="cap5-bg-blob cap5-blob-2" aria-hidden="true"></div>
     <div class="container mx-auto px-6 lg:px-12">
-        <div class="max-w-3xl mx-auto text-center">
+        <div class="cap5-reveal max-w-3xl mx-auto text-center" data-cap5-delay="0">
             <p class="inline-flex items-center rounded-full border border-[#172455]/20 bg-[#172455]/5 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.2em] text-[#172455]">
                 Capabilities
             </p>
@@ -220,24 +232,60 @@
                     $desc = is_array($item) ? ($item['description'] ?? '') : ($item->description ?? '');
                     $bg = count($portfolioImages) ? ($portfolioImages[$idx % count($portfolioImages)] ?? $defaultPortfolioImage) : $defaultPortfolioImage;
                 ?>
-                <article class="cap5-card group relative rounded-2xl border bg-white p-6 h-64 overflow-hidden transition-all duration-300">
-                    <div class="cap5-photo" style="background-image: url('<?php echo e($bg); ?>');" aria-hidden="true"></div>
-                    <div class="cap5-scrim" aria-hidden="true"></div>
-                    <div class="cap5-overlay absolute inset-0 bg-gradient-to-t from-[#020617]/95 via-[#0b1436]/75 to-transparent translate-y-[70%] group-hover:translate-y-0 transition-transform duration-500"></div>
-                    <div class="relative z-10 h-full flex flex-col items-center justify-center text-center gap-4">
-                        <div class="w-full text-slate-900 group-hover:text-white transition-colors duration-300">
-                            <div class="cap5-topcopy">
-                                <h3 class="cap5-title text-xl font-black leading-snug line-clamp-2 text-[#172455] group-hover:text-white transition-colors duration-300"><?php echo e($titleItem); ?></h3>
+                <div class="cap5-reveal" data-cap5-delay="<?php echo e(($idx + 1) * 0.08); ?>">
+                    <article class="cap5-card group relative rounded-2xl border bg-white p-6 h-64 overflow-hidden transition-all duration-300">
+                        <div class="cap5-photo" style="background-image: url('<?php echo e($bg); ?>');" aria-hidden="true"></div>
+                        <div class="cap5-scrim" aria-hidden="true"></div>
+                        <div class="cap5-overlay absolute inset-0 bg-gradient-to-t from-[#020617]/95 via-[#0b1436]/75 to-transparent translate-y-[70%] group-hover:translate-y-0 transition-transform duration-500"></div>
+                        <div class="relative z-10 h-full flex flex-col items-center justify-center text-center gap-4">
+                            <div class="w-full text-slate-900 group-hover:text-white transition-colors duration-300">
+                                <div class="cap5-topcopy">
+                                    <h3 class="cap5-title text-xl font-black leading-snug line-clamp-2 text-[#172455] group-hover:text-white transition-colors duration-300"><?php echo e($titleItem); ?></h3>
+                                </div>
+                            </div>
+                            <div class="cap5-footer text-sm lg:text-base font-medium transition-all duration-300 line-clamp-2">
+                                <?php echo e($desc); ?>
+
                             </div>
                         </div>
-                        <div class="cap5-footer text-sm lg:text-base font-medium transition-all duration-300 line-clamp-2">
-                            <?php echo e($desc); ?>
-
-                        </div>
-                    </div>
-                </article>
+                    </article>
+                </div>
             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </div>
     </div>
+    <script>
+    (function() {
+        var section = document.getElementById('services');
+        if (!section) return;
+        var reveals = section.querySelectorAll('.cap5-reveal');
+        if (!reveals.length) return;
+
+        function revealAll() {
+            reveals.forEach(function(node) {
+                var delay = parseFloat(node.getAttribute('data-cap5-delay') || '0');
+                node.style.transitionDelay = delay + 's';
+                node.classList.add('is-visible');
+            });
+        }
+
+        if (typeof IntersectionObserver === 'undefined') {
+            revealAll();
+            return;
+        }
+
+        var shown = false;
+        var observer = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (!shown && entry.isIntersecting) {
+                    shown = true;
+                    revealAll();
+                    observer.disconnect();
+                }
+            });
+        }, { threshold: 0.14 });
+
+        observer.observe(section);
+    })();
+    </script>
 </section>
 <?php /**PATH C:\projects\stagepassapi\resources\views/website/partials/options/CapabilitiesOption5.blade.php ENDPATH**/ ?>
