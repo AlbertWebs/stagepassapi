@@ -46,14 +46,34 @@
             .cap5-bg-blob { filter: blur(70px); }
         }
         .cap5-card {
+            position: relative;
+            isolation: isolate;
             border-color: rgba(23, 36, 85, 0.14);
             box-shadow: 0 12px 28px rgba(2, 6, 23, 0.06);
             transition: transform .28s ease, box-shadow .28s ease, border-color .28s ease;
+        }
+        .cap5-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            padding: 1px;
+            background: linear-gradient(130deg, rgba(2,28,85,0.65), rgba(232,103,5,0.62), rgba(252,176,13,0.68));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: .48;
+            pointer-events: none;
+            transition: opacity .28s ease;
+            z-index: 0;
         }
         .cap5-card:hover {
             transform: translateY(-6px);
             border-color: rgba(245, 158, 11, 0.45);
             box-shadow: 0 22px 50px rgba(2, 6, 23, 0.12);
+        }
+        .cap5-card:hover::before {
+            opacity: .95;
         }
         .cap5-card:focus-within {
             border-color: rgba(245, 158, 11, 0.55);
@@ -97,6 +117,8 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
+            align-items: center;
+            text-align: center;
         }
         .cap5-topcopy::before {
             content: "";
@@ -142,17 +164,35 @@
         }
         .cap5-footer {
             border-radius: 10px;
-            padding: 10px 12px;
-            background: transparent;
-            border: 0;
-            box-shadow: none;
-            color: rgba(255,255,255,0.92);
-            line-height: 1.4;
-            backdrop-filter: none;
+            padding: 12px 12px 14px;
+            background: rgba(255,255,255,0.88);
+            border: 1px solid rgba(15,23,42,0.10);
+            box-shadow: 0 8px 18px rgba(15,23,42,0.14);
+            color: rgba(15,23,42,0.98);
+            line-height: 1.45;
+            letter-spacing: 0.01em;
+            font-weight: 600;
+            backdrop-filter: blur(2px);
+            opacity: 1;
+            transform: translateY(0);
+            text-shadow: none;
+            min-height: calc(1.4em * 2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
         }
         .cap5-card:hover .cap5-footer {
             background: transparent;
-            color: rgba(255,255,255,0.98);
+            opacity: 0;
+            transform: translateY(8px);
+            min-height: 0;
+            max-height: 0;
+            padding-top: 0;
+            padding-bottom: 0;
+            margin: 0;
+            border-width: 0;
+            overflow: hidden;
         }
         @media (prefers-reduced-motion: reduce) {
             .cap5-card,
@@ -183,14 +223,14 @@
                 <article class="cap5-card group relative rounded-2xl border bg-white p-6 h-64 overflow-hidden transition-all duration-300">
                     <div class="cap5-photo" style="background-image: url('{{ $bg }}');" aria-hidden="true"></div>
                     <div class="cap5-scrim" aria-hidden="true"></div>
-                    <div class="cap5-overlay absolute inset-0 bg-gradient-to-br from-[#0b1436] to-slate-900 translate-y-[82%] group-hover:translate-y-0 transition-transform duration-500"></div>
-                    <div class="relative z-10 h-full flex flex-col">
-                        <div class="text-slate-900 group-hover:text-white transition-colors duration-300">
+                    <div class="cap5-overlay absolute inset-0 bg-gradient-to-t from-[#020617]/95 via-[#0b1436]/75 to-transparent translate-y-[70%] group-hover:translate-y-0 transition-transform duration-500"></div>
+                    <div class="relative z-10 h-full flex flex-col items-center justify-center text-center gap-4">
+                        <div class="w-full text-slate-900 group-hover:text-white transition-colors duration-300">
                             <div class="cap5-topcopy">
                                 <h3 class="cap5-title text-xl font-black leading-snug line-clamp-2 text-[#172455] group-hover:text-white transition-colors duration-300">{{ $titleItem }}</h3>
                             </div>
                         </div>
-                        <div class="cap5-footer mt-auto text-sm lg:text-base font-medium transition-all duration-300 line-clamp-2">
+                        <div class="cap5-footer text-sm lg:text-base font-medium transition-all duration-300 line-clamp-2">
                             {{ $desc }}
                         </div>
                     </div>

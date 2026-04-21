@@ -172,7 +172,7 @@
             }
         @endphp
         <div class="mt-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-            <div class="lg:col-span-8 lg:order-2">
+            <div class="order-2 lg:col-span-8 lg:order-2">
                 <div id="industries-option2-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                     @foreach(array_values($gridItems) as $idx => $item)
                         @php
@@ -228,7 +228,7 @@
                     @endforeach
                 </div>
             </div>
-            <aside class="lg:col-span-4 lg:self-end lg:order-1 space-y-4">
+            <aside class="order-1 lg:col-span-4 lg:self-end lg:order-1 space-y-4">
                 <div class="max-w-md">
                     <p class="inline-flex items-center rounded-full border border-[#172455]/20 bg-[#172455]/5 px-4 py-1.5 text-xs sm:text-sm font-extrabold uppercase tracking-[0.2em] text-[#172455] shadow-sm">
                         Industries

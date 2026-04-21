@@ -55,6 +55,24 @@ document.addEventListener('alpine:init', () => {
     Alpine.data('statsSectionCounters', () => ({
         rows: baseRows.map((r) => (r.numeric ? { ...r, display: 0 } : { ...r })),
         started: false,
+        init() {
+            this.rows = this.rows.map((r) => (r.numeric ? { ...r, display: 0 } : { ...r }));
+            const el = this.$el;
+            if (!el) return;
+            if (typeof IntersectionObserver === 'undefined') {
+                this.startAll();
+                return;
+            }
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        this.startAll();
+                        observer.disconnect();
+                    }
+                });
+            }, { threshold: 0.2 });
+            observer.observe(el);
+        },
         startAll() {
             if (this.started) {
                 return;
@@ -90,7 +108,7 @@ document.addEventListener('alpine:init', () => {
 </script>
 <section id="stats-video-section" class="relative min-h-[700px] max-h-[700px] flex items-center justify-center overflow-hidden text-white py-16"
          x-data="statsSectionCounters"
-         x-intersect.threshold.0.15.once="startAll()">
+         x-init="init()">
     <div class="absolute inset-0 overflow-hidden">
         <img id="stats-video-fallback" src="<?php echo e($videoFallbackImage); ?>" alt="" class="absolute inset-0 w-full h-full object-cover hidden" aria-hidden="true">
         <?php if($isYoutube): ?>
