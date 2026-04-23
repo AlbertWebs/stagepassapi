@@ -56,6 +56,8 @@
 @php
     $isSelectedPage = request()->is('selected');
     $menuBgHex = $isSelectedPage ? '#021caf' : '#0b3f81';
+    $menuScrolledClass = "bg-[{$menuBgHex}] shadow-xl border-b-2 border-[#172455]/10";
+    $menuTopClass = $isSelectedPage ? 'bg-transparent backdrop-blur-none border-b-0 shadow-none' : "bg-[{$menuBgHex}] backdrop-blur-md";
     $sections = [];
     if (is_array($navLinks)) {
         $sections = array_map(function($link) {
@@ -110,7 +112,7 @@ document.addEventListener('alpine:init', () => {
 </script>
 
 <div x-data="navbar">
-    <nav :class="(isScrolled || {{ $isPageJs }}) ? 'bg-[{{ $menuBgHex }}] shadow-xl border-b-2 border-[#172455]/10' : 'bg-[{{ $menuBgHex }}] backdrop-blur-md'"
+    <nav :class="(isScrolled || {{ $isPageJs }}) ? '{{ $menuScrolledClass }}' : '{{ $menuTopClass }}'"
          class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
         <!-- Top accent bar: gradient shifts with scroll depth -->
         <div class="nav-top-accent h-1 md:h-2"
