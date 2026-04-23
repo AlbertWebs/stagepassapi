@@ -61,6 +61,10 @@
         if ($heroData && !is_array($heroData)) {
             $heroData = (array) $heroData;
         }
+        if ($capabilitiesOption === 5 && $industriesOption === 2) {
+            $heroData = is_array($heroData) ? $heroData : [];
+            $heroData['vimeo_url'] = 'https://player.vimeo.com/video/1185799010?title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0&app_id=58479&autoplay=1&muted=1&loop=1&background=1';
+        }
     ?>
     <main id="home" class="relative">
         <?php echo $__env->make('website.partials.hero-video', ['data' => $heroData], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>

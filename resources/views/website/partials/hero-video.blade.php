@@ -1,7 +1,10 @@
 @php
     $data = $data ?? null;
     $headline = is_array($data) ? ($data['headline'] ?? 'We Create the Most Engaging Events in the World Using Technology') : ($data->headline ?? 'We Create the Most Engaging Events in the World Using Technology');
-    $vimeoUrl = 'https://player.vimeo.com/video/1175144955?badge=0&autopause=0&player_id=0&app_id=58479&autoplay=1&muted=1&loop=1&background=1';
+    $defaultVimeoUrl = 'https://player.vimeo.com/video/1175144955?badge=0&autopause=0&player_id=0&app_id=58479&autoplay=1&muted=1&loop=1&background=1';
+    $vimeoUrl = is_array($data)
+        ? ($data['vimeo_url'] ?? $defaultVimeoUrl)
+        : ($data->vimeo_url ?? $defaultVimeoUrl);
     $videoFallbackImage = asset('uploads/hero.jpeg');
 @endphp
 <section id="home" class="relative h-screen flex items-center justify-center overflow-hidden bg-gray-900 text-white -mt-[4.25rem] md:mt-0" style="padding-top: 4.25rem;">

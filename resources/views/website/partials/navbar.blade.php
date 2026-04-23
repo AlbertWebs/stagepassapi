@@ -54,6 +54,8 @@
     if ($currentPath === '/') $currentPath = '/';
 @endphp
 @php
+    $isSelectedPage = request()->is('selected');
+    $menuBgHex = $isSelectedPage ? '#021caf' : '#0b3f81';
     $sections = [];
     if (is_array($navLinks)) {
         $sections = array_map(function($link) {
@@ -108,7 +110,7 @@ document.addEventListener('alpine:init', () => {
 </script>
 
 <div x-data="navbar">
-    <nav :class="(isScrolled || {{ $isPageJs }}) ? 'bg-[#0b3f81] shadow-xl border-b-2 border-[#172455]/10' : 'bg-[#0b3f81] backdrop-blur-md'"
+    <nav :class="(isScrolled || {{ $isPageJs }}) ? 'bg-[{{ $menuBgHex }}] shadow-xl border-b-2 border-[#172455]/10' : 'bg-[{{ $menuBgHex }}] backdrop-blur-md'"
          class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
         <!-- Top accent bar: gradient shifts with scroll depth -->
         <div class="nav-top-accent h-1 md:h-2"
@@ -180,7 +182,7 @@ document.addEventListener('alpine:init', () => {
                  x-transition:leave="transition ease-in duration-150"
                  x-transition:leave-start="opacity-100 transform translate-y-0"
                  x-transition:leave-end="opacity-0 transform -translate-y-1"
-                 class="lg:hidden py-4 border-t border-[#172455]/10 animate-fade-in bg-gradient-to-b from-[#0f1b3d] to-[#172455]">
+                 class="lg:hidden py-4 border-t border-[#172455]/10 animate-fade-in bg-gradient-to-b from-[{{ $menuBgHex }}] to-[#172455]">
                 <div class="flex flex-col space-y-4">
                     @foreach($navLinks as $index => $link)
                         @php
