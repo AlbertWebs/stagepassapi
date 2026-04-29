@@ -376,5 +376,5 @@ style="background: linear-gradient(160deg, #f8fafc 0%, #e0e7ff 22%, #fef3c7 45%,
             </div>
         </div>
     </div>
-    <div class="absolute bottom-0 left-0 right-0 h-3 bg-gradient-to-r from-blue-500 via-purple-500 via-pink-500 via-red-500 via-orange-500 via-yellow-500 to-green-500 animate-gradient-x"></div>
+    <div class="absolute bottom-0 left-0 right-0 h-3 brand-gradient-x"></div>
 </section>

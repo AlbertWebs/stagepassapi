@@ -143,7 +143,7 @@ document.addEventListener('alpine:init', () => {
 });
 </script>
 <div class="h-12 bg-gradient-to-b from-white to-gray-50 relative">
-    <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-transparent via-[#172455] to-transparent"></div>
+    <div class="absolute inset-x-0 top-0 h-1 brand-gradient-x"></div>
 </div>
 
 <section id="about" 
@@ -191,7 +191,7 @@ document.addEventListener('alpine:init', () => {
                 <div>
                     <span class="inline-block text-sm font-bold text-yellow-600 tracking-wider uppercase bg-gradient-to-r from-yellow-100 via-yellow-50 to-yellow-100 px-4 py-2 rounded-full shadow-lg shadow-yellow-200/50 border border-yellow-200/50"><?php echo e($badgeLabel); ?></span>
                     <h2 class="text-4xl lg:text-5xl font-black text-[#172455] mt-6 leading-tight drop-shadow-sm"><?php echo e($title); ?></h2>
-                    <div class="h-2 w-24 bg-gradient-to-r from-yellow-500 via-yellow-400 to-yellow-600 rounded-full mt-4 shadow-lg shadow-yellow-500/30"></div>
+                    <div class="h-2 w-24 brand-gradient-fill rounded-full mt-4 shadow-lg shadow-yellow-500/30"></div>
                 </div>
 
                 <div class="text-xl text-gray-700 leading-relaxed font-medium"><?php echo $descriptionPrimary; ?></div>
@@ -247,7 +247,7 @@ document.addEventListener('alpine:init', () => {
                             <path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
                         </svg>
                         <h3 class="text-xl md:text-2xl font-black text-[#172455] mb-3 md:mb-4"><?php echo e($peopleTitle); ?></h3>
-                        <div class="h-2 w-20 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-full mx-auto mb-4 md:mb-6"></div>
+                        <div class="h-2 w-20 brand-gradient-fill rounded-full mx-auto mb-4 md:mb-6"></div>
                         <p class="text-base md:text-lg text-gray-700 leading-relaxed font-medium"><?php echo e($peopleDescription); ?></p>
                     </div>
                 </div>
@@ -258,6 +258,6 @@ document.addEventListener('alpine:init', () => {
 </section>
 
 <div class="h-24 bg-gradient-to-b from-white to-gray-50 relative">
-    <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-transparent via-yellow-500 to-transparent"></div>
+    <div class="absolute inset-x-0 top-0 h-1 brand-gradient-x"></div>
 </div>
 <?php /**PATH C:\projects\stagepassapi\resources\views/website/partials/about.blade.php ENDPATH**/ ?>

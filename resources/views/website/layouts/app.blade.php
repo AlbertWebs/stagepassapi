@@ -122,15 +122,52 @@ $defaultLogo =
     .nav-top-accent {
         background-image: linear-gradient(
             90deg,
-            #172455 0%,
-            #eab308 22%,
-            #172455 45%,
-            #facc15 68%,
-            #172455 100%
+            #021c55 0%,
+            #021c55 22%,
+            #0b3f81 22%,
+            #0b3f81 48%,
+            #e86705 54%,
+            #f1850a 64%,
+            #fcb00d 80%,
+            #f7b82c 100%
         );
         background-size: 220% 100%;
         background-repeat: no-repeat;
         will-change: background-position;
+    }
+
+    /* Full-width / section stripes: dark + light blue hold ~half the band before oranges/yellows */
+    .brand-gradient-x {
+        background-image: linear-gradient(
+            90deg,
+            #021c55 0%,
+            #021c55 24%,
+            #0b3f81 24%,
+            #0b3f81 50%,
+            #e86705 56%,
+            #f1850a 66%,
+            #fcb00d 82%,
+            #f7b82c 100%
+        );
+        background-size: 220% 100%;
+        background-repeat: no-repeat;
+        animation: gradient-x 3s ease infinite;
+    }
+    .brand-gradient-fill {
+        background-image: linear-gradient(
+            90deg,
+            #021c55 0%,
+            #021c55 22%,
+            #0b3f81 22%,
+            #0b3f81 48%,
+            #e86705 54%,
+            #f1850a 65%,
+            #fcb00d 80%,
+            #f7b82c 100%
+        );
+    }
+    @media (prefers-reduced-motion: reduce) {
+        .brand-gradient-x { animation: none; }
     }
 
     /* Used by stats, footer, industries stripes, etc. */
@@ -152,13 +189,15 @@ $defaultLogo =
     .contact-form-gradient-border {
         background-image: linear-gradient(
             125deg,
-            #172455 0%,
-            #eab308 18%,
-            #172455 36%,
-            #facc15 54%,
-            #1e3a8a 72%,
-            #eab308 88%,
-            #172455 100%
+            #021c55 0%,
+            #021c55 14%,
+            #0b3f81 14%,
+            #0b3f81 32%,
+            #e86705 42%,
+            #f1850a 52%,
+            #fcb00d 68%,
+            #f7b82c 82%,
+            #021c55 100%
         );
         background-size: 320% 320%;
         animation: contact-form-border-flow 6s ease-in-out infinite;

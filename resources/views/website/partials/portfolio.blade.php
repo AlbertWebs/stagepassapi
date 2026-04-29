@@ -177,7 +177,7 @@ document.addEventListener('alpine:init', () => {
              style="opacity: 1;">
             <span class="inline-block text-sm font-bold text-yellow-600 tracking-wider uppercase bg-gradient-to-r from-yellow-100 via-yellow-50 to-yellow-100 px-4 py-2 rounded-full shadow-lg shadow-yellow-200/50 border border-yellow-200/50">{{ $badgeLabel }}</span>
             <h2 class="text-5xl lg:text-6xl font-black text-[#172455] mt-6 mb-8 drop-shadow-sm">{{ $title }}</h2>
-            <div class="h-2 w-32 bg-gradient-to-r from-yellow-500 via-yellow-400 to-yellow-600 rounded-full mx-auto mb-8 shadow-lg shadow-yellow-500/30"></div>
+            <div class="h-2 w-32 brand-gradient-fill rounded-full mx-auto mb-8 shadow-lg shadow-yellow-500/30"></div>
             <p class="text-xl text-gray-700 max-w-2xl mx-auto font-medium drop-shadow-sm">{{ $description }}</p>
         </div>
 

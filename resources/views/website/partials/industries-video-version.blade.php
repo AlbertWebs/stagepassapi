@@ -126,7 +126,7 @@
         </div>
         <div class="absolute inset-0 bg-gray-900/60 pointer-events-none" aria-hidden="true"></div>
     </div>
-    <div class="absolute top-0 left-0 right-0 h-3 bg-gradient-to-r from-blue-500 via-purple-500 via-pink-500 via-red-500 via-orange-500 via-yellow-500 to-green-500 animate-gradient-x z-10" aria-hidden="true"></div>
+    <div class="absolute top-0 left-0 right-0 h-3 brand-gradient-x z-10" aria-hidden="true"></div>
     <!-- Subtle grid -->
     <div class="absolute inset-0 opacity-[0.06] pointer-events-none z-10" aria-hidden="true"
          style="background-image: linear-gradient(rgba(255,255,255,.08) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.08) 1px, transparent 1px); background-size: 48px 48px;"></div>

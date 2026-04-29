@@ -95,7 +95,17 @@
             position: absolute;
             inset: -1px;
             border-radius: 1rem;
-            background: linear-gradient(120deg, rgba(99,102,241,.28), rgba(14,165,233,.22), rgba(245,158,11,.26));
+            background: linear-gradient(
+                120deg,
+                rgba(2,28,85,.45) 0%,
+                rgba(2,28,85,.40) 20%,
+                rgba(11,63,129,.42) 20%,
+                rgba(11,63,129,.38) 45%,
+                rgba(232,103,5,.34) 55%,
+                rgba(241,133,10,.30) 65%,
+                rgba(252,176,13,.32) 82%,
+                rgba(247,184,44,.34) 100%
+            );
             opacity: .7;
             transition: opacity .25s ease, filter .25s ease;
             pointer-events: none;
@@ -220,7 +230,7 @@
                             <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/35 to-transparent pointer-events-none"></div>
                             <div class="relative h-full p-8 flex flex-col justify-end">
                                 <h3 class="ind2-title text-white text-xl font-semibold transition-transform duration-300 group-hover:-translate-y-1">{{ $name }}</h3>
-                                <div class="mt-4 h-px w-full bg-gradient-to-r from-yellow-300/75 via-white/45 to-transparent"></div>
+                                <div class="mt-4 h-px w-full bg-gradient-to-r from-[#021c55]/80 via-[#f1850a]/70 to-[#f7b82c]/75"></div>
                             </div>
                             </div>
                             </article>
@@ -234,7 +244,7 @@
                         Industries
                     </p>
                     <h3 class="mt-3 text-3xl sm:text-4xl xl:text-5xl font-black text-[#172455] leading-tight mb-2">We Serve</h3>
-                    <div class="h-2 w-32 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-full  mb-6"></div>
+                    <div class="h-2 w-32 brand-gradient-fill rounded-full  mb-6"></div>
                     <p class="text-xl text-gray-700 max-w-2xl mx-auto font-medium">
                         StagePass Audio Visual serves a wide range of industries, delivering tailored audio-visual solutions designed to meet the unique needs of each sector while ensuring seamless and reliable experiences.
 
@@ -276,7 +286,7 @@
          style="display: none;">
         <div class="relative w-full max-w-5xl rounded-3xl border border-[#172455]/20 bg-white shadow-2xl overflow-hidden"
              @click.stop>
-            <div class="h-1.5 w-full bg-gradient-to-r from-yellow-400 via-amber-500 to-[#172455]"></div>
+            <div class="h-1.5 w-full brand-gradient-fill"></div>
             <button type="button"
                     @click="isModalOpen = false"
                     class="absolute right-3 top-3 z-20 inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200/80 bg-white/95 text-slate-500 hover:text-[#172455] hover:border-[#172455]/40 transition-colors"
@@ -290,7 +300,7 @@
                         <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-html="selectedIndustry && selectedIndustry.icon_svg ? selectedIndustry.icon_svg : ''"></svg>
                     </div>
                     <h3 class="mt-4 text-2xl sm:text-3xl lg:text-4xl font-black leading-tight text-[#172455]" x-text="selectedIndustry && selectedIndustry.title"></h3>
-                    <div class="mt-5 h-px w-full bg-gradient-to-r from-[#172455]/35 via-yellow-400/60 to-transparent"></div>
+                    <div class="mt-5 h-px w-full bg-gradient-to-r from-[#021c55]/60 via-[#0b3f81]/55 via-[#f1850a]/60 to-[#f7b82c]/55"></div>
                     <div class="mt-5 max-h-[52vh] overflow-y-auto pr-1 text-slate-700">
                         <template x-if="selectedIndustry && selectedIndustry.overlay_description">
                             <div class="prose prose-sm sm:prose-base max-w-none text-slate-700 [&_p]:mb-3 [&_ul]:mb-3 [&_li]:mb-1 [&_strong]:text-[#172455] [&_h1]:text-[#172455] [&_h2]:text-[#172455] [&_h3]:text-[#172455]" x-html="selectedIndustry.overlay_description"></div>
@@ -358,7 +368,7 @@
     
 </section>
 
-<div class="h-3 w-full bg-gradient-to-r from-blue-500 via-purple-500 via-pink-500 via-red-500 via-orange-500 via-yellow-500 to-green-500 animate-gradient-x"></div>
+<div class="h-3 w-full brand-gradient-x"></div>
 
 
 

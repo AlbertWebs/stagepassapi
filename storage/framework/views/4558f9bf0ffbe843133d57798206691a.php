@@ -58,7 +58,17 @@
             inset: 0;
             border-radius: inherit;
             padding: 1px;
-            background: linear-gradient(130deg, rgba(2,28,85,0.65), rgba(232,103,5,0.62), rgba(252,176,13,0.68));
+            background: linear-gradient(
+                130deg,
+                rgba(2,28,85,0.88) 0%,
+                rgba(2,28,85,0.82) 18%,
+                rgba(11,63,129,0.82) 18%,
+                rgba(11,63,129,0.78) 42%,
+                rgba(232,103,5,0.72) 52%,
+                rgba(241,133,10,0.68) 62%,
+                rgba(252,176,13,0.72) 78%,
+                rgba(247,184,44,0.75) 100%
+            );
             -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
             -webkit-mask-composite: xor;
             mask-composite: exclude;
@@ -129,10 +139,12 @@
             background: linear-gradient(
                 120deg,
                 #021c55 0%,
+                #021c55 20%,
                 #0b3f81 20%,
-                #e86705 40%,
-                #f1850a 58%,
-                #fcb00d 78%,
+                #0b3f81 46%,
+                #e86705 54%,
+                #f1850a 64%,
+                #fcb00d 80%,
                 #f7b82c 100%
             );
             background-size: 240% 240%;
@@ -222,7 +234,7 @@
                 Capabilities
             </p>
             <h2 class="mt-4 text-3xl lg:text-5xl font-black text-[#172455]"><?php echo e($title); ?></h2>
-            <div class="mt-5 h-1.5 w-24 rounded-full bg-gradient-to-r from-[#172455] to-amber-500 mx-auto"></div>
+            <div class="mt-5 h-1.5 w-24 rounded-full brand-gradient-fill mx-auto"></div>
             <p class="mt-5 text-slate-600 text-base lg:text-lg"><?php echo e($subtitle); ?></p>
         </div>
         <div class="mt-10 grid sm:grid-cols-2 xl:grid-cols-3 gap-6">

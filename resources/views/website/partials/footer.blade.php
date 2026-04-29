@@ -130,7 +130,7 @@
         x-intersect="isVisible = true"
         class="bg-gradient-to-br from-[#172455] via-[#1e3a8a] to-[#172455] text-white relative overflow-hidden">
     <!-- Rainbow gradient bar -->
-    <div class="h-3 bg-gradient-to-r from-blue-500 via-purple-500 via-pink-500 via-red-500 via-orange-500 via-yellow-500 to-green-500 animate-gradient-x"></div>
+    <div class="h-3 brand-gradient-x"></div>
     
     <!-- Animated background elements -->
     <div class="absolute top-20 right-20 w-96 h-96 bg-yellow-500 rounded-full blur-3xl opacity-10 animate-pulse-slow"></div>

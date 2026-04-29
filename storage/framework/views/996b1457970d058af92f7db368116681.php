@@ -105,7 +105,7 @@ class="py-32 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden">
                 <div>
                     <span class="inline-block text-sm font-bold text-yellow-600 tracking-wider uppercase bg-gradient-to-r from-yellow-100 via-yellow-50 to-yellow-100 px-4 py-2 rounded-full shadow-lg shadow-yellow-200/50 border border-yellow-200/50">Get In Touch</span>
                     <h2 class="text-5xl lg:text-6xl font-black text-[#172455] mt-6 mb-8 leading-tight drop-shadow-sm">Let's Create Something Amazing Together</h2>
-                    <div class="h-2 w-24 bg-gradient-to-r from-yellow-500 via-yellow-400 to-yellow-600 rounded-full mb-8 shadow-lg shadow-yellow-500/30"></div>
+                    <div class="h-2 w-24 brand-gradient-fill rounded-full mb-8 shadow-lg shadow-yellow-500/30"></div>
                     <p class="text-xl text-gray-700 font-medium drop-shadow-sm">Ready to elevate your next event? <span class="text-[#172455] font-bold">Contact us today</span> for a quote or consultation.</p>
                 </div>
 
