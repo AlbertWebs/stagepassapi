@@ -266,9 +266,9 @@ class HomeController extends Controller
         ]);
     }
 
-    /** /selected: capabilities option 5, industries option 2. */
+    /** /selected: homepage capabilities (services) section, industries option 2. */
     public function selectedHome()
     {
-        return $this->homeWithVideo(5, 2);
+        return $this->homeWithVideo(null, 2);
     }
 }

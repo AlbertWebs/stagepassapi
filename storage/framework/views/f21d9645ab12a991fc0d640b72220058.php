@@ -26,13 +26,19 @@
     $badgeLabel = is_array($section) ? ($section['badge_label'] ?? 'Our Capabilities') : ($section->badge_label ?? 'Our Capabilities');
     $title = is_array($section) ? ($section['title'] ?? 'One-Stop-Solution For All Your AV Services') : ($section->title ?? 'One-Stop-Solution For All Your AV Services');
     $description = is_array($section) ? ($section['description'] ?? 'From concept to set-up to on-site support, we are there every step of the way to provide you with the exceptional product and service you deserve.') : ($section->description ?? 'From concept to set-up to on-site support, we are there every step of the way to provide you with the exceptional product and service you deserve.');
+    $backgroundImage = $backgroundImage ?? null;
 ?>
 <section id="services" 
          x-data="{ headerVisible: false, servicesVisible: [] }"
-         class="py-0 md:py-0 pb-16 md:pb-24 bg-white relative overflow-hidden">
-    <!-- Background decoration -->
-    <div class="absolute top-0 right-0 w-[700px] h-[700px] bg-yellow-100 rounded-full blur-3xl opacity-30 animate-pulse-slow"></div>
-    <div class="absolute bottom-0 left-0 w-[700px] h-[700px] bg-[#172455] rounded-full blur-3xl opacity-5 animate-pulse-slower"></div>
+         class="py-0 md:py-0 pb-16 md:pb-24 relative overflow-hidden <?php echo e($backgroundImage ? '' : 'bg-white'); ?>">
+    <?php if($backgroundImage): ?>
+        <div class="absolute inset-0 z-0 bg-center bg-cover bg-no-repeat" style="background-image: url('<?php echo e($backgroundImage); ?>');" aria-hidden="true"></div>
+        <div class="absolute inset-0 z-0 bg-white/80" aria-hidden="true"></div>
+    <?php else: ?>
+        <!-- Background decoration -->
+        <div class="absolute top-0 right-0 w-[700px] h-[700px] bg-yellow-100 rounded-full blur-3xl opacity-30 animate-pulse-slow"></div>
+        <div class="absolute bottom-0 left-0 w-[700px] h-[700px] bg-[#172455] rounded-full blur-3xl opacity-5 animate-pulse-slower"></div>
+    <?php endif; ?>
     
     <div class="container mx-auto px-4 lg:px-12 relative z-10">
         <!-- Header -->
@@ -140,6 +146,6 @@
     </div>
     
     <!-- Rainbow gradient bar with animation -->
-    <div class="absolute bottom-0 left-0 right-0 h-3 bg-gradient-to-r from-[#021c55] via-[#0b3f81] via-[#e86705] via-[#f1850a] via-[#fcb00d] to-[#f7b82c] animate-gradient-x"></div>
+    <div class="absolute bottom-0 left-0 right-0 h-3 brand-gradient-x"></div>
 </section>
 <?php /**PATH C:\projects\stagepassapi\resources\views/website/partials/services.blade.php ENDPATH**/ ?>

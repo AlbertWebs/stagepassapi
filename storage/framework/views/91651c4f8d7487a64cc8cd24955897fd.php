@@ -61,9 +61,19 @@
         if ($heroData && !is_array($heroData)) {
             $heroData = (array) $heroData;
         }
-        if ($capabilitiesOption === 5 && $industriesOption === 2) {
+        if (request()->is('selected')) {
             $heroData = is_array($heroData) ? $heroData : [];
             $heroData['vimeo_url'] = 'https://player.vimeo.com/video/1185799010?title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0&app_id=58479&autoplay=1&muted=1&loop=1&background=1';
+        }
+        $capabilitiesBackgroundImage = null;
+        if (request()->is('selected')) {
+            $capabilitiesBgPath = public_path('images/bg-indurstries.jpg');
+            if (!is_file($capabilitiesBgPath)) {
+                $capabilitiesBgPath = public_path('images/bg-indurstries.PNG');
+            }
+            if (is_file($capabilitiesBgPath)) {
+                $capabilitiesBackgroundImage = asset('images/' . basename($capabilitiesBgPath));
+            }
         }
     ?>
     <main id="home" class="relative">
@@ -77,7 +87,10 @@
             'data' => $homepageData['services'] ?? null
         ], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
     <?php else: ?>
-        <?php echo $__env->make('website.partials.services', ['data' => $homepageData['services'] ?? null], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+        <?php echo $__env->make('website.partials.services', [
+            'data' => $homepageData['services'] ?? null,
+            'backgroundImage' => $capabilitiesBackgroundImage ?? null,
+        ], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
     <?php endif; ?>
     <?php if($industriesOption >= 1 && $industriesOption <= 5): ?>
         <?php echo $__env->make('website.partials.options.industries-options-switch', [
