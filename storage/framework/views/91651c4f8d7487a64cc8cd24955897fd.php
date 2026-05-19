@@ -58,26 +58,33 @@
         $heroData = $homepageData['hero'] ?? null;
         $capabilitiesOption = isset($capabilitiesOption) ? (int) $capabilitiesOption : null;
         $industriesOption = isset($industriesOption) ? (int) $industriesOption : null;
+        $heroStyle = $heroStyle ?? 'video';
+        $industriesHideImages = (bool) ($industriesHideImages ?? false);
+        $capabilitiesBackgroundImage = (bool) ($capabilitiesBackgroundImage ?? false);
         if ($heroData && !is_array($heroData)) {
             $heroData = (array) $heroData;
         }
-        if (request()->is('selected')) {
+        if (!empty($heroVimeoUrl)) {
             $heroData = is_array($heroData) ? $heroData : [];
-            $heroData['vimeo_url'] = 'https://player.vimeo.com/video/1185799010?title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0&app_id=58479&autoplay=1&muted=1&loop=1&background=1';
+            $heroData['vimeo_url'] = $heroVimeoUrl;
         }
-        $capabilitiesBackgroundImage = null;
-        if (request()->is('selected')) {
+        $capabilitiesBgImageUrl = null;
+        if ($capabilitiesBackgroundImage) {
             $capabilitiesBgPath = public_path('images/bg-indurstries.jpg');
             if (!is_file($capabilitiesBgPath)) {
                 $capabilitiesBgPath = public_path('images/bg-indurstries.PNG');
             }
             if (is_file($capabilitiesBgPath)) {
-                $capabilitiesBackgroundImage = asset('images/' . basename($capabilitiesBgPath));
+                $capabilitiesBgImageUrl = asset('images/' . basename($capabilitiesBgPath));
             }
         }
     ?>
     <main id="home" class="relative">
-        <?php echo $__env->make('website.partials.hero-video', ['data' => $heroData], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+        <?php if($heroStyle === 'image'): ?>
+            <?php echo $__env->make('website.partials.hero', ['data' => $heroData], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+        <?php else: ?>
+            <?php echo $__env->make('website.partials.hero-video', ['data' => $heroData], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+        <?php endif; ?>
     </main>
 
     <?php echo $__env->make('website.partials.about', ['data' => $homepageData['about'] ?? null], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
@@ -89,13 +96,14 @@
     <?php else: ?>
         <?php echo $__env->make('website.partials.services', [
             'data' => $homepageData['services'] ?? null,
-            'backgroundImage' => $capabilitiesBackgroundImage ?? null,
+            'backgroundImage' => $capabilitiesBgImageUrl,
         ], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
     <?php endif; ?>
     <?php if($industriesOption >= 1 && $industriesOption <= 5): ?>
         <?php echo $__env->make('website.partials.options.industries-options-switch', [
             'option' => $industriesOption,
-            'data' => $homepageData['industries'] ?? null
+            'data' => $homepageData['industries'] ?? null,
+            'hideImages' => $industriesHideImages,
         ], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
     <?php else: ?>
         <?php echo $__env->make('website.partials.industries-video', ['data' => $homepageData['industries'] ?? null], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>

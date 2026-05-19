@@ -29,6 +29,7 @@ Route::get('/stream/video/{path}', [VideoStreamController::class, 'stream'])
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/home-with-video', [HomeController::class, 'homeWithVideo'])->name('home-with-video');
 Route::get('/selected', [HomeController::class, 'selectedHome'])->name('home.selected');
+Route::get('/selected-1', [HomeController::class, 'selectedHome1'])->name('home.selected-1');
 Route::get('/home-with-video/options/capabilities-{capabilitiesOption}/industries-{industriesOption}', [HomeController::class, 'homeWithVideo'])
     ->where(['capabilitiesOption' => '[1-5]', 'industriesOption' => '[1-5]'])
     ->name('home-with-video.options');

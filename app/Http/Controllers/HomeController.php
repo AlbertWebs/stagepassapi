@@ -254,7 +254,7 @@ class HomeController extends Controller
     /**
      * Home page with video hero (uses home-with-video.blade.php)
      */
-    public function homeWithVideo(?int $capabilitiesOption = null, ?int $industriesOption = null)
+    public function homeWithVideo(?int $capabilitiesOption = null, ?int $industriesOption = null, array $variant = [])
     {
         $homepageData = $this->getHomepageData();
 
@@ -263,12 +263,29 @@ class HomeController extends Controller
             'isPage' => false,
             'capabilitiesOption' => $capabilitiesOption,
             'industriesOption' => $industriesOption,
+            'heroStyle' => $variant['heroStyle'] ?? 'video',
+            'industriesHideImages' => (bool) ($variant['industriesHideImages'] ?? false),
+            'capabilitiesBackgroundImage' => (bool) ($variant['capabilitiesBackgroundImage'] ?? false),
+            'heroVimeoUrl' => $variant['heroVimeoUrl'] ?? null,
         ]);
     }
 
-    /** /selected: homepage capabilities (services) section, industries option 2. */
+    /** /selected: video hero, homepage capabilities, industries option 2. */
     public function selectedHome()
     {
-        return $this->homeWithVideo(null, 2);
+        return $this->homeWithVideo(null, 2, [
+            'heroVimeoUrl' => 'https://player.vimeo.com/video/1185799010?title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0&app_id=58479&autoplay=1&muted=1&loop=1&background=1',
+            'capabilitiesBackgroundImage' => true,
+        ]);
+    }
+
+    /** /selected-1: homepage hero, same as /selected but industries without images. */
+    public function selectedHome1()
+    {
+        return $this->homeWithVideo(null, 2, [
+            'heroStyle' => 'image',
+            'industriesHideImages' => true,
+            'capabilitiesBackgroundImage' => true,
+        ]);
     }
 }

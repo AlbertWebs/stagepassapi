@@ -1,7 +1,7 @@
 @php $option = (int) ($option ?? 1); @endphp
 
 @if($option === 2)
-    @include('website.partials.options.IndustriesOption2', ['data' => $data ?? null])
+    @include('website.partials.options.IndustriesOption2', ['data' => $data ?? null, 'hideImages' => $hideImages ?? false])
 @elseif($option === 3)
     @include('website.partials.options.IndustriesOption3', ['data' => $data ?? null])
 @elseif($option === 4)

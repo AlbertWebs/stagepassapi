@@ -4,6 +4,7 @@
     $items = is_array($data) ? ($data['items'] ?? []) : ($data->items ?? []);
     $title = is_array($section) ? ($section['title'] ?? 'Industries We Serve') : ($section->title ?? 'Industries We Serve');
     $subtitle = is_array($section) ? ($section['subtitle'] ?? 'Industry-focused solutions designed for measurable outcomes.') : ($section->subtitle ?? 'Industry-focused solutions designed for measurable outcomes.');
+    $hideImages = (bool) ($hideImages ?? false);
 
     function industriesOption2Icon(string $name): string {
         $n = strtolower($name);
@@ -173,7 +174,7 @@
             $randomIndustryTitle = is_array($randomIndustry) ? ($randomIndustry['title'] ?? $title) : ($randomIndustry->title ?? $title);
             $randomIndustryDescription = is_array($randomIndustry) ? ($randomIndustry['description'] ?? null) : ($randomIndustry->description ?? null);
             $randomIndustryImage = is_array($randomIndustry) ? ($randomIndustry['image_url'] ?? null) : ($randomIndustry->image_url ?? null);
-            $randomIndustryMedia = industriesOption2Media($randomIndustryTitle, $randomIndustryImage);
+            $randomIndustryMedia = $hideImages ? ['image' => null, 'video' => null] : industriesOption2Media($randomIndustryTitle, $randomIndustryImage);
             $showcaseImage = $randomIndustryMedia['image'] ?? null;
             $showcaseVideoUrl = $randomIndustryMedia['video'] ?? null;
             $gridItems = $itemsForRandom;
@@ -190,15 +191,15 @@
                             $img = is_array($item) ? ($item['image_url'] ?? null) : ($item->image_url ?? null);
                             $desc = is_array($item) ? ($item['description'] ?? '') : ($item->description ?? '');
                             $overlayDescription = is_array($item) ? ($item['overlay_description'] ?? null) : ($item->overlay_description ?? null);
-                            $resolvedMedia = industriesOption2Media($name, $img);
-                            $img = $resolvedMedia['image'] ?? $img;
-                            $videoUrl = $resolvedMedia['video'] ?? null;
+                            $resolvedMedia = $hideImages ? ['image' => null, 'video' => null] : industriesOption2Media($name, $img);
+                            $img = $hideImages ? null : ($resolvedMedia['image'] ?? $img);
+                            $videoUrl = $hideImages ? null : ($resolvedMedia['video'] ?? null);
                             $iconSvg = industriesOption2Icon($name);
                             $industryForJs = [
                                 'title' => $name,
                                 'description' => $desc ?: 'Tailored AV solutions crafted for this industry.',
                                 'overlay_description' => $overlayDescription ? html_entity_decode($overlayDescription, ENT_QUOTES | ENT_HTML5, 'UTF-8') : null,
-                                'image_url' => $img,
+                                'image_url' => $hideImages ? null : $img,
                                 'icon_svg' => $iconSvg,
                             ];
                         ?>
@@ -294,8 +295,8 @@
                 <span class="text-lg leading-none">&times;</span>
             </button>
 
-            <div class="grid grid-cols-1 lg:grid-cols-12">
-                <div class="lg:col-span-7 p-6 sm:p-8 lg:p-10">
+            <div class="grid grid-cols-1 <?php echo e($hideImages ? '' : 'lg:grid-cols-12'); ?>">
+                <div class="<?php echo e($hideImages ? '' : 'lg:col-span-7'); ?> p-6 sm:p-8 lg:p-10">
                     <div class="inline-flex h-12 w-12 items-center justify-center rounded-xl border border-[#172455]/20 bg-[#172455]/8 text-[#172455]">
                         <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-html="selectedIndustry && selectedIndustry.icon_svg ? selectedIndustry.icon_svg : ''"></svg>
                     </div>
@@ -311,6 +312,7 @@
                     </div>
                 </div>
 
+                <?php if (! ($hideImages)): ?>
                 <aside class="lg:col-span-5 relative min-h-[260px] lg:min-h-full bg-slate-950">
                     <template x-if="selectedIndustry && selectedIndustry.image_url">
                         <img :src="selectedIndustry.image_url"
@@ -327,6 +329,7 @@
                         <p class="mt-2 text-sm text-slate-100/90 line-clamp-3" x-text="selectedIndustry && selectedIndustry.description"></p>
                     </div>
                 </aside>
+                <?php endif; ?>
             </div>
         </div>
     </div>
